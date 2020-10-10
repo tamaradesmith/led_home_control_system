@@ -5,7 +5,7 @@ export async function up(knex: Knex): Promise<void> {
     .createTable("displays", (t: Knex.TableBuilder) => {
       t.bigIncrements("id");
       t.string("name");
-      t.string("ipadress");
+      t.string("ipaddress");
       t.integer('led_number');
       t.timestamps(true, true);
     })

@@ -2,7 +2,7 @@ import { Application, Router } from "express";
 import { DisplayController } from '../src/controllers/DisplayController';
 
 const _routes: [string, Router][] = [
-  ["/display", DisplayController],
+  ["/displays", DisplayController],
 ];
 
 export const routes = (app: Application) => {
