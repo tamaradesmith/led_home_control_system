@@ -3,6 +3,13 @@ const DisplayModel = require("../model/DisplayModel");
 
 export const DisplayController: Router = Router();
 
+interface Display {
+  id: number | null;
+  name: string | null;
+  ipaddress: string;
+  led_number: number;
+}
+
 DisplayController.get(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -30,13 +37,19 @@ DisplayController.get(
 DisplayController.post(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
-    try {
-    const info = req.body.display;
-    const display = await DisplayModel.create(info);
-    const check = await DisplayModel.getOne(4)
-      res.status(200).send(check[0]);
-    } catch (error) {
-      next(error);
+    const { name, ipaddress, led_number, id } = req.body;
+    const info: Display = { name, ipaddress, led_number, id };
+    const validDisplay = DisplayModel.validDisplay(info);
+    if (!validDisplay.message) {
+      try {
+        const display = await DisplayModel.create(info);
+        res.status(200).send(display[0]);
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      console.log("bad");
+      next({message: validDisplay.message, status: 422});
     }
   }
 );

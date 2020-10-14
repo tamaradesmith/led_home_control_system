@@ -21,19 +21,26 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 
 // app.use(expressValidator());
 
-if (app.get("env") === "development") {
+if (app.get("env") === "development" || app.get("env") === "test") {
   app.use(
     (
       error: { message: string; status: number },
       req: Request,
       res: Response,
       next: NextFunction
-    ) => {
+      ) => {
+
+      //   const error = new Error("Not Found");
+      //   error.status = 404;
+      //   next(error);
+      // //   console.log(error.message)
       res.status(error.status || 500);
-      res.json({
-        message: error.message,
-        error: error,
-      });
+      next(error)
+      // res.json({
+      //   message: error.message,
+      //   error: error,
+      // });
+      
     }
   );
 }
