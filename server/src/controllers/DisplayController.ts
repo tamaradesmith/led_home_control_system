@@ -28,7 +28,11 @@ DisplayController.get(
     try {
       const id = req.params.id;
       const display = await DisplayModel.getOne(id);
-      res.status(200).send(display[0]);
+      if (!display.message) {
+        res.status(200).send(display[0]);
+      } else {
+        next(display);
+      }
     } catch (error) {
       next(error);
     }
@@ -48,8 +52,7 @@ DisplayController.post(
         next(error);
       }
     } else {
-      console.log("bad");
-      next({message: validDisplay.message, status: 422});
+      next({ message: validDisplay.message, status: 422 });
     }
   }
 );
@@ -57,8 +60,8 @@ DisplayController.post(
 DisplayController.get(
   "/:id/edit",
   async (req: Request, res: Response, next: NextFunction) => {
+    const id = req.params.id;
     try {
-      const id = req.params.id;
       const display = await DisplayModel.getOne(id);
       res.status(200).send(display[0]);
     } catch (error) {
@@ -69,13 +72,19 @@ DisplayController.get(
 DisplayController.patch(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const id = req.params.id;
-      const info = req.body.display;
-      const display = await DisplayModel.update(id, info);
-      res.status(200).send(display[0]);
-    } catch (error) {
-      next(error);
+    const id = req.params.id;
+    const info = req.body.display;
+    const validDisplay = await DisplayModel.validDisplay(info);
+    if (validDisplay === true) {
+      try {
+        const display = await DisplayModel.update(id, info);
+        res.status(200).send(display[0]);
+      } catch (error) {
+        next(error);
+      }
+    } else {
+      
+      next({ message: validDisplay.message, status: 422 });
     }
   }
 );
@@ -84,7 +93,9 @@ DisplayController.delete(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.status(200).send("Delete Display");
+      const id = req.params.id;
+      const display = await DisplayModel.delete(id)
+      res.status(200).send(display)
     } catch (error) {
       next(error);
     }

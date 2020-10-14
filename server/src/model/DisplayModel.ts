@@ -1,4 +1,5 @@
 import { create } from "domain";
+import { validate } from "express-validation";
 
 const knex = require("../../db/client");
 
@@ -15,6 +16,20 @@ interface Display {
   ipaddress: string;
   led_number: number;
 }
+interface Result {
+  name?: Error;
+  ipaddress?: Error;
+  led_number?: Error;
+  message?: Error;
+}
+const validateIpadress = (ipadress: string) => {
+  const ipformat = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/;
+  if (ipadress.match(ipformat)) {
+    return true;
+  } else {
+    return false;
+  }
+};
 
 module.exports = {
   async getAll() {
@@ -26,9 +41,12 @@ module.exports = {
   },
   async getOne(id: number) {
     try {
-      return await knex("displays")
+      const display = await knex("displays")
         .select("name", "ipaddress", "id", "led_number")
         .where({ id });
+      return display.length !== 0
+        ? display
+        : new Error("Display does not exist");
     } catch (error) {
       return error;
     }
@@ -47,32 +65,45 @@ module.exports = {
       return error;
     }
   },
+  async delete(id: number) {
+    try {
+      return await knex("displays").where({ id }).del();
+    } catch (error) {
+      return error;
+    }
+  },
   validDisplay(display: Display) {
-    let result: object | Error = {
-      name: false,
-      ipaddress: false,
-      led_number: false,
-      message: false,
-    };
+    let valid = true;
+    const result: Result = {};
     const allowParams: string[] = ["name", "ipaddress", "led_number"];
     const keys = Object.keys(display);
     keys.forEach((key) => {
       if (!allowParams.includes(key) && key !== "id") {
-        result = new Error("Invalid entry");
+        result.message = new Error("Invalid entry");
+        valid = false;
       }
-
-      allowParams.forEach((param) => {
-        if (
-          keys.includes(param) &&
-          (display as any)[param] !== undefined &&
-          !result.message
-        ) {
-          (result as any)[param] = (display as any)[param];
-        } else {
-          result = new Error(`Missing ${param}`);
-        }
-      });
+      if (!display.name || display.name.length < 1) {
+        result.name = new Error("Invalid name");
+        valid = false;
+      }
+      if (!display.led_number || display.led_number < 1) {
+        result.led_number = new Error("Invalid led number");
+        valid = false;
+      }
+      if (!validateIpadress(display.ipaddress)) {
+        result.ipaddress = new Error("Invalid ipaddress");
+        valid = false;
+      }
     });
-    return result;
+    if (!valid) {
+      if (Object.keys(result).length > 1) {
+        return new Error("Invalid Data");
+      } else {
+        const key = Object.keys(result);
+        return (result as any)[key[0]];
+      }
+    } else {
+      return valid;
+    }
   },
 };
