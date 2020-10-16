@@ -1,0 +1,14 @@
+@import url("./reset.css");
+
+:root {
+  --main-colour: #451f55;
+  --secondary-colour: #efe9e7;
+}
+h2{
+  font-size: 1.3em;
+  font-weight: 700;
+  margin: 1.1em 0;
+}
+.display-list {
+  display: flex;
+}
