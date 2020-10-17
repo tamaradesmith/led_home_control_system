@@ -1,11 +1,20 @@
-import React from 'react';
-import DisplayIndex from './compoments/DisplayIndex';
+import React from "react";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+import DisplayIndex from "./compoments/DisplayIndex";
+import DisplayNew from "./compoments/DisplayNew";
+import DisplayShow from "./compoments/DisplayShow";
 
 function App() {
   return (
     <div className="App">
-      <p>meow</p>
-     <DisplayIndex />
+      <Router>
+        <Switch>
+          <Route exact path="/" component={DisplayIndex} />
+          <Route exact path="/Displays" component={DisplayIndex} />
+          <Route exact path="/Displays/new" component={DisplayNew} />
+          <Route exact path="/Displays/:id" component={DisplayShow} />
+        </Switch>
+      </Router>
     </div>
   );
 }

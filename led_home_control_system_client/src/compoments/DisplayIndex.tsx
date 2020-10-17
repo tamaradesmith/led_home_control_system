@@ -29,20 +29,35 @@ const DisplayIndex = () => {
   return (
     <main className="DisplayIndex">
       <h2> Available LED Displays </h2>
+      <button>All OFF</button>
+      <button>All On</button>
       <div>
+        <div className="display-list">
+          <h4>Name</h4>
+          <h4>Current Show</h4>
+          <h4>On/Off</h4>
+        </div>
         {displays.map((display: Display) => (
           <div key={display.id} className="display-list">
-            <p> {display.name}</p>
-            <p> {display.led_number}</p>
+            <p className="display-item"> {display.name}</p>
+            <p className="display-item"> Hudson</p>
+            <p className="display-item"> off</p>
           </div>
         ))}
       </div>
 
       <h2>Unavailable LED Display</h2>
-      <p>
-        {" "}
-        Hudson <small>Search</small>
-      </p>
+      <button>search All</button>
+      <div className="display-list">
+        <h4>Name</h4>
+        <h4>ipaddress</h4>
+        <h4>search</h4>
+      </div>
+      <div className="display-list">
+        <p>Hudson</p>
+        <p>192.168.0.231</p>
+        <p>Search</p>
+      </div>
     </main>
   );
 };

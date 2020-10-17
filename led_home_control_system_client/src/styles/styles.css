@@ -2,13 +2,73 @@
 
 :root {
   --main-colour: #451f55;
-  --secondary-colour: #efe9e7;
+  --secondary-colour: #f7f0fa;
 }
-h2{
+body {
+  font-size: 1.2em;
+  background: var(--secondary-colour);
+  padding: 1em 1.5em;
+}
+h2 {
   font-size: 1.3em;
   font-weight: 700;
   margin: 1.1em 0;
 }
+h4 {
+  font-size: 1.1em;
+  font-weight: 500;
+}
 .display-list {
-  display: flex;
+  display: grid;
+  grid-template-columns: 200px 200px 200px;
+  padding: 0.25em;
+}
+.display-item {
+  margin: 0 0.25em;
+}
+.form {
+  display: grid;
+  grid-template-columns: 150px 50px 175px auto;
+  grid-row-gap: 0.25em;
+}
+.form_ipadress {
+  display: grid;
+  grid-template-columns: 50px auto 50px auto 50px auto 50px;
+}
+.column_1 {
+  grid-column: 1/2;
+}
+.column_2 {
+  grid-column: 2/3;
+}
+.column_2_3 {
+  grid-column: 2/4;
+}
+.column_3{
+  grid-column: 3/4;
+}
+.row5 {
+  grid-row: 4/5;
+}
+.btn {
+  padding: 0.25em 0.5em;
+  margin: 0.25em;
+  border-radius: 0.5em;
+  width: 75px;
+  height: 30px;
+  border: 1px solid var(--main-colour);
+
+}
+.btn_save {
+  background: var(--main-colour);
+  color: var(--secondary-colour);
+  text-transform: capitalize;
+}
+.btn_cancel {
+  color: var(--main-colour);
+  background: var(--secondary-colour);
+  text-transform: capitalize;
+}
+.missing_field{
+  border: 2px solid #dd0000;
 }

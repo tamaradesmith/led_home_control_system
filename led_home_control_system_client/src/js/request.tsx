@@ -1,5 +1,16 @@
-const BASE_URL = "http://localhost:4545";
+import { create } from "domain";
 
+const BASE_URL = "http://localhost:4540";
+
+// interface Display {
+//   name: string;
+//   ipaddress: string;
+//   led_number: number;
+//   id?: number;
+// }
+
+
+// 192.168.0.202
 const DisplayQuery = {
   async getAll() {
     try {
@@ -8,7 +19,22 @@ const DisplayQuery = {
       });
       return res.json();
     } catch (error) {
-      return (error)
+      return error;
+    }
+  },
+  async create(display: object){
+    try {
+      const res = await fetch(`${BASE_URL}/displays`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({display}),
+      });
+      return {res: true, display :res.json()}
+    } catch (error) {
+      return error
     }
   }
 };
