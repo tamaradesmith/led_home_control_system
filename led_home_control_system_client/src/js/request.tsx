@@ -1,5 +1,3 @@
-import { create } from "domain";
-
 const BASE_URL = "http://localhost:4540";
 
 // interface Display {
@@ -8,7 +6,6 @@ const BASE_URL = "http://localhost:4540";
 //   led_number: number;
 //   id?: number;
 // }
-
 
 // 192.168.0.202
 const DisplayQuery = {
@@ -22,7 +19,17 @@ const DisplayQuery = {
       return error;
     }
   },
-  async create(display: object){
+  async getOne(id: string) {
+    try {
+      const res = await fetch(`${BASE_URL}/displays/${id}`, {
+        credentials: "include",
+      });
+     return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async create(display: object) {
     try {
       const res = await fetch(`${BASE_URL}/displays`, {
         method: "POST",
@@ -30,13 +37,13 @@ const DisplayQuery = {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({display}),
+        body: JSON.stringify({ display }),
       });
-      return {res: true, display :res.json()}
+      return { res: res.ok, display: res.json() };
     } catch (error) {
-      return error
+      return error;
     }
-  }
+  },
 };
 
 export { DisplayQuery };

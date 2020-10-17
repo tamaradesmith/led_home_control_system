@@ -1,13 +1,15 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import DisplayIndex from "./compoments/DisplayIndex";
-import DisplayNew from "./compoments/DisplayNew";
-import DisplayShow from "./compoments/DisplayShow";
+import DisplayIndex from "./compoments/display/DisplayIndex";
+import DisplayNew from "./compoments/display/DisplayNew";
+import DisplayShow from "./compoments/display/DisplayShow";
+import NavBar from "./compoments/partials/NavBar";
 
 function App() {
   return (
     <div className="App">
       <Router>
+        <NavBar />
         <Switch>
           <Route exact path="/" component={DisplayIndex} />
           <Route exact path="/Displays" component={DisplayIndex} />

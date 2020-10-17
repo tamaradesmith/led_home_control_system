@@ -1,23 +1,61 @@
 @import url("./reset.css");
-
+@import url("https://fonts.googleapis.com/css2?family=Merienda:wght@400;700&display=swap");
 :root {
   --main-colour: #451f55;
-  --secondary-colour: #f7f0fa;
+  --secondary-colour: #feffff;
+  --missing: #dd0000;
 }
 body {
   font-size: 1.2em;
   background: var(--secondary-colour);
+}
+main {
   padding: 1em 1.5em;
 }
 h2 {
   font-size: 1.3em;
   font-weight: 700;
-  margin: 1.1em 0;
+  margin-bottom: 1.1em;
 }
 h4 {
   font-size: 1.1em;
   font-weight: 500;
 }
+a {
+  color: #000000;
+  text-decoration: none;
+}
+/* NAV BAR STYLES */
+.NavBar {
+  color: var(--secondary-colour);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  /* box-shadow: 0px 25px 5px var(--shadow-colour); */
+}
+.nav-header {
+  background: var(--main-colour);
+  padding: 0.5em 1em;
+  font-family: "Merienda", cursive;
+  font-size: 1.5em;
+}
+.nav-div {
+  display: flex;
+  justify-content: flex-end;
+  width: 100%;
+  border-bottom: 2px solid var(--main-colour);
+  padding: 0.5em 1em;
+}
+.nav-item {
+  width: 200px;
+  text-align: center;
+}
+.nav-item:hover {
+  color: var(--main-colour);
+  font-weight: 600;
+  background: transparent;
+}
+/* DISPLAY STYLES */
 .display-list {
   display: grid;
   grid-template-columns: 200px 200px 200px;
@@ -25,6 +63,11 @@ h4 {
 }
 .display-item {
   margin: 0 0.25em;
+}
+.list-div{
+  margin-bottom: 1em;
+  margin-top: .5em;
+
 }
 .form {
   display: grid;
@@ -44,7 +87,7 @@ h4 {
 .column_2_3 {
   grid-column: 2/4;
 }
-.column_3{
+.column_3 {
   grid-column: 3/4;
 }
 .row5 {
@@ -57,7 +100,6 @@ h4 {
   width: 75px;
   height: 30px;
   border: 1px solid var(--main-colour);
-
 }
 .btn_save {
   background: var(--main-colour);
@@ -69,6 +111,6 @@ h4 {
   background: var(--secondary-colour);
   text-transform: capitalize;
 }
-.missing_field{
-  border: 2px solid #dd0000;
+.missing_field {
+  border: 2px solid var(--missing);
 }

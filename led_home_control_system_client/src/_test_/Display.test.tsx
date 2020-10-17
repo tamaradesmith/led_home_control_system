@@ -2,7 +2,7 @@ import React from "react";
 import { act, screen, render } from "@testing-library/react";
 
 
-import DisplayIndex from '../compoments/DisplayIndex'
+import DisplayIndex from '../compoments/display/DisplayIndex'
 
 describe('<DisplayIndex />', () =>{
 it("renders <DisplayIndex", ()=>{

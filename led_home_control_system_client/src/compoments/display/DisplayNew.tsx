@@ -2,9 +2,9 @@ import React from "react";
 import "../styles/styles.css";
 import { useHistory } from "react-router-dom";
 
-import { DisplayQuery } from "../js/request";
+import { DisplayQuery } from "../../js/request";
 
-import DisplayForm from "./partials/DisplayForm";
+import DisplayForm from "../partials/DisplayForm";
 
 interface Display {
   name: string;
@@ -23,7 +23,6 @@ const DisplayNew = () => {
     if (saveDisplays.res) {
       history.push(`/displays/${saveDisplays.display.id}`);
     } else {
-      console.log(saveDisplays);
       const message = document.querySelector<HTMLElement>(
         "#errorMessage"
       ) as HTMLElement;
