@@ -34,7 +34,12 @@ const validateIpadress = (ipadress: string) => {
 module.exports = {
   async getAll() {
     try {
-      return await knex("displays").select("name", "ipaddress", "led_number");
+      return await knex("displays").select(
+        "id",
+        "name",
+        "ipaddress",
+        "led_number"
+      );
     } catch (error) {
       return error;
     }

@@ -1,10 +1,10 @@
 import React from "react";
-import "../styles/styles.css";
 import { useHistory } from "react-router-dom";
 
 import { DisplayQuery } from "../../js/request";
 
 import DisplayForm from "../partials/DisplayForm";
+
 
 interface Display {
   name: string;
@@ -16,12 +16,12 @@ interface Display {
 const DisplayNew = () => {
   const history = useHistory();
 
-  const save: (event: React.MouseEvent<HTMLElement>) => void = async (
-    newDisplay
+  const save = async (
+    newDisplay: Display
   ) => {
     const saveDisplays = await DisplayQuery.create(newDisplay);
-    if (saveDisplays.res) {
-      history.push(`/displays/${saveDisplays.display.id}`);
+    if (saveDisplays.name) {
+      history.push(`/displays/${saveDisplays.id}`);
     } else {
       const message = document.querySelector<HTMLElement>(
         "#errorMessage"
@@ -33,6 +33,7 @@ const DisplayNew = () => {
   const cancel: (event: React.MouseEvent<HTMLElement>) => void = () => {
     history.push("/displays");
   };
+  
   return (
     <div className="DisplayNew">
       <p id="errorMessage"></p>

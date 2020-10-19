@@ -1,8 +1,8 @@
 {
   "name": "led_home_control_system_client",
   "version": "0.1.0",
-  "typings": "main.d.ts",
-  "private": true,
+  "types": "globals.d.js",
+"private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",

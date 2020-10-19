@@ -1,3 +1,5 @@
+// / <reference path="./interfaces.d.ts" />
+
 interface Display {
   name: string;
   ipaddress: string;
@@ -8,8 +10,3 @@ interface Display {
 interface DetailParams {
   id?: string;
 }
-
-// interface DetailsProps {
-//   required: string;
-//   match: match<DetailParams>;
-// }

@@ -41,18 +41,24 @@ DisplayController.get(
 DisplayController.post(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
-    const { name, ipaddress, led_number, id } = req.body;
-    const info: Display = { name, ipaddress, led_number, id };
-    const validDisplay = DisplayModel.validDisplay(info);
-    if (!validDisplay.message) {
-      try {
-        const display = await DisplayModel.create(info);
-        res.status(200).send(display[0]);
-      } catch (error) {
-        next(error);
+    const { display } = req.body;
+    console.log("req.body", req.body);
+    console.log("display", display);
+    try {
+      const validDisplay = DisplayModel.validDisplay(display);
+
+      if (!validDisplay.message) {
+        try {
+          const saveDisplay = await DisplayModel.create(display);
+          res.status(200).send(saveDisplay[0]);
+        } catch (error) {
+          next(error);
+        }
+      } else {
+        next({ message: validDisplay.message, status: 422 });
       }
-    } else {
-      next({ message: validDisplay.message, status: 422 });
+    } catch (error) {
+      next(error);
     }
   }
 );
@@ -83,7 +89,6 @@ DisplayController.patch(
         next(error);
       }
     } else {
-      
       next({ message: validDisplay.message, status: 422 });
     }
   }
@@ -94,8 +99,9 @@ DisplayController.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id = req.params.id;
-      const display = await DisplayModel.delete(id)
-      res.status(200).send(display)
+      const display = await DisplayModel.delete(id);
+    
+      res.sendStatus(200);
     } catch (error) {
       next(error);
     }

@@ -8,9 +8,7 @@
 body {
   font-size: 1.2em;
   background: var(--secondary-colour);
-}
-main {
-  padding: 1em 1.5em;
+  width: 100vw;
 }
 h2 {
   font-size: 1.3em;
@@ -25,13 +23,41 @@ a {
   color: #000000;
   text-decoration: none;
 }
+.DisplayNew,
+.DisplayShow,
+.DisplayIndex,
+.DisplayEdit {
+  padding: 1em 1.5em;
+}
+.hidden{
+  display: none;
+}
+/* TYPICAL BUTTON STYLES */
+.btn {
+  padding: 0.25em 0.5em;
+  margin: 0.25em;
+  border-radius: 0.5em;
+  width: 75px;
+  height: 30px;
+  border: 1px solid var(--main-colour);
+}
+.btn_save {
+  background: var(--main-colour);
+  color: var(--secondary-colour);
+  text-transform: capitalize;
+}
+.btn_cancel {
+  color: var(--main-colour);
+  background: var(--secondary-colour);
+  text-transform: capitalize;
+}
+
 /* NAV BAR STYLES */
 .NavBar {
   color: var(--secondary-colour);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  /* box-shadow: 0px 25px 5px var(--shadow-colour); */
 }
 .nav-header {
   background: var(--main-colour);
@@ -55,6 +81,7 @@ a {
   font-weight: 600;
   background: transparent;
 }
+
 /* DISPLAY STYLES */
 .display-list {
   display: grid;
@@ -64,10 +91,9 @@ a {
 .display-item {
   margin: 0 0.25em;
 }
-.list-div{
+.list-div {
   margin-bottom: 1em;
-  margin-top: .5em;
-
+  margin-top: 0.5em;
 }
 .form {
   display: grid;
@@ -93,24 +119,26 @@ a {
 .row5 {
   grid-row: 4/5;
 }
-.btn {
-  padding: 0.25em 0.5em;
-  margin: 0.25em;
-  border-radius: 0.5em;
-  width: 75px;
-  height: 30px;
-  border: 1px solid var(--main-colour);
-}
-.btn_save {
-  background: var(--main-colour);
-  color: var(--secondary-colour);
-  text-transform: capitalize;
-}
-.btn_cancel {
-  color: var(--main-colour);
-  background: var(--secondary-colour);
-  text-transform: capitalize;
-}
 .missing_field {
   border: 2px solid var(--missing);
+}
+.message-text {
+  color: var(--missing);
+  
+ }
+.confirm-delete-div {
+  width: 400px;
+  border: 1px solid var(--main-colour);
+  background: var(--secondary-colour);
+  padding: 1em;
+  position: absolute;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  top: 150px;
+}
+.confirm-btn{
+  display: flex;
+  justify-content: flex-end;
+  padding-top: 1em;
 }

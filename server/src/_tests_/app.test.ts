@@ -92,7 +92,7 @@ describe("update with invalid data", () => {
 
 describe("CREATE", () => {
   it("should create a new display with Vaild data", async () => {
-    const res = await request(app).post("/displays").send(newDisplay);
+    const res = await request(app).post("/displays").send({display: newDisplay});
     expect(200);
     expect(res.body).toHaveProperty("name", newDisplay.name);
     expect(res.body).toHaveProperty("ipaddress", newDisplay.ipaddress);
@@ -102,20 +102,45 @@ describe("CREATE", () => {
 });
 
 describe("CREATE with invaild data", () => {
-  it("should not save to db", async () => {
+  it("should not save to db with no name", async () => {
     const invalidDisplay = {
       ipaddress: "192.168.1.209",
       led_number: 18,
       id: 4,
     };
-    await request(app).post("/displays").send(invalidDisplay);
+    await request(app).post("/displays").send({display: invalidDisplay});
     const res = await request(app).get("/displays/4");
     expect(404);
     expect(res.ok).toBe(false);
   });
+   it("should not save to db with no led count", async () => {
+     const invalidDisplay = {
+       name: "hudson",
+       ipaddress: "192.168.1.209",
+       id: 4,
+     };
+     await request(app).post("/displays").send({display: invalidDisplay});
+     const res = await request(app).get("/displays/4");
+     expect(404);
+     expect(res.ok).toBe(false);
+   });
+   it("should not save to db with unknow params", async () => {
+     const invalidDisplay = {
+       name: 'extra',
+       ipaddress: "192.168.1.209",
+       led_number: 18,
+       id: 4,
+       notAllowed: 'this is not allowed'
+     };
+     await request(app).post("/displays").send({display: invalidDisplay});
+     const res = await request(app).get("/displays/4");
+     console.log("res", res.body);
+     expect(404);
+     expect(res.ok).toBe(false);
+   });
   it("should not save with an invalid ipaddress", async () => {
     newDisplay.ipaddress = "283.44.59.1";
-    const res = await request(app).post("/displays").send(newDisplay);
+    const res = await request(app).post("/displays").send({display: newDisplay});
     expect(422);
     expect(res.ok).toBe(false);
   });

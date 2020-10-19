@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import "../styles/styles.css";
 import { useHistory } from "react-router-dom";
 
 import { DisplayQuery } from "../../js/request";
@@ -8,8 +7,10 @@ interface Display {
   name: string;
   ipaddress: string;
   led_number: number;
-  id: number;
+  id?: number;
 }
+
+
 
 const DisplayIndex = () => {
   const history = useHistory();
@@ -47,7 +48,7 @@ const DisplayIndex = () => {
           <div
             key={display.id}
             className="display-list"
-            onClick={() => redirctToShow(display.id)}
+            onClick={() => redirctToShow(display.id ? display.id : 0)}
           >
             <p className="display-item"> {display.name}</p>
             <p className="display-item"> Hudson</p>
