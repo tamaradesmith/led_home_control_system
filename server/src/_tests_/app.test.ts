@@ -12,7 +12,7 @@ interface Display {
 }
 const newDisplay = {
   name: "hudson",
-  ipaddress: "192.168.1.209",
+  ipaddress: "192.168.1.208",
   led_number: 18,
   id: 4,
 };
@@ -134,7 +134,6 @@ describe("CREATE with invaild data", () => {
      };
      await request(app).post("/displays").send({display: invalidDisplay});
      const res = await request(app).get("/displays/4");
-     console.log("res", res.body);
      expect(404);
      expect(res.ok).toBe(false);
    });

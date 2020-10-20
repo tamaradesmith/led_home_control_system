@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response, Router } from "express";
-const DisplayModel = require("../model/DisplayModel");
+
+import { DisplayModel } from "../model/DisplayModel";
 
 export const DisplayController: Router = Router();
 
@@ -10,6 +11,34 @@ interface Display {
   led_number: number;
 }
 
+// SPECIAL ROUTES
+
+DisplayController.get(
+  "/search",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const result = await DisplayModel.searchAll();
+      res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+DisplayController.get(
+  "/:id/search",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id: number = parseInt(req.params.id);
+    try {
+      const result = await DisplayModel.search(id);
+      res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// CRUD ROUTES
 DisplayController.get(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +55,7 @@ DisplayController.get(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.params.id;
+      const id: number = parseInt(req.params.id);
       const display = await DisplayModel.getOne(id);
       if (!display.message) {
         res.status(200).send(display[0]);
@@ -42,11 +71,8 @@ DisplayController.post(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
     const { display } = req.body;
-    console.log("req.body", req.body);
-    console.log("display", display);
     try {
       const validDisplay = DisplayModel.validDisplay(display);
-
       if (!validDisplay.message) {
         try {
           const saveDisplay = await DisplayModel.create(display);
@@ -66,7 +92,7 @@ DisplayController.post(
 DisplayController.get(
   "/:id/edit",
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
+    const id: number = parseInt(req.params.id);
     try {
       const display = await DisplayModel.getOne(id);
       res.status(200).send(display[0]);
@@ -78,7 +104,8 @@ DisplayController.get(
 DisplayController.patch(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
-    const id = req.params.id;
+    const id: number = parseInt(req.params.id);
+
     const info = req.body.display;
     const validDisplay = await DisplayModel.validDisplay(info);
     if (validDisplay === true) {
@@ -98,9 +125,8 @@ DisplayController.delete(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const id = req.params.id;
+      const id: number = parseInt(req.params.id);
       const display = await DisplayModel.delete(id);
-    
       res.sendStatus(200);
     } catch (error) {
       next(error);

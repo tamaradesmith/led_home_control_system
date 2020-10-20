@@ -1,6 +1,6 @@
-import { create } from "domain";
-import { validate } from "express-validation";
-
+import { rejects } from "assert";
+// import { validate } from "express-validation";
+import axios from "axios";
 const knex = require("../../db/client");
 
 declare global {
@@ -11,9 +11,9 @@ declare global {
 Object.typedKeys = Object.keys as any;
 
 interface Display {
-  id: number | null;
-  name: string | null;
-  ipaddress: string;
+  id: number | undefined;
+  name: string;
+  ipaddress: string | undefined;
   led_number: number;
 }
 interface Result {
@@ -31,7 +31,33 @@ const validateIpadress = (ipadress: string) => {
   }
 };
 
-module.exports = {
+const searchPromise = async (
+  displays: Display[],
+  found: (Display)[],
+  not_found: (Display)[] 
+) => {
+  const currentDisplay: Display = displays.shift();
+  try {
+    const id: number = currentDisplay ? currentDisplay.id : 1;
+    const response = await DisplayModel.search(id);
+    found.push(currentDisplay? currentDisplay : {});
+    if (displays.length < 0) {
+      searchPromise(displays, found, not_found)
+    } else {
+      return {found, not_found}
+    }
+  } catch (error) {
+    not_found.push(currentDisplay ? currentDisplay : {});
+    if (displays.length < 0) {
+      searchPromise(displays, found, not_found);
+    } else {
+      return { found, not_found };
+    }
+  }
+  return {found, not_found}
+};
+
+const DisplayModel = {
   async getAll() {
     try {
       return await knex("displays").select(
@@ -95,7 +121,7 @@ module.exports = {
         result.led_number = new Error("Invalid led number");
         valid = false;
       }
-      if (!validateIpadress(display.ipaddress)) {
+      if (!validateIpadress(display.ipaddress ? display.ipaddress : "0")) {
         result.ipaddress = new Error("Invalid ipaddress");
         valid = false;
       }
@@ -111,4 +137,48 @@ module.exports = {
       return valid;
     }
   },
+  async search(id: number) {
+    return new Promise(async (res, rej) => {
+      const timer = setTimeout(() => {
+        return rej(new Error("Node not located"));
+      }, 3000);
+      try {
+        const display: Display = (await this.getOne(id))[0];
+        const result = await axios.get(`http://${display.ipaddress}/rest`);
+        clearTimeout(timer);
+        res(result);
+      } catch (error) {
+        return error;
+      }
+    });
+  },
+
+  // Promise.all([fooPromise, barPromise]).then(([foo, bar]) => {
+  //   // compiler correctly warns if someField not found from foo's type
+  //   console.log(foo.someField);
+  // });
+
+  async searchAll() {
+    const displays = await this.getAll();
+    const found: Display[] = [];
+    const not_found: Display[] = [];
+    const seaching = await searchPromise(displays, [], []);
+    console.log("searchAll -> seaching", seaching);
+    // const f = await displays.map(async (display: Display) => {
+    //   try {
+    //     await searchPromise(display.id ? display.id : -1);
+    //     found.push(display);
+    //     console.log("searchAll -> found", found);
+    //   } catch (error) {
+    //     not_found.push(display);
+    //     console.log("searchAll -> not_found", not_found);
+    //   }
+    //   return;
+    // });
+    const result = { found, not_found };
+    console.log("searchAll -> result", result);
+    return result;
+  },
 };
+
+export { DisplayModel };
