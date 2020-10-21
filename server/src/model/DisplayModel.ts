@@ -11,9 +11,9 @@ declare global {
 Object.typedKeys = Object.keys as any;
 
 interface Display {
-  id: number | undefined;
+  id: number;
   name: string;
-  ipaddress: string | undefined;
+  ipaddress: string;
   led_number: number;
 }
 interface Result {
@@ -33,28 +33,28 @@ const validateIpadress = (ipadress: string) => {
 
 const searchPromise = async (
   displays: Display[],
-  found: (Display)[],
-  not_found: (Display)[] 
+  found: Display[],
+  not_found: Display[]
 ) => {
-  const currentDisplay: Display = displays.shift();
+  const currentDisplay = displays.shift();
   try {
-    const id: number = currentDisplay ? currentDisplay.id : 1;
+    const id = currentDisplay!.id;
     const response = await DisplayModel.search(id);
-    found.push(currentDisplay? currentDisplay : {});
-    if (displays.length < 0) {
-      searchPromise(displays, found, not_found)
+    found.push(currentDisplay!);
+    if (displays.length > 0) {
+     await searchPromise(displays, found, not_found);
     } else {
-      return {found, not_found}
+      return { found, not_found };
     }
   } catch (error) {
-    not_found.push(currentDisplay ? currentDisplay : {});
-    if (displays.length < 0) {
-      searchPromise(displays, found, not_found);
+    not_found.push(currentDisplay!);
+    if (displays.length > 0) {
+     await searchPromise(displays, found, not_found);
     } else {
       return { found, not_found };
     }
   }
-  return {found, not_found}
+  return { found, not_found };
 };
 
 const DisplayModel = {
@@ -138,46 +138,26 @@ const DisplayModel = {
     }
   },
   async search(id: number) {
+
     return new Promise(async (res, rej) => {
       const timer = setTimeout(() => {
         return rej(new Error("Node not located"));
-      }, 3000);
+      }, 2000);
       try {
         const display: Display = (await this.getOne(id))[0];
         const result = await axios.get(`http://${display.ipaddress}/rest`);
         clearTimeout(timer);
-        res(result);
+        res(true);
       } catch (error) {
-        return error;
+        rej(false);
       }
     });
   },
 
-  // Promise.all([fooPromise, barPromise]).then(([foo, bar]) => {
-  //   // compiler correctly warns if someField not found from foo's type
-  //   console.log(foo.someField);
-  // });
-
   async searchAll() {
     const displays = await this.getAll();
-    const found: Display[] = [];
-    const not_found: Display[] = [];
     const seaching = await searchPromise(displays, [], []);
-    console.log("searchAll -> seaching", seaching);
-    // const f = await displays.map(async (display: Display) => {
-    //   try {
-    //     await searchPromise(display.id ? display.id : -1);
-    //     found.push(display);
-    //     console.log("searchAll -> found", found);
-    //   } catch (error) {
-    //     not_found.push(display);
-    //     console.log("searchAll -> not_found", not_found);
-    //   }
-    //   return;
-    // });
-    const result = { found, not_found };
-    console.log("searchAll -> result", result);
-    return result;
+    return seaching;
   },
 };
 
