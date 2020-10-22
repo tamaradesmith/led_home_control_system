@@ -1,4 +1,3 @@
-import { rejects } from "assert";
 // import { validate } from "express-validation";
 import axios from "axios";
 const knex = require("../../db/client");
