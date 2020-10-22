@@ -77,6 +77,16 @@ const DisplayQuery = {
       return error;
     }
   },
+  async searchAll() {
+    try {
+      const res = await fetch(`${BASE_URL}/displays/search`, {
+        credentials: "include",
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
 };
 
 export { DisplayQuery };

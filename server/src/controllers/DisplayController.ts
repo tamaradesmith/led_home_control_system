@@ -126,7 +126,7 @@ DisplayController.delete(
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       const id: number = parseInt(req.params.id);
-      const display = await DisplayModel.delete(id);
+      await DisplayModel.delete(id);
       res.sendStatus(200);
     } catch (error) {
       next(error);

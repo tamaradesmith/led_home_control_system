@@ -102,6 +102,7 @@ const DisplayModel = {
       return error;
     }
   },
+  // Extra Functions
   validDisplay(display: Display) {
     let valid = true;
     const result: Result = {};

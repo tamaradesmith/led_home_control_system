@@ -10,16 +10,17 @@ interface Display {
   id?: number;
 }
 
-
-
 const DisplayIndex = () => {
   const history = useHistory();
   const [displays, setDisplays] = useState([]);
+  const [missingDisplays, setMissingDisplays] = useState([]);
 
   const getAllDisplays = async () => {
     try {
-      const allDisplays = await DisplayQuery.getAll();
-      setDisplays(allDisplays);
+      const allDisplays = await DisplayQuery.searchAll();
+      console.log("getAllDisplays -> allDisplays", allDisplays);
+      setDisplays(allDisplays.found);
+      setMissingDisplays(allDisplays.not_found);
     } catch (error) {
       console.error(error);
     }
@@ -65,11 +66,13 @@ const DisplayIndex = () => {
           <h4>ipaddress</h4>
           <h4>search</h4>
         </div>
-        <div className="display-list">
-          <p>Hudson</p>
-          <p>192.168.0.231</p>
-          <p>Search</p>
-        </div>
+        {missingDisplays.map((display: Display) => (
+          <div key={display.id} className="display-list">
+            <p>{display.name}</p>
+            <p>{display.ipaddress}</p>
+            <button>Search</button>
+          </div>
+        ))}
       </div>
     </main>
   );

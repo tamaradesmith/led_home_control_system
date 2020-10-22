@@ -23,9 +23,10 @@ const ColourModel = {
   },
   async getOne(id: number) {
     try {
-      return await knex("colours")
+      const colour = await knex("colours")
         .select("id", "name", "hue", "saturation", "lightness")
         .where({ id });
+      return colour.length !== 0 ? colour : new Error("Colour does not exist");
     } catch (error) {
       return error;
     }
@@ -37,6 +38,21 @@ const ColourModel = {
       return error;
     }
   },
+  async update(id: number, colour: Colour) {
+    try {
+      return await knex("colours").where({ id }).update(colour).returning("*");
+    } catch (error) {
+      return error;
+    }
+  },
+  async delete(id: number) {
+    try {
+      return await knex("colours").where({ id }).del();
+    } catch (error) {
+      return error;
+    }
+  },
+
   validColour(colour: Colour) {
     let vaild = true;
     const result = {};
@@ -53,7 +69,7 @@ const ColourModel = {
     if (!colour.hue || colour.hue < 0 || colour.hue > 360) {
       vaild = false;
     }
-    
+
     if (
       !colour.saturation ||
       colour.saturation < 0 ||
