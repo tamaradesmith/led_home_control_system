@@ -1,6 +1,6 @@
-// import { validate } from "express-validation";
-import axios from "axios";
+const axios = require("axios");
 const knex = require("../../db/client");
+
 
 declare global {
   interface ObjectConstructor {

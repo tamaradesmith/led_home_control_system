@@ -1,12 +1,12 @@
 import express, {
   Application,
-  // ErrorRequestHandler,
+  ErrorRequestHandler,
   NextFunction,
   Request,
   Response,
 } from "express";
 
-import { routes } from "./routes/routes";
+import { routes } from "./src/routes/routes";
 
 interface Error {
   status?: number;
@@ -15,18 +15,17 @@ interface Error {
 // const expressValidator = require("express-validator");
 import logger from "morgan";
 import cookieParser from "cookie-parser";
-import cors = require("cors");
+const cors = require("cors");
 // const methodOverride = require("method-override");
 
-import dotenv from "dotenv";
+const dotenv =require("dotenv");
 dotenv.config();
 
 export const app: Application = express();
+// import { app } from "./src/app";
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-
 
 if (process.env.NODE_ENV !== "test") {
   app.use(logger("dev"));
@@ -57,7 +56,6 @@ app.use(function (
   });
   next(error);
 });
-
 
 const PORT = process.env.PORT;
 

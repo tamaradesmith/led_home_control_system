@@ -1,8 +1,9 @@
 import { NextFunction, Request, Response, Router } from "express";
 
+export const DisplayController: Router = Router();
+
 import { DisplayModel } from "../model/DisplayModel";
 
-export const DisplayController: Router = Router();
 
 interface Display {
   id: number | null;

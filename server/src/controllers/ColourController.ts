@@ -1,9 +1,9 @@
-import { NextFunction, Request, Response, Router } from "express";
-
+import { Router, NextFunction, Response , Request} from "express";
 
 import { ColourModel } from "../model/ColourModel";
 
 export const ColourController: Router = Router();
+
 
 interface Colour {
   id?: number;

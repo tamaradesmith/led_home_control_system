@@ -1,4 +1,3 @@
-import { create } from "domain";
 
 const knex = require("../../db/client");
 
