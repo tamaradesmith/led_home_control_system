@@ -23,14 +23,22 @@ a {
   color: #000000;
   text-decoration: none;
 }
+input {
+  font-size: 0.9em;
+}
 .DisplayNew,
 .DisplayShow,
 .DisplayIndex,
-.DisplayEdit {
+.DisplayEdit,
+.ColourIndex,
+.ColourNew {
   padding: 1em 1.5em;
 }
-.hidden{
+.hidden {
   display: none;
+}
+.toCapital {
+  text-transform: capitalize;
 }
 /* TYPICAL BUTTON STYLES */
 .btn {
@@ -75,6 +83,7 @@ a {
 .nav-item {
   width: 200px;
   text-align: center;
+  text-transform: capitalize;
 }
 .nav-item:hover {
   color: var(--main-colour);
@@ -124,8 +133,7 @@ a {
 }
 .message-text {
   color: var(--missing);
-  
- }
+}
 .confirm-delete-div {
   width: 400px;
   border: 1px solid var(--main-colour);
@@ -137,8 +145,97 @@ a {
   margin: 0 auto;
   top: 150px;
 }
-.confirm-btn{
+.confirm-btn {
   display: flex;
   justify-content: flex-end;
   padding-top: 1em;
+}
+
+/* COLOUR */
+.ColourForm {
+  display: grid;
+  grid-template-columns: 90px 200px auto 160px;
+  max-width: 1100px;
+  margin: auto;
+}
+.colour-header {
+  grid-column: 1/4;
+  text-align: center;
+  font-size: 1.4em;
+  font-weight: 700;
+  margin-bottom: 1em;
+}
+.colour-label {
+  margin-bottom: 0.25em;
+}
+.colour-btn-div {
+  grid-column: 3/5;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1em;
+}
+.colour-swatch {
+  border: 1px solid black;
+  width: 150px;
+  height: 104px;
+  grid-column: 4/5;
+  grid-row: 2/5;
+  margin-left: .5em;
+  margin-top: .25em;
+}
+.colour-index{
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+  
+}
+.swatch{
+  background: 1px solid black;
+  width: 50px;
+  height: 50px;
+  margin: .25em;
+}
+.swatch-label{
+  text-align: center;
+}
+/* SLIDER */
+.slider-div {
+  display: grid;
+  grid-template-columns: 90px auto 60px;
+  margin: 0.25em 0;
+  grid-column: 1/4;
+}
+.slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 98%;
+  height: 25px;
+  outline: none;
+}
+.slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 5px;
+  height: 25px;
+  background: black;
+  border: 1px solid white;
+  cursor: pointer;
+}
+.hue {
+  background: linear-gradient(
+    to right,
+    hsl(0, 100%, 50%),
+    hsl(30, 100%, 50%),
+    hsl(60, 100%, 50%),
+    hsl(90, 100%, 50%),
+    hsl(120, 100%, 50%),
+    hsl(150, 100%, 50%),
+    hsl(180, 100%, 50%),
+    hsl(210, 100%, 50%),
+    hsl(240, 100%, 50%),
+    hsl(270, 100%, 50%),
+    hsl(300, 100%, 50%),
+    hsl(330, 100%, 50%),
+    hsl(360, 100%, 50%)
+  );
 }

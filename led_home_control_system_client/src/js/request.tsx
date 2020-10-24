@@ -1,3 +1,5 @@
+import { create } from "domain";
+
 const BASE_URL = "http://localhost:4545";
 
 interface Display {
@@ -7,7 +9,14 @@ interface Display {
   id?: number;
 }
 
-// 192.168.0.202
+interface Colour {
+  name: string;
+  hue: number;
+  saturation: number;
+  lightness: number;
+  id?: number;
+}
+
 const DisplayQuery = {
   async getAll() {
     try {
@@ -53,7 +62,7 @@ const DisplayQuery = {
   },
   async edit(id: number) {
     try {
-      const res = await fetch(`${BASE_URL}/display/${id}/edit`, {
+      const res = await fetch(`${BASE_URL}/displays/${id}/edit`, {
         method: "EDIT",
         credentials: "include",
       });
@@ -88,5 +97,41 @@ const DisplayQuery = {
     }
   },
 };
-
-export { DisplayQuery };
+const ColourQuery = {
+  async getAll() {
+    try {
+      const res = await fetch(`${BASE_URL}/colours`, {
+        credentials: "include",
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async create(colour: Colour){
+    try {
+      const res = await fetch(`${BASE_URL}/colours`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ colour }),
+      });
+      return res.json()
+    } catch (error) {
+      return error
+    }
+  },
+    async edit(id: number) {
+    try {
+      const res = await fetch(`${BASE_URL}/colours/${id}`, {
+        credentials: "include",
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+};
+export { DisplayQuery, ColourQuery };

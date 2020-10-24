@@ -18,7 +18,6 @@ const DisplayIndex = () => {
   const getAllDisplays = async () => {
     try {
       const allDisplays = await DisplayQuery.searchAll();
-      console.log("getAllDisplays -> allDisplays", allDisplays);
       setDisplays(allDisplays.found);
       setMissingDisplays(allDisplays.not_found);
     } catch (error) {
@@ -67,7 +66,11 @@ const DisplayIndex = () => {
           <h4>search</h4>
         </div>
         {missingDisplays.map((display: Display) => (
-          <div key={display.id} className="display-list">
+          <div
+            key={display.id}
+            className="display-list"
+            onClick={() => redirctToShow(display.id ? display.id : 0)}
+          >
             <p>{display.name}</p>
             <p>{display.ipaddress}</p>
             <button>Search</button>

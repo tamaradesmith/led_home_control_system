@@ -40,8 +40,8 @@ const DisplayForm = (props: Props) => {
     }
   };
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [event.target.name]: event.target.value });
   };
 
   const fieldValid = () => {

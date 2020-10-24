@@ -3,16 +3,16 @@ import { match, useHistory } from "react-router-dom";
 
 import { DisplayQuery } from "../../js/request";
 
-interface DetailParams {
+interface DisplayParams {
   id: string;
 }
 
-interface DetailsProps {
+interface DisplaysProps {
   required: string;
-  match: match<DetailParams>;
+  match: match<DisplayParams>;
 }
 
-const DisplayShow = (props: DetailsProps) => {
+const DisplayShow = (props: DisplaysProps) => {
   const history = useHistory();
   const match = props.match;
 

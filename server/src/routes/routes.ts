@@ -14,5 +14,3 @@ export const routes = (app: Application) => {
     app.use(url, controller);
   });
 };
-// app.use("/displays", DisplayController);
-// app.use("/colours", ColourController);

@@ -1,4 +1,3 @@
-
 const knex = require("../../db/client");
 
 interface Colour {
@@ -54,7 +53,6 @@ const ColourModel = {
 
   validColour(colour: Colour) {
     let vaild = true;
-    const result = {};
     const keys = Object.keys(colour);
     const allowParams = ["name", "hue", "saturation", "lightness"];
     keys.forEach((key) => {
@@ -65,20 +63,23 @@ const ColourModel = {
     if (!colour.name || colour.name.length < 1) {
       vaild = false;
     }
-    if (!colour.hue || colour.hue < 0 || colour.hue > 360) {
+
+    if (colour.hue < 0 || colour.hue > 360 || !colour.hue) {
       vaild = false;
     }
 
     if (
-      !colour.saturation ||
       colour.saturation < 0 ||
-      colour.saturation > 100
+      colour.saturation > 100 ||
+      !colour.saturation
     ) {
       vaild = false;
     }
-    if (!colour.lightness || colour.lightness < 0 || colour.lightness > 100) {
+
+    if (colour.lightness < 0 || colour.lightness > 100 || !colour.lightness) {
       vaild = false;
     }
+
     return vaild;
   },
 };
