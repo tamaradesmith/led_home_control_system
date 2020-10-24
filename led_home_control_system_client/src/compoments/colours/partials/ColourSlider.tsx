@@ -16,6 +16,7 @@ const ColourSlider = (props: Props) => {
     updateValue(event.target.name, parseInt(event.target.value));
   };
   const background = `slider ${type}`;
+
   return (
     <div className="ColourSlider slider-div">
       <p className='toCapital'> {type} </p>

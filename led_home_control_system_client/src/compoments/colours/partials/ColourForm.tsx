@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import ColourSlider from "./ColourSlider";
 
@@ -13,14 +13,14 @@ interface Colour {
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   save: Function;
-  editColour?:  Colour;
+  editColour?: Colour;
 }
 
 const ColourForm = (props: Props) => {
-  const { cancel, save , editColour} = props;
-  const [hue, setHue] = useState((editColour) ? editColour.hue : 0);
-  const [saturation, setSaturation] = useState((editColour)? editColour.saturation: 100);
-  const [lightness, setLightness] = useState((editColour) ? editColour.lightness: 50);
+  const { cancel, save, editColour } = props;
+  const [hue, setHue] = useState(0);
+  const [saturation, setSaturation] = useState(100);
+  const [lightness, setLightness] = useState(50);
   const [name, setName] = useState("");
   const HSL = [
     { type: "hue", max: 360, value: hue },
@@ -44,11 +44,18 @@ const ColourForm = (props: Props) => {
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newValue =event.target.value;
-    console.log("handleChange -> newValue", newValue);
-
+    const newValue = event.target.value;
     setName(newValue);
   };
+
+  useEffect(() => {
+    if (editColour) {
+      setHue(editColour?.hue);
+      setSaturation(editColour.saturation);
+      setLightness(editColour.lightness);
+      setName(editColour.name);
+    }
+  }, [editColour]);
 
   const updateValue = (name: string, newValue: number) => {
     switch (name) {
@@ -90,7 +97,6 @@ const ColourForm = (props: Props) => {
           value={type.value}
           updateValue={updateValue}
           hslValue={{ hue, saturation, lightness }}
-          
         />
       ))}
       <div

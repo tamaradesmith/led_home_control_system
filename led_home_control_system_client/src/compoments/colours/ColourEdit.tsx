@@ -14,6 +14,14 @@ interface Props {
   match: match<DetailParams>;
 }
 
+interface Colour {
+  name: string;
+  hue: number;
+  saturation: number;
+  lightness: number;
+  id?: number;
+}
+
 const ColourEdit = (props: Props) => {
   const history = useHistory();
   const match = props.match;
@@ -27,19 +35,26 @@ const ColourEdit = (props: Props) => {
 
   const getColour = async () => {
     const savedColour = await ColourQuery.edit(parseInt(match.params.id));
-    console.log("getColour -> savedColour", savedColour);
-    setColour(savedColour)
+    setColour(savedColour);
   };
 
-  const save = () => {
-    console.log("update colour");
+  const save = async (updatedColour: Colour) => {
+    const result = await ColourQuery.update(
+      parseInt(match.params.id),
+      updatedColour
+    );
+    if (result.id) {
+      history.push("/colours");
+    }
   };
+
   const cancel = () => {
     history.push("/colours");
   };
 
   useEffect(() => {
     getColour();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
