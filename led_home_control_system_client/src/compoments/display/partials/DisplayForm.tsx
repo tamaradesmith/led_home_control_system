@@ -18,11 +18,11 @@ const DisplayForm = (props: Props) => {
 
   const [formData, setFormData] = useState({
     name: "",
-    ipaddress1: -1,
-    ipaddress2: -1,
-    ipaddress3: -1,
-    ipaddress4: -1,
-    led_number: -1,
+    ipaddress1: 0,
+    ipaddress2: 0,
+    ipaddress3: 0,
+    ipaddress4: 0,
+    led_number: 0,
   });
 
   const saveDisplay = () => {
@@ -79,7 +79,7 @@ const DisplayForm = (props: Props) => {
   };
 
   useEffect(() => {
-    if (display?.name !== undefined) {
+    if (display?.ipaddress !== undefined) {
       setFormData({
         name: display.name,
         ipaddress1: parseInt(display.ipaddress.split(".")[0]),
@@ -134,7 +134,11 @@ const DisplayForm = (props: Props) => {
           name="ipaddress1"
           id="ipaddress1"
           onChange={handleChange}
-          defaultValue={display ? display.ipaddress.split(".")[0] : -1}
+          defaultValue={
+            display?.ipaddress !== undefined
+              ? display.ipaddress.split(".")[0]
+              : ""
+          }
         />
         <p className="">.</p>
         <input
@@ -144,7 +148,9 @@ const DisplayForm = (props: Props) => {
           name="ipaddress2"
           id="ipaddress2"
           onChange={handleChange}
-          defaultValue={display ? display.ipaddress.split(".")[1] : -1}
+          defaultValue={
+            display?.ipaddress ? display.ipaddress.split(".")[1] : ""
+          }
         />
         <p className="">.</p>
         <input
@@ -154,7 +160,9 @@ const DisplayForm = (props: Props) => {
           name="ipaddress3"
           id="ipaddress3"
           onChange={handleChange}
-          defaultValue={display ? display.ipaddress.split(".")[2] : -1}
+          defaultValue={
+            display?.ipaddress ? display.ipaddress.split(".")[2] : ""
+          }
         />
         <p className="">.</p>
         <input
@@ -164,7 +172,9 @@ const DisplayForm = (props: Props) => {
           name="ipaddress4"
           id="ipaddress4"
           onChange={handleChange}
-          defaultValue={display ? display.ipaddress.split(".")[3] : -1}
+          defaultValue={
+            display?.ipaddress ? display.ipaddress.split(".")[3] : ""
+          }
         />
       </div>
 

@@ -1,7 +1,6 @@
 const axios = require("axios");
 const knex = require("../../db/client");
 
-
 declare global {
   interface ObjectConstructor {
     typedKeys<T>(o: T): Array<keyof T>;
@@ -41,14 +40,14 @@ const searchPromise = async (
     const response = await DisplayModel.search(id);
     found.push(currentDisplay!);
     if (displays.length > 0) {
-     await searchPromise(displays, found, not_found);
+      await searchPromise(displays, found, not_found);
     } else {
       return { found, not_found };
     }
   } catch (error) {
     not_found.push(currentDisplay!);
     if (displays.length > 0) {
-     await searchPromise(displays, found, not_found);
+      await searchPromise(displays, found, not_found);
     } else {
       return { found, not_found };
     }
@@ -138,7 +137,6 @@ const DisplayModel = {
     }
   },
   async search(id: number) {
-
     return new Promise(async (res, rej) => {
       const timer = setTimeout(() => {
         return rej(new Error("Node not located"));
@@ -158,6 +156,9 @@ const DisplayModel = {
     const displays = await this.getAll();
     const seaching = await searchPromise(displays, [], []);
     return seaching;
+  },
+  async getShows(id: number) {
+    return await knex('shows').select('name').where({display_id: id}).orWhere({display_id: null}).groupBy('name').orderBy('name')
   },
 };
 

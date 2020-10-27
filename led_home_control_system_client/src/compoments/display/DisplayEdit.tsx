@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { match, useHistory } from "react-router-dom";
+
 import { DisplayQuery } from "../../js/request";
-import DisplayForm from "../partials/DisplayForm";
+
+import DisplayForm from "./partials/DisplayForm";
 
 interface Display {
   name: string;
@@ -32,6 +34,7 @@ const DisplayEdit = (props: DetailProps) => {
 
   const getDisplay = async () => {
     const displayInfo = await DisplayQuery.edit(parseInt(match.params.id));
+    console.log("getDisplay -> displayInfo", displayInfo);
     setDisplay(displayInfo);
   };
 

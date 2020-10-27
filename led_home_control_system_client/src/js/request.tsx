@@ -60,8 +60,8 @@ const DisplayQuery = {
   },
   async edit(id: number) {
     try {
-      const res = await fetch(`${BASE_URL}/displays/${id}/edit`, {
-        method: "EDIT",
+      console.log('fetch')
+      const res = await fetch(`${BASE_URL}/displays/${id}`, {
         credentials: "include",
       });
       return res.json();
@@ -84,6 +84,16 @@ const DisplayQuery = {
       return error;
     }
   },
+  async search(id: number) {
+    try {
+      const res = await fetch(`${BASE_URL}/displays/${id}/search`, {
+        credentials: 'include',
+      })
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
   async searchAll() {
     try {
       const res = await fetch(`${BASE_URL}/displays/search`, {
@@ -95,6 +105,7 @@ const DisplayQuery = {
     }
   },
 };
+
 const ColourQuery = {
   async getAll() {
     try {

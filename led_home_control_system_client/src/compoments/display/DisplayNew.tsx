@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 
 import { DisplayQuery } from "../../js/request";
 
-import DisplayForm from "../partials/DisplayForm";
+import DisplayForm from "./partials/DisplayForm";
 
 
 interface Display {

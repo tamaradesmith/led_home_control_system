@@ -58,18 +58,38 @@ const DisplayShow = (props: DisplaysProps) => {
 
   return (
     <div className="DisplayShow">
-      <h4> {display.name}</h4>
-      <p>Show: Move show Red</p>
-      <p>Status: on</p>
-      <p> change show: "drop down of avablie shows"</p>
-      <p> change default show: "dropdown of avaible shows"</p>
-      <button onClick={editDisplay} className="btn btn_save">
-        Edit
-      </button>
-      <button onClick={confirmDelete} className="btn btn_cancel">
-        {" "}
-        Delete
-      </button>
+      <h4 className="main-header"> {display.name}</h4>
+      <div className="card-div">
+        <div className="card">
+          <h6 className="card-header">Current Stauts</h6>
+          <p className="card-label">Contection:</p>
+          <p className="column_2">true</p>
+          <p className="card-label column_3"> Stauts: </p>
+          <p className="column_4">play</p>
+          <p className="card-label">Current Show:</p>
+          <p className="column_2_5"> Move show Red</p>
+          <p className="card-label column_1"> change show: </p>
+          <p className="column_2_5">"drop down of avablie shows"</p>
+        </div>
+
+        <div className="card">
+          <h6 className="card-header">Setups</h6>
+          <p className="card-label"> startup:</p>
+          <p>Play </p>
+          <p className="card-label column_1"> default show: </p>
+          <p className='column_2_4'> red Move </p>
+           <p>click change defeaut show</p>
+        </div>
+      </div>
+      <div className="btn-div">
+        <button onClick={editDisplay} className="btn btn_save">
+          Edit
+        </button>
+        <button onClick={confirmDelete} className="btn btn_cancel">
+          {" "}
+          Delete
+        </button>
+      </div>
 
       <p id="errorMessage" className="message-text"></p>
       <div id="confirm" className={deleteDiv ? "hidden" : "confirm-delete-div"}>

@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 const ColourMenuBar = ()=>{
   return (
-    <div className="ColourMenuBar nav-div">
+    <div className="ColourMenuBar nav-secondary">
         <NavLink to="/colours" className="nav-item">
           colours
         </NavLink>

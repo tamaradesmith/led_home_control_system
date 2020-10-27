@@ -2,6 +2,7 @@
 @import url("https://fonts.googleapis.com/css2?family=Merienda:wght@400;700&display=swap");
 :root {
   --main-colour: #451f55;
+  --fade-main-colour: #451f5527;
   --secondary-colour: #feffff;
   --missing: #dd0000;
 }
@@ -42,6 +43,11 @@ input {
 .toCapital {
   text-transform: capitalize;
 }
+.main-header {
+  font-weight: 900;
+  font-size: 1.6em;
+  text-align: center;
+}
 /* TYPICAL BUTTON STYLES */
 .btn {
   padding: 0.25em 0.5em;
@@ -50,6 +56,7 @@ input {
   width: 75px;
   height: 30px;
   border: 1px solid var(--main-colour);
+  font-size: 0.85em;
 }
 .btn_save {
   background: var(--main-colour);
@@ -61,11 +68,82 @@ input {
   background: var(--secondary-colour);
   text-transform: capitalize;
 }
+.btn-div {
+  grid-column: 3/5;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5em;
+}
+.btn-search {
+  width: 100px;
+  color: var(--main-colour);
+  background: var(--secondary-colour);
+  text-transform: capitalize;
+  align-self: flex-end;
+}
+
+.btn-search:hover {
+  background: var(--fade-main-colour);
+}
+/* CARD */
+.card {
+  display: grid;
+  grid-template-columns: 125px 100px 75px auto;
+  gap: 0.5em;
+  border: 1px solid var(--main-colour);
+  background: var(--fade-main-colour);
+  border-radius: 0.5em;
+  width: 700px;
+  padding: 0.5em 0.75em;
+  margin: 0.5em;
+}
+.card-header {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 700;
+  margin-bottom: 0.5em;
+  grid-column: 1/5;
+}
+.card-div {
+  display: flex;
+  justify-content: space-between;
+}
+.card-label {
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+/* Grid column and rows */
+.column_1 {
+  grid-column: 1/2;
+}
+.column_2 {
+  grid-column: 2/3;
+}
+.column_3 {
+  grid-column: 3/4;
+}
+.column_4 {
+  grid-column: 4/5;
+}
+.column_2_3 {
+  grid-column: 2/4;
+}
+.column_2_4 {
+  grid-column: 2/4;
+}
+.column_2_5 {
+  grid-column: 2/5;
+}
+.row5 {
+  grid-row: 4/5;
+}
 
 /* NAV BAR STYLES */
 .NavBar {
   color: var(--secondary-colour);
   display: flex;
+  width: 100%;
   flex-direction: column;
   justify-content: space-between;
 }
@@ -78,12 +156,12 @@ input {
 .nav-div {
   display: flex;
   justify-content: flex-end;
-  width: 100%;
   border-bottom: 2px solid var(--main-colour);
-  padding: 0.5em 1em;
+  padding: 0em 0.5em;
 }
 .nav-item {
-  width: 200px;
+  padding: 0.5em 0em;
+  width: 150px;
   text-align: center;
   text-transform: capitalize;
 }
@@ -92,11 +170,16 @@ input {
   font-weight: 600;
   background: transparent;
 }
-
+.nav-secondary{
+    display: flex;
+  justify-content: flex-end;
+  border-bottom: 2px solid var(--main-colour);
+  padding: 0em 0.5em;
+}
 /* DISPLAY STYLES */
 .display-list {
   display: grid;
-  grid-template-columns: 200px 200px 200px;
+  grid-template-columns: 200px 200px 200px 200px;
   padding: 0.25em;
 }
 .display-item {
@@ -109,27 +192,13 @@ input {
 .form {
   display: grid;
   grid-template-columns: 150px 50px 175px auto;
-  grid-row-gap: 0.25em;
+  row-gap: 0.25em;
 }
 .form_ipadress {
   display: grid;
-  grid-template-columns: 50px auto 50px auto 50px auto 50px;
+  grid-template-columns: 55px auto 55px auto 55px auto 55px;
 }
-.column_1 {
-  grid-column: 1/2;
-}
-.column_2 {
-  grid-column: 2/3;
-}
-.column_2_3 {
-  grid-column: 2/4;
-}
-.column_3 {
-  grid-column: 3/4;
-}
-.row5 {
-  grid-row: 4/5;
-}
+
 .missing_field {
   border: 2px solid var(--missing);
 }
@@ -182,24 +251,23 @@ input {
   height: 104px;
   grid-column: 4/5;
   grid-row: 2/5;
-  margin-left: .5em;
-  margin-top: .25em;
+  margin-left: 0.5em;
+  margin-top: 0.25em;
 }
-.colour-index{
+.colour-index {
   display: flex;
-  /* justify-content: space-evenly; */
   flex-wrap: wrap;
-  
 }
-.swatch{
+.swatch {
   background: 1px solid black;
   width: 50px;
   height: 50px;
-  margin: 2em 2em .25em;
+  margin: 2em 2em 0.25em;
 }
-.swatch-label{
+.swatch-label {
   text-align: center;
 }
+
 /* SLIDER */
 .slider-div {
   display: grid;

@@ -4,7 +4,6 @@ export const DisplayController: Router = Router();
 
 import { DisplayModel } from "../model/DisplayModel";
 
-
 interface Display {
   id: number | null;
   name: string | null;
@@ -33,6 +32,21 @@ DisplayController.get(
     try {
       const result = await DisplayModel.search(id);
       res.status(200).send(result);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+DisplayController.get(
+  "/:id/shows",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id: number = parseInt(req.params.id);
+    console.log("id", id);
+    try {
+      const shows = await DisplayModel.getShows(id);
+      console.log("shows", shows);
+      res.status(200).send(shows);
     } catch (error) {
       next(error);
     }

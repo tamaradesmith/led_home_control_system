@@ -157,3 +157,17 @@ describe("DELETE", () => {
     expect(res.ok).toBe(false);
   });
 });
+
+// SHOW Related Tests
+
+describe("DISPLAY SHOW RELATED TESTS", () => {
+  it("it should be genral and that displays show", async () => {
+    const res = await request(app).get("/displays/1/shows");
+    expect(200);
+    expect(res.body).toHaveLength(7);
+    expect(res.body[0]).toHaveProperty('name', 'cue 1')
+    expect(res.body[2]).toHaveProperty("name", "hudson");
+    expect(res.body[6]).toHaveProperty("name", "woodstock");
+
+  });
+});

@@ -1,13 +1,29 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
+import { useHistory } from "react-router-dom";
+
 import ColourMenuBar from "../colours/partials/ColourMenuBar";
 
 const NavBar = () => {
+  const history = useHistory();
+
   const [colourMenu, setColourMenu] = useState(false);
 
   const handleColour = () => {
     setColourMenu(colourMenu ? false : true);
   };
+
+  const handleDisplay = () => {
+    setColourMenu(false);
+  };
+
+  useEffect(() => {
+    if (history.location.pathname.includes("colour")) {
+      setColourMenu(true);
+    } else {
+      setColourMenu(false);
+    }
+  }, [history.location.pathname]);
 
   return (
     <header className="NavBar">
@@ -15,10 +31,14 @@ const NavBar = () => {
         <h4 className="nav-header">LED Home Control System</h4>
       </div>
       <div className="nav-div">
-        <NavLink to="/displays" className="nav-item">
+        <NavLink to="/displays" onClick={handleDisplay} className="nav-item">
           Displays
         </NavLink>
-        <NavLink to="/displays/new" className="nav-item">
+        <NavLink
+          to="/displays/new"
+          onClick={handleDisplay}
+          className="nav-item"
+        >
           Add a Display
         </NavLink>
         <NavLink
