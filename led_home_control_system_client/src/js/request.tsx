@@ -5,6 +5,8 @@ interface Display {
   ipaddress: string;
   led_number: number;
   id?: number;
+  default_on: boolean;
+  default_show?: number;
 }
 
 interface Colour {
@@ -60,7 +62,7 @@ const DisplayQuery = {
   },
   async edit(id: number) {
     try {
-      console.log('fetch')
+      console.log("fetch");
       const res = await fetch(`${BASE_URL}/displays/${id}`, {
         credentials: "include",
       });
@@ -79,6 +81,7 @@ const DisplayQuery = {
         },
         body: JSON.stringify({ display }),
       });
+      // console.log("update -> res.json()", res.json());
       return res.json();
     } catch (error) {
       return error;
@@ -87,8 +90,8 @@ const DisplayQuery = {
   async search(id: number) {
     try {
       const res = await fetch(`${BASE_URL}/displays/${id}/search`, {
-        credentials: 'include',
-      })
+        credentials: "include",
+      });
       return res.json();
     } catch (error) {
       return error;
@@ -158,4 +161,28 @@ const ColourQuery = {
     }
   },
 };
-export { DisplayQuery, ColourQuery };
+
+const LedQuery = {
+  async sendColour(
+    display: { id: number; led_number: number; ipaddress: string },
+    colour: { hue: number; saturation: number; lightness: number }
+  ) {
+    const info = { colour, led_number: display.led_number };
+    console.log("info", info);
+    try {
+      const res = await fetch(`${BASE_URL}/displays/${display.id}/led/colour`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(info),
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+};
+
+export { DisplayQuery, ColourQuery, LedQuery };

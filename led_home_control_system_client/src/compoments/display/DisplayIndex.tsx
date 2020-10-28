@@ -36,36 +36,39 @@ const DisplayIndex = (props: Props) => {
 
   return (
     <main className="DisplayIndex">
-      <h2> Available LED Displays </h2>
-      <button>All OFF</button>
-      <button>All On</button>
-      <div className="list-div">
-        <div className="display-list">
-          <h4>Name</h4>
-          <h4>Current Show</h4>
-          <h4>On/Off</h4>
+      <div className="card-index">
+        <h2 className="card-header"> Available LED Displays </h2>
+        <button>All OFF</button>
+        <button>All On</button>
+        <div className="list-div">
+          <div className="display-list">
+            <h4 className="column_1 table-header">Name</h4>
+            <h4 className="column_2 table-header">ipaddress</h4>
+            <h4 className="column_3 table-header">On/Off</h4>
+          </div>
+          {displays.length > 0 ? (
+            <>
+              {displays.map((display: Display) => (
+                <div
+                  key={display.id}
+                  className="display-list"
+                  onClick={() => redirctToShow(display.id ? display.id : 0)}
+                >
+                  <p className="display-item toCapital"> {display.name}</p>
+                  <p className="display-item"> {display.ipaddress}</p>
+                  <p className="display-item"> off</p>
+                </div>
+              ))}
+            </>
+          ) : (
+            <p className="display-message">No Available Displays</p>
+          )}
         </div>
-        {displays.length > 0 ? (
-          <>
-            {displays.map((display: Display) => (
-              <div
-                key={display.id}
-                className="display-list"
-                onClick={() => redirctToShow(display.id ? display.id : 0)}
-              >
-                <p className="display-item"> {display.name}</p>
-                <p className="display-item"> Hudson</p>
-                <p className="display-item"> off</p>
-              </div>
-            ))}
-          </>
-        ) : (
-          <p>No Available Displays</p>
-        )}
       </div>
+
       {missingDisplays.length > 0 ? (
-        <>
-          <h2>Unavailable LED Display</h2>
+        <div className="card-index">
+          <h2 className="card-header">Unavailable LED Display</h2>
           <div className="list-div">
             <div className="display-list toCapital">
               <button
@@ -76,9 +79,9 @@ const DisplayIndex = (props: Props) => {
               >
                 search All
               </button>
-              <h4 className="column_1">Name</h4>
-              <h4>ipaddress</h4>
-              <h4>search</h4>
+              <h4 className="column_1 table-header">Name</h4>
+              <h4 className="column_2 table-header">ipaddress</h4>
+              <h4 className="column_3 table-header">search</h4>
             </div>
             {missingDisplays.map((display: Display) => (
               <div key={display.id} className="display-list">
@@ -103,7 +106,7 @@ const DisplayIndex = (props: Props) => {
               </div>
             ))}
           </div>
-        </>
+        </div>
       ) : null}
     </main>
   );

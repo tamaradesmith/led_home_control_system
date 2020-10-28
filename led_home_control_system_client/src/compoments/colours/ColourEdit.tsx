@@ -1,17 +1,15 @@
 import React, { useEffect, useState } from "react";
 
-import { useHistory, match } from "react-router-dom";
+import { useHistory, match, RouteComponentProps } from "react-router-dom";
 import { ColourQuery } from "../../js/request";
 
 import ColourForm from "./partials/ColourForm";
 
-interface DetailParams {
-  id: string;
-}
-
-interface Props {
-  required: string;
-  match: match<DetailParams>;
+interface Display {
+  name: string;
+  ipaddress: string;
+  led_number: number;
+  id?: number;
 }
 
 interface Colour {
@@ -22,9 +20,20 @@ interface Colour {
   id?: number;
 }
 
+interface DetailParams {
+  id: string;
+}
+
+interface Props {
+  // required: string;
+  displays: Display[];
+  match: match<DetailParams>;
+}
+
 const ColourEdit = (props: Props) => {
   const history = useHistory();
   const match = props.match;
+  const { displays } = props;
 
   const [colour, setColour] = useState({
     name: "",
@@ -60,7 +69,12 @@ const ColourEdit = (props: Props) => {
   return (
     <div className="ColourEdit">
       <h3 className="colour-header"> Edit Colour Form</h3>
-      <ColourForm save={save} cancel={cancel} editColour={colour} />
+      <ColourForm
+        save={save}
+        cancel={cancel}
+        editColour={colour}
+        displays={displays}
+      />
     </div>
   );
 };

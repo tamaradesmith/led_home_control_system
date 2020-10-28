@@ -4,11 +4,12 @@
   --main-colour: #451f55;
   --fade-main-colour: #451f5527;
   --secondary-colour: #feffff;
+  --background: #f6f2fa91;
   --missing: #dd0000;
 }
 body {
   font-size: 1.2em;
-  background: var(--secondary-colour);
+  background: var(--background);
   width: 100vw;
 }
 h2 {
@@ -86,23 +87,32 @@ input {
   background: var(--fade-main-colour);
 }
 /* CARD */
+.card-index {
+  background: var(--secondary-colour);
+  box-shadow: 0px 0px 5px var(--main-colour);
+  border-radius: 0.5em;
+  width: 700px;
+  padding: 0.5em 0.75em;
+  margin: 0.5em auto 3em;
+}
 .card {
   display: grid;
   grid-template-columns: 125px 100px 75px auto;
   gap: 0.5em;
-  border: 1px solid var(--main-colour);
-  background: var(--fade-main-colour);
+  background: var(--secondary-colour);
+  box-shadow: 0px 0px 5px var(--main-colour);
   border-radius: 0.5em;
   width: 700px;
   padding: 0.5em 0.75em;
-  margin: 0.5em;
+  margin: 0.5em auto;
 }
 .card-header {
   text-align: center;
-  font-size: 1.2em;
+  font-size: 1.5em;
   font-weight: 700;
   margin-bottom: 0.5em;
   grid-column: 1/5;
+  text-transform: capitalize;
 }
 .card-div {
   display: flex;
@@ -135,6 +145,9 @@ input {
 .column_2_5 {
   grid-column: 2/5;
 }
+.column_1_5 {
+  grid-column: 1/5;
+}
 .row5 {
   grid-row: 4/5;
 }
@@ -142,6 +155,7 @@ input {
 /* NAV BAR STYLES */
 .NavBar {
   color: var(--secondary-colour);
+
   display: flex;
   width: 100%;
   flex-direction: column;
@@ -156,6 +170,8 @@ input {
 .nav-div {
   display: flex;
   justify-content: flex-end;
+  background: var(--secondary-colour);
+
   border-bottom: 2px solid var(--main-colour);
   padding: 0em 0.5em;
 }
@@ -170,8 +186,8 @@ input {
   font-weight: 600;
   background: transparent;
 }
-.nav-secondary{
-    display: flex;
+.nav-secondary {
+  display: flex;
   justify-content: flex-end;
   border-bottom: 2px solid var(--main-colour);
   padding: 0em 0.5em;
@@ -181,6 +197,17 @@ input {
   display: grid;
   grid-template-columns: 200px 200px 200px 200px;
   padding: 0.25em;
+}
+.display-message{
+  text-align: center;
+  margin-top: .5em;
+  font-size: 1.2em;
+}
+.table-header{
+  font-size: 1.1em;
+  font-weight: 600;
+  text-transform: capitalize;
+  margin-bottom: .5em;
 }
 .display-item {
   margin: 0 0.25em;
@@ -198,7 +225,6 @@ input {
   display: grid;
   grid-template-columns: 55px auto 55px auto 55px auto 55px;
 }
-
 .missing_field {
   border: 2px solid var(--missing);
 }
@@ -259,7 +285,7 @@ input {
   flex-wrap: wrap;
 }
 .swatch {
-  background: 1px solid black;
+  border: 1px solid black;
   width: 50px;
   height: 50px;
   margin: 2em 2em 0.25em;
@@ -308,4 +334,19 @@ input {
     hsl(330, 100%, 50%),
     hsl(360, 100%, 50%)
   );
+}
+
+/* SHOWS */
+
+.ShowIndex {
+  border: 1px solid var(--main-colour);
+  border-radius: 0.5em;
+  background: var(--secondary-colour);
+  padding: 0.25em 0.5em;
+  position: absolute;
+  top: 200px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 500px;
 }

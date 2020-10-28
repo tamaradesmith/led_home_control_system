@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from "react";
-import {
-  BrowserRouter as Router,
-  Route,
-  Switch,
-  RouteComponentProps,
-} from "react-router-dom";
+import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import NavBar from "./compoments/partials/NavBar";
 
 import DisplayEdit from "./compoments/display/DisplayEdit";
@@ -17,6 +12,7 @@ import ColourNew from "./compoments/colours/ColourNew";
 import ColourEdit from "./compoments/colours/ColourEdit";
 
 import { DisplayQuery } from "./js/request";
+
 
 interface Display {
   name: string;
@@ -63,12 +59,12 @@ function App() {
   };
 
   useEffect(() => {
-    let isCancelled = false;
+    // let isCancelled = false;
     getAllDisplays();
 
-    return () => {
-      isCancelled = true;
-    };
+    // return () => {
+    // isCancelled = true;
+    // };
   }, []);
 
   return (
@@ -97,8 +93,12 @@ function App() {
           <Route exact path="/Displays/:id" component={DisplayShow} />
           <Route exact path="/Displays/:id/edit" component={DisplayEdit} />
           <Route exact path="/colours" component={ColourIndex} />
-          <Route exact path="/colours/new" component={ColourNew} />
-          <Route exact path="/colours/:id/edit" component={ColourEdit} />
+          <Route exact path="/colours/new" component={ColourNew}>
+            <ColourNew displays={displays} />
+          </Route>
+          <Route exact path="/colours/:id/edit">
+            {/* <ColourEdit displays={displays} /> */}
+          </Route>
         </Switch>
       </Router>
     </div>

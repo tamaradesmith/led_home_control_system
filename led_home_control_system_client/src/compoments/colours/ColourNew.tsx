@@ -11,8 +11,19 @@ interface Colour {
   lightness: number;
   id?: number;
 }
+interface Display {
+  name: string;
+  ipaddress: string;
+  led_number: number;
+  id?: number;
+}
 
-const ColourNew = () => {
+interface Props {
+  displays: Display[];
+}
+const ColourNew = (props: Props) => {
+  const { displays } = props;
+
   const history = useHistory();
 
   const cancel = () => {
@@ -34,7 +45,7 @@ const ColourNew = () => {
     <div className="ColourNew">
       <h3 className="colour-header"> Create New Colour Form</h3>
       <p id="errorMessage"></p>
-      <ColourForm save={save} cancel={cancel} />
+      <ColourForm save={save} cancel={cancel} displays={displays} />
       <div></div>
     </div>
   );

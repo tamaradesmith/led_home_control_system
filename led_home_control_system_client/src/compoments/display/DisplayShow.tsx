@@ -2,9 +2,15 @@ import React, { useEffect, useState } from "react";
 import { match, useHistory } from "react-router-dom";
 
 import { DisplayQuery } from "../../js/request";
+import ShowIndex from "./partials/ShowIndex";
 
 interface DisplayParams {
   id: string;
+}
+interface Show {
+  name: string;
+  id: number;
+  display_id: number;
 }
 
 interface DisplaysProps {
@@ -21,11 +27,21 @@ const DisplayShow = (props: DisplaysProps) => {
     ipaddress: "",
     id: 0,
     led_number: 0,
+    shows: [],
+    default_on: true,
+    default_show: { name: "", id: 0, display_id: 0 },
   });
+
   const [deleteDiv, setDeleteDiv] = useState(true);
+  const [showlist, setShowList] = useState(false);
 
   const getDisplay = async () => {
     const displayInfo = await DisplayQuery.getOne(match.params.id);
+    displayInfo.shows.forEach((show: { id: number }) => {
+      if (show.id === displayInfo.default_show) {
+        displayInfo.default_show = show;
+      }
+    });
     setDisplay(displayInfo);
   };
   const confirmDelete = () => {
@@ -51,6 +67,23 @@ const DisplayShow = (props: DisplaysProps) => {
     history.push(`/displays/${display.id}/edit`);
   };
 
+  const cancelShow = () => {
+    setShowList(false);
+  };
+  const saveShow = async (show: Show) => {
+    const displayUpdated = {
+      name: display.name,
+      ipaddress: display.ipaddress,
+      led_number: display.led_number,
+      id: display.id,
+      default_show: show.id,
+      default_on: display.default_on,
+    };
+    await DisplayQuery.update(displayUpdated);
+    setShowList(false);
+    getDisplay();
+  };
+
   useEffect(() => {
     getDisplay();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -58,37 +91,67 @@ const DisplayShow = (props: DisplaysProps) => {
 
   return (
     <div className="DisplayShow">
-      <h4 className="main-header"> {display.name}</h4>
       <div className="card-div">
         <div className="card">
-          <h6 className="card-header">Current Stauts</h6>
+          <h4 className="card-header"> {display.name}</h4>
+          {/* <h6 className="card-header">Current Stauts</h6> */}
           <p className="card-label">Contection:</p>
           <p className="column_2">true</p>
           <p className="card-label column_3"> Stauts: </p>
           <p className="column_4">play</p>
           <p className="card-label">Current Show:</p>
-          <p className="column_2_5"> Move show Red</p>
-          <p className="card-label column_1"> change show: </p>
-          <p className="column_2_5">"drop down of avablie shows"</p>
-        </div>
+          <p className="column_2_4">
+            {" "}
+            {display.default_show ? (
+              <>{display.default_show.name}</>
+            ) : (
+              <>none</>
+            )}
+          </p>
 
+          <p
+            className="column_4"
+            onClick={() => {
+              setShowList(showlist ? false : true);
+            }}
+          >
+            Change Shows
+          </p>
+          <div className="btn-div">
+            <button onClick={editDisplay} className="btn btn_save">
+              Edit
+            </button>
+            <button onClick={confirmDelete} className="btn btn_cancel">
+              {" "}
+              Delete
+            </button>
+          </div>
+        </div>
+        {/* 
         <div className="card">
           <h6 className="card-header">Setups</h6>
           <p className="card-label"> startup:</p>
           <p>Play </p>
           <p className="card-label column_1"> default show: </p>
-          <p className='column_2_4'> red Move </p>
-           <p>click change defeaut show</p>
-        </div>
+          <p
+            className="column_2_4"
+            onClick={() => {
+              setShowList(showlist ? false : true);
+            }}
+          >
+            {" "}
+            red Move{" "}
+          </p>
+          <p>click change defeaut show</p>
+        </div>*/}
       </div>
-      <div className="btn-div">
-        <button onClick={editDisplay} className="btn btn_save">
-          Edit
-        </button>
-        <button onClick={confirmDelete} className="btn btn_cancel">
-          {" "}
-          Delete
-        </button>
+      <div className={!showlist ? "hidden" : ""}>
+        <ShowIndex
+          shows={display.shows ? display.shows : []}
+          cancel={cancelShow}
+          save={saveShow}
+          current={display.default_show}
+        />
       </div>
 
       <p id="errorMessage" className="message-text"></p>

@@ -11,6 +11,8 @@ interface Display {
   ipaddress: string;
   led_number: number;
   id?: number;
+  default_on: boolean;
+  default_show?: number;
 }
 
 const DisplayNew = () => {

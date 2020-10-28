@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 
 import ColourSlider from "./ColourSlider";
 
+import { LedQuery } from "../../../js/request";
+
 interface Colour {
   name: string;
   hue: number;
@@ -10,18 +12,28 @@ interface Colour {
   id?: number;
 }
 
+interface Display {
+  name: string;
+  ipaddress: string;
+  led_number: number;
+  id?: number;
+}
+
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   save: Function;
   editColour?: Colour;
+  displays: Display[];
 }
 
 const ColourForm = (props: Props) => {
-  const { cancel, save, editColour } = props;
+  const { cancel, save, editColour, displays } = props;
+
   const [hue, setHue] = useState(0);
   const [saturation, setSaturation] = useState(100);
   const [lightness, setLightness] = useState(50);
   const [name, setName] = useState("");
+  const [testDisplay, setTestDisplay] = useState(displays[0]);
   const HSL = [
     { type: "hue", max: 360, value: hue },
     { type: "saturation", max: 100, value: saturation },
@@ -41,6 +53,27 @@ const ColourForm = (props: Props) => {
       document.querySelector("#name")?.classList.add("missing_field");
       document.querySelector("#missing")?.classList.remove("hidden");
     }
+  };
+  const handleTestDisplay = () => {
+    const testValue = (document.querySelector(
+      "#testDisplay"
+    ) as HTMLInputElement).value;
+    setTestDisplay(displays[parseInt(testValue)]);
+  };
+
+  const testColour = () => {
+    const testColour = {
+      hue,
+      saturation,
+      lightness,
+    };
+    console.log("testColour -> testColour", testColour);
+    const displayInfo= {
+      id: testDisplay.id ? testDisplay.id : 0,
+      led_number: testDisplay.led_number,
+      ipaddress: testDisplay.ipaddress
+    }
+    LedQuery.sendColour(displayInfo, testColour);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -89,6 +122,15 @@ const ColourForm = (props: Props) => {
         {"   "}
         *** Please add colour's name ***
       </p>
+      <label htmlFor="display"> Select Test Display: </label>
+      <select id="testDisplay" onChange={handleTestDisplay}>
+        <option></option>
+        {displays?.map((display, index) => (
+          <option key={display.id} value={index}>
+            {display.name}
+          </option>
+        ))}
+      </select>
       {HSL.map((type, index) => (
         <ColourSlider
           key={index}
@@ -104,6 +146,10 @@ const ColourForm = (props: Props) => {
         style={{ background: `hsl(${hue}, ${saturation}%, ${lightness}%)` }}
       ></div>
       <div className="colour-btn-div">
+        <button className="btn btn_save" onClick={testColour}>
+          {" "}
+          Test
+        </button>
         <button className="btn btn_save" onClick={handleSave}>
           {" "}
           Save

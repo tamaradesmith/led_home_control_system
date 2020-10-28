@@ -6,6 +6,7 @@ var express = require("express");
 export const DisplayController: Router = express.Router();
 
 import { DisplayModel } from "../model/DisplayModel";
+import { LedController } from "./LedController";
 
 interface Display {
   id: number | null;
@@ -40,6 +41,26 @@ DisplayController.get(
     }
   }
 );
+
+
+// LED ROUTES
+
+DisplayController.post(
+  ":id/led/colour",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const id: number = parseInt(req.params.id);
+    console.log("id", id);
+    // const led = req.body;
+    // console.log("led", led);
+    try {
+      res.status(200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+
 
 // CRUD ROUTES
 DisplayController.get(
@@ -104,18 +125,16 @@ DisplayController.get(
     }
   }
 );
+
 DisplayController.patch(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     const id: number = parseInt(req.params.id);
-
     const info = req.body.display;
-    console.log("info", info);
     const validDisplay = await DisplayModel.validDisplay(info);
     if (validDisplay === true) {
       try {
         const display = await DisplayModel.update(id, info);
-        console.log("display", display);
         res.status(200).send(display[0]);
       } catch (error) {
         next(error);

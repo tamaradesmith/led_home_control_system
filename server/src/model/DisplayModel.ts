@@ -1,8 +1,6 @@
 const axios = require("axios");
 var knex = require("../../db/client");
 
-import { ShowModel } from "./ShowModel";
-
 declare global {
   interface ObjectConstructor {
     typedKeys<T>(o: T): Array<keyof T>;
@@ -16,8 +14,8 @@ interface Display {
   ipaddress: string;
   led_number: number;
   default_on: boolean;
-  default_show?: {name: string, id: number, display_id: number | null}
-  shows?: []
+  default_show?: { name: string; id: number; display_id: number | null };
+  shows?: [];
 }
 interface Result {
   name?: Error;
@@ -65,22 +63,22 @@ const DisplayModel = {
     try {
       return await knex("displays")
         .select(
-          "id",
-          "name",
+          "displays.id",
+          "displays.name",
           "ipaddress",
           "led_number",
           "default_on",
-          "default_show"
+          "default_show",
         )
         .groupBy(
-          "name",
+          "displays.name",
           "led_number",
-          "id",
+          "displays.id",
           "ipaddress",
           "default_on",
-          "default_show"
+          "default_show",
         )
-        .orderBy("name");
+        .orderBy("displays.name");
     } catch (error) {
       return error;
     }
@@ -107,15 +105,18 @@ const DisplayModel = {
     }
   },
   async update(id: number, info: Display) {
-     if (info.shows) {
-       delete info.shows;
-     }
+    if (info.shows) {
+      delete info.shows;
+    }
     try {
-      const display = await knex("displays").where({ id }).update(info).returning("*");
+      const display = await knex("displays")
+        .where({ id })
+        .update(info)
+        .returning("*");
       const shows = await this.getShows(id);
       display[0].shows = shows;
 
-      return display
+      return display;
     } catch (error) {
       return error;
     }
@@ -136,12 +137,18 @@ const DisplayModel = {
   },
   // Extra Functions
   validDisplay(display: Display) {
-    if(display.shows){
-      delete display.shows; 
+    if (display.shows) {
+      delete display.shows;
     }
     let valid = true;
     const result: Result = {};
-    const allowParams: string[] = ["name", "ipaddress", "led_number", "default_show", 'default_on'];
+    const allowParams: string[] = [
+      "name",
+      "ipaddress",
+      "led_number",
+      "default_show",
+      "default_on",
+    ];
     const keys = Object.keys(display);
     keys.forEach((key) => {
       if (!allowParams.includes(key) && key !== "id") {
@@ -200,6 +207,9 @@ const DisplayModel = {
       .orWhere({ display_id: null })
       .groupBy("name", "display_id", "id")
       .orderBy("name");
+  },
+  async getCurrentShow(id: number) {
+    return await knex("shows").select("name", "id").where({ id });
   },
 };
 
