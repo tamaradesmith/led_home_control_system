@@ -18,11 +18,10 @@ import cookieParser from "cookie-parser";
 const cors = require("cors");
 // const methodOverride = require("method-override");
 
-const dotenv =require("dotenv");
+const dotenv = require("dotenv");
 dotenv.config();
 
 export const app: Application = express();
-// import { app } from "./src/app";
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

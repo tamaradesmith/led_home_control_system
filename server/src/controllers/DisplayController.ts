@@ -1,6 +1,9 @@
-import { NextFunction, Request, Response, Router } from "express";
+"use strict";
 
-export const DisplayController: Router = Router();
+import { NextFunction, Request, Response, Router } from "express";
+var express = require("express");
+
+export const DisplayController: Router = express.Router();
 
 import { DisplayModel } from "../model/DisplayModel";
 
@@ -32,21 +35,6 @@ DisplayController.get(
     try {
       const result = await DisplayModel.search(id);
       res.status(200).send(result);
-    } catch (error) {
-      next(error);
-    }
-  }
-);
-
-DisplayController.get(
-  "/:id/shows",
-  async (req: Request, res: Response, next: NextFunction) => {
-    const id: number = parseInt(req.params.id);
-    console.log("id", id);
-    try {
-      const shows = await DisplayModel.getShows(id);
-      console.log("shows", shows);
-      res.status(200).send(shows);
     } catch (error) {
       next(error);
     }
@@ -122,10 +110,12 @@ DisplayController.patch(
     const id: number = parseInt(req.params.id);
 
     const info = req.body.display;
+    console.log("info", info);
     const validDisplay = await DisplayModel.validDisplay(info);
     if (validDisplay === true) {
       try {
         const display = await DisplayModel.update(id, info);
+        console.log("display", display);
         res.status(200).send(display[0]);
       } catch (error) {
         next(error);
@@ -148,3 +138,5 @@ DisplayController.delete(
     }
   }
 );
+
+

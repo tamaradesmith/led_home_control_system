@@ -15,6 +15,7 @@ const newDisplay = {
   ipaddress: "192.168.1.208",
   led_number: 18,
   id: 4,
+  default_show: 1,
 };
 
 beforeEach(function (done) {
@@ -38,16 +39,24 @@ describe("Index", () => {
     const res = await request(app).get("/displays");
     expect(200);
     expect(res.body).toHaveLength(3);
+    expect(res.body[0]).toHaveProperty("name");
+    expect(res.body[0]).toHaveProperty("id");
+    expect(res.body[0]).toHaveProperty("ipaddress");
+    expect(res.body[0]).toHaveProperty("default_on");
+    expect(res.body[0]).toHaveProperty("default_show");
   });
 });
 describe("Show", () => {
-  it("should have name, ipddrass, id, led_number", async () => {
+  it("should have name, ipddrass, id, led_number default_on, default_show", async () => {
     const res = await request(app).get("/displays/1");
     expect(200);
     expect(res.body).toHaveProperty("name");
     expect(res.body).toHaveProperty("id");
     expect(res.body).toHaveProperty("ipaddress");
     expect(res.body).toHaveProperty("led_number");
+    expect(res.body).toHaveProperty("shows");
+    expect(res.body).toHaveProperty("default_on", true);
+    expect(res.body).toHaveProperty("default_show");
   });
 });
 describe("Edit", () => {
@@ -58,6 +67,7 @@ describe("Edit", () => {
     expect(res.body).toHaveProperty("ipaddress", "192.168.1.123");
     expect(res.body).toHaveProperty("id", "1");
     expect(res.body).toHaveProperty("led_number", 16);
+    expect(res.body.shows).toHaveLength(7);
   });
 });
 
@@ -66,6 +76,7 @@ describe("Update", () => {
     const info = await request(app).get("/displays/1");
     const display = info.body;
     display.name = "frosty family";
+    delete display.shows;
     const res = await request(app).patch("/displays/1").send({ display });
     expect(200);
     expect(res.body).toHaveProperty("name", display.name);
@@ -76,6 +87,7 @@ describe("update with invalid data", () => {
     const info = await request(app).get("/displays/1");
     const display = info.body;
     display.name = "";
+    delete display.shows;
     const res = await request(app).patch("/displays/1").send({ display });
     expect(422);
     expect(res.ok).toBe(false);
@@ -100,6 +112,8 @@ describe("CREATE", () => {
     expect(res.body).toHaveProperty("ipaddress", newDisplay.ipaddress);
     expect(res.body).toHaveProperty("led_number", newDisplay.led_number);
     expect(res.body).toHaveProperty("id");
+    expect(res.body).toHaveProperty("default_on", true);
+    expect(res.body).toHaveProperty("default_show");
   });
 });
 
@@ -155,19 +169,5 @@ describe("DELETE", () => {
     const res = await request(app).get("/displays/1");
     expect(404);
     expect(res.ok).toBe(false);
-  });
-});
-
-// SHOW Related Tests
-
-describe("DISPLAY SHOW RELATED TESTS", () => {
-  it("it should be genral and that displays show", async () => {
-    const res = await request(app).get("/displays/1/shows");
-    expect(200);
-    expect(res.body).toHaveLength(7);
-    expect(res.body[0]).toHaveProperty('name', 'cue 1')
-    expect(res.body[2]).toHaveProperty("name", "hudson");
-    expect(res.body[6]).toHaveProperty("name", "woodstock");
-
   });
 });

@@ -1,9 +1,10 @@
-import { Router, NextFunction, Response , Request} from "express";
+"use strict";
+import { NextFunction, Request, Response, Router } from "express";
+var express = require("express");
+
+export const ColourController: Router = express.Router()
 
 import { ColourModel } from "../model/ColourModel";
-
-export const ColourController: Router = Router();
-
 
 interface Colour {
   id?: number;
@@ -103,3 +104,4 @@ ColourController.delete(
     }
   }
 );
+

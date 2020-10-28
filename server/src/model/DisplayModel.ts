@@ -1,5 +1,7 @@
 const axios = require("axios");
-const knex = require("../../db/client");
+var knex = require("../../db/client");
+
+import { ShowModel } from "./ShowModel";
 
 declare global {
   interface ObjectConstructor {
@@ -13,6 +15,9 @@ interface Display {
   name: string;
   ipaddress: string;
   led_number: number;
+  default_on: boolean;
+  default_show?: {name: string, id: number, display_id: number | null}
+  shows?: []
 }
 interface Result {
   name?: Error;
@@ -58,12 +63,24 @@ const searchPromise = async (
 const DisplayModel = {
   async getAll() {
     try {
-      return await knex("displays").select(
-        "id",
-        "name",
-        "ipaddress",
-        "led_number"
-      );
+      return await knex("displays")
+        .select(
+          "id",
+          "name",
+          "ipaddress",
+          "led_number",
+          "default_on",
+          "default_show"
+        )
+        .groupBy(
+          "name",
+          "led_number",
+          "id",
+          "ipaddress",
+          "default_on",
+          "default_show"
+        )
+        .orderBy("name");
     } catch (error) {
       return error;
     }
@@ -71,8 +88,17 @@ const DisplayModel = {
   async getOne(id: number) {
     try {
       const display = await knex("displays")
-        .select("name", "ipaddress", "id", "led_number")
-        .where({ id });
+        .select(
+          "name",
+          "ipaddress",
+          "id",
+          "led_number",
+          "default_on",
+          "default_show"
+        )
+        .where("displays.id", id);
+      const shows = await this.getShows(id);
+      display[0].shows = shows;
       return display.length !== 0
         ? display
         : new Error("Display does not exist");
@@ -81,8 +107,15 @@ const DisplayModel = {
     }
   },
   async update(id: number, info: Display) {
+     if (info.shows) {
+       delete info.shows;
+     }
     try {
-      return await knex("displays").where({ id }).update(info).returning("*");
+      const display = await knex("displays").where({ id }).update(info).returning("*");
+      const shows = await this.getShows(id);
+      display[0].shows = shows;
+
+      return display
     } catch (error) {
       return error;
     }
@@ -103,9 +136,12 @@ const DisplayModel = {
   },
   // Extra Functions
   validDisplay(display: Display) {
+    if(display.shows){
+      delete display.shows; 
+    }
     let valid = true;
     const result: Result = {};
-    const allowParams: string[] = ["name", "ipaddress", "led_number"];
+    const allowParams: string[] = ["name", "ipaddress", "led_number", "default_show", 'default_on'];
     const keys = Object.keys(display);
     keys.forEach((key) => {
       if (!allowParams.includes(key) && key !== "id") {
@@ -158,7 +194,12 @@ const DisplayModel = {
     return seaching;
   },
   async getShows(id: number) {
-    return await knex('shows').select('name').where({display_id: id}).orWhere({display_id: null}).groupBy('name').orderBy('name')
+    return await knex("shows")
+      .select("name", "id", "display_id")
+      .where({ display_id: id })
+      .orWhere({ display_id: null })
+      .groupBy("name", "display_id", "id")
+      .orderBy("name");
   },
 };
 

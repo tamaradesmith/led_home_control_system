@@ -1,4 +1,4 @@
-const knex = require("../../db/client");
+var knex = require("../../db/client");
 
 interface Colour {
   id?: number;

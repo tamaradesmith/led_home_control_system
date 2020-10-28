@@ -1,6 +1,6 @@
 import { getEnabledCategories } from "trace_events";
 
-const knex = require("../../db/client");
+var knex = require("../../db/client");
 
 const ShowModel = {
   async getAll() {

@@ -1,7 +1,11 @@
-import { NextFunction, Request, Response, Router } from "express";
-import { ShowModel } from "../model/ShowModel";
+"use strict";
 
-export const ShowController: Router = Router();
+import { Router, NextFunction, Request, Response } from "express";
+var express = require("express");
+
+export const ShowController: Router = express.Router();
+
+import { ShowModel } from "../model/ShowModel";
 
 // CRUD ROUTES
 
@@ -46,3 +50,5 @@ ShowController.delete(
     }
   }
 );
+
+
