@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import DisplayContext from '../../partials/DisplayContext'
 
 import ColourSlider from "./ColourSlider";
 
@@ -23,17 +24,17 @@ interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   save: Function;
   editColour?: Colour;
-  displays: Display[];
 }
 
 const ColourForm = (props: Props) => {
-  const { cancel, save, editColour, displays } = props;
+  const { cancel, save, editColour} = props;
+   const allDisplays = useContext(DisplayContext);
 
   const [hue, setHue] = useState(0);
   const [saturation, setSaturation] = useState(100);
   const [lightness, setLightness] = useState(50);
   const [name, setName] = useState("");
-  const [testDisplay, setTestDisplay] = useState(displays[0]);
+  const [testDisplay, setTestDisplay] = useState<undefined | Display>(allDisplays.displays.length === 1 ? allDisplays.displays[0]: undefined);
   const HSL = [
     { type: "hue", max: 360, value: hue },
     { type: "saturation", max: 100, value: saturation },
@@ -58,7 +59,7 @@ const ColourForm = (props: Props) => {
     const testValue = (document.querySelector(
       "#testDisplay"
     ) as HTMLInputElement).value;
-    setTestDisplay(displays[parseInt(testValue)]);
+    setTestDisplay(allDisplays.displays[parseInt(testValue)]);
   };
 
   const testColour = () => {
@@ -67,13 +68,17 @@ const ColourForm = (props: Props) => {
       saturation,
       lightness,
     };
-    console.log("testColour -> testColour", testColour);
-    const displayInfo= {
-      id: testDisplay.id ? testDisplay.id : 0,
-      led_number: testDisplay.led_number,
-      ipaddress: testDisplay.ipaddress
+    const displayInfo = {
+      id: testDisplay ? (testDisplay.id === undefined ? 0 : testDisplay.id) : 0,
+      led_number: testDisplay ? testDisplay.led_number : 0,
+      ipaddress: testDisplay ? testDisplay.ipaddress : "none",
+      name: testDisplay ? testDisplay.name : "none",
+    };
+    if (testDisplay) {
+      LedQuery.sendColour(displayInfo, testColour);
+    } else {
+      alert("select a display!");
     }
-    LedQuery.sendColour(displayInfo, testColour);
   };
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,7 +112,7 @@ const ColourForm = (props: Props) => {
   };
 
   return (
-    <div className="ColourForm">
+    <div className="ColourForm ">
       <label htmlFor="name" className="colour-label" defaultValue={name}>
         Name:{" "}
       </label>
@@ -122,10 +127,10 @@ const ColourForm = (props: Props) => {
         {"   "}
         *** Please add colour's name ***
       </p>
-      <label htmlFor="display"> Select Test Display: </label>
-      <select id="testDisplay" onChange={handleTestDisplay}>
+      <label htmlFor="display" className="column_4"> Select Test Display: </label>
+      <select id="testDisplay" name="display" onChange={handleTestDisplay}>
         <option></option>
-        {displays?.map((display, index) => (
+        {allDisplays.displays.map((display, index) => (
           <option key={display.id} value={index}>
             {display.name}
           </option>
@@ -145,7 +150,7 @@ const ColourForm = (props: Props) => {
         className="colour-swatch"
         style={{ background: `hsl(${hue}, ${saturation}%, ${lightness}%)` }}
       ></div>
-      <div className="colour-btn-div">
+      <div className="colour-btn-div ">
         <button className="btn btn_save" onClick={testColour}>
           {" "}
           Test

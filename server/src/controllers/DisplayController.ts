@@ -6,6 +6,7 @@ var express = require("express");
 export const DisplayController: Router = express.Router();
 
 import { DisplayModel } from "../model/DisplayModel";
+import { ColourController } from "./ColourController";
 import { LedController } from "./LedController";
 
 interface Display {
@@ -46,13 +47,11 @@ DisplayController.get(
 // LED ROUTES
 
 DisplayController.post(
-  ":id/led/colour",
+  "/led",
   async (req: Request, res: Response, next: NextFunction) => {
-    const id: number = parseInt(req.params.id);
-    console.log("id", id);
-    // const led = req.body;
-    // console.log("led", led);
+    const { colour, display } = req.body
     try {
+      const led = LedController.ledsColour(display, colour)
       res.status(200);
     } catch (error) {
       next(error);

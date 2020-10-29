@@ -10,8 +10,18 @@ interface Colour {
   lightness: number;
   id?: number;
 }
+interface Display {
+  name: string;
+  ipaddress: string;
+  led_number: number;
+  id?: number;
+}
 
-const ColourIndex = () => {
+interface Props {
+  displays: Display[];
+}
+const ColourIndex = (props: Props) => {
+  const { displays } = props;
   const history = useHistory();
 
   const [colours, setColours] = useState([]);
@@ -31,22 +41,24 @@ const ColourIndex = () => {
 
   return (
     <div className="ColourIndex">
-      <h2>Colours</h2>
-      <div className="colour-index">
-        {colours.map((colour: Colour) => (
-          <div
-            key={colour.id}
-            onClick={() => redirctToEdit(colour.id ? colour.id : 0)}
-          >
+      <div className="card-colour">
+        <h2 className="card-header">Colours</h2>
+        <div className="colour-index">
+          {colours.map((colour: Colour) => (
             <div
-              className="swatch"
-              style={{
-                background: `hsl(${colour.hue}, ${colour.saturation}%, ${colour.lightness}%)`,
-              }}
-            ></div>
-            <p className="swatch-label">{colour.name}</p>
-          </div>
-        ))}
+              key={colour.id}
+              onClick={() => redirctToEdit(colour.id ? colour.id : 0)}
+            >
+              <div
+                className="swatch"
+                style={{
+                  background: `hsl(${colour.hue}, ${colour.saturation}%, ${colour.lightness}%)`,
+                }}
+              ></div>
+              <p className="swatch-label">{colour.name}</p>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -25,15 +25,12 @@ interface DetailParams {
 }
 
 interface Props {
-  // required: string;
-  displays: Display[];
   match: match<DetailParams>;
 }
 
 const ColourEdit = (props: Props) => {
   const history = useHistory();
   const match = props.match;
-  const { displays } = props;
 
   const [colour, setColour] = useState({
     name: "",
@@ -68,13 +65,15 @@ const ColourEdit = (props: Props) => {
 
   return (
     <div className="ColourEdit">
-      <h3 className="colour-header"> Edit Colour Form</h3>
+      <div className="card-colour">
+
+      <h3 className="card-header"> Edit Colour Form</h3>
       <ColourForm
         save={save}
         cancel={cancel}
         editColour={colour}
-        displays={displays}
-      />
+        />
+        </div>
     </div>
   );
 };

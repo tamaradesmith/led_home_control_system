@@ -12,7 +12,7 @@ import ColourNew from "./compoments/colours/ColourNew";
 import ColourEdit from "./compoments/colours/ColourEdit";
 
 import { DisplayQuery } from "./js/request";
-
+import { DisplayProvider } from "./compoments/partials/DisplayContext";
 
 interface Display {
   name: string;
@@ -67,40 +67,48 @@ function App() {
     // };
   }, []);
 
+  //    <ThemeContext.Provider value = {theme}>
+  //       <div>
+  //       </div>
+  //     </ThemeContext.Provider>
+  //   );
+  // }
+  const displaysValue = { displays, missingDisplays };
+
   return (
     <div className="App">
-      <Router>
-        <NavBar />
-        <Switch>
-          <Route exact path="/">
-            {" "}
-            <DisplayIndex
-              displays={displays}
-              missingDisplays={missingDisplays}
-              updateAll={getAllDisplays}
-              update={updateDisplay}
-            />
-          </Route>
-          <Route exact path="/Displays">
-            <DisplayIndex
-              displays={displays}
-              missingDisplays={missingDisplays}
-              updateAll={getAllDisplays}
-              update={updateDisplay}
-            />
-          </Route>
-          <Route exact path="/Displays/new" component={DisplayNew} />
-          <Route exact path="/Displays/:id" component={DisplayShow} />
-          <Route exact path="/Displays/:id/edit" component={DisplayEdit} />
-          <Route exact path="/colours" component={ColourIndex} />
-          <Route exact path="/colours/new" component={ColourNew}>
-            <ColourNew displays={displays} />
-          </Route>
-          <Route exact path="/colours/:id/edit">
-            {/* <ColourEdit displays={displays} /> */}
-          </Route>
-        </Switch>
-      </Router>
+      <DisplayProvider value={displaysValue}>
+        <Router>
+          <NavBar />
+          <Switch>
+            <Route exact path="/">
+              {" "}
+              <DisplayIndex
+    
+                updateAll={getAllDisplays}
+                update={updateDisplay}
+              />
+            </Route>
+            <Route exact path="/Displays">
+              <DisplayIndex
+         
+                updateAll={getAllDisplays}
+                update={updateDisplay}
+              />
+            </Route>
+            <Route exact path="/Displays/new" component={DisplayNew} />
+            <Route exact path="/Displays/:id" component={DisplayShow} />
+            <Route exact path="/Displays/:id/edit" component={DisplayEdit} />
+            <Route exact path="/colours" component={ColourIndex} />
+            <Route exact path="/colours/new" component={ColourNew} />
+            <Route
+              exact
+              path="/colours/:id/edit"
+              component={ColourEdit}
+            ></Route>
+          </Switch>
+        </Router>
+      </DisplayProvider>
     </div>
   );
 }

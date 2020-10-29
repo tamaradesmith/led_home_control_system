@@ -18,12 +18,7 @@ interface Display {
   id?: number;
 }
 
-interface Props {
-  displays: Display[];
-}
-const ColourNew = (props: Props) => {
-  const { displays } = props;
-
+const ColourNew = () => {
   const history = useHistory();
 
   const cancel = () => {
@@ -43,10 +38,11 @@ const ColourNew = (props: Props) => {
   };
   return (
     <div className="ColourNew">
-      <h3 className="colour-header"> Create New Colour Form</h3>
-      <p id="errorMessage"></p>
-      <ColourForm save={save} cancel={cancel} displays={displays} />
-      <div></div>
+      <div className="card-colour">
+        <h3 className="card-header"> Create New Colour Form</h3>
+        <p id="errorMessage"></p>
+        <ColourForm save={save} cancel={cancel} />
+      </div>
     </div>
   );
 };

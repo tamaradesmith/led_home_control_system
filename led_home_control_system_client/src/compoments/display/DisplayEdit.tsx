@@ -62,8 +62,11 @@ const DisplayEdit = (props: DetailProps) => {
 
   return (
     <div className="DisplayEdit">
-      <p> DisplayEdit </p>
+      <div className="card-index">
+
+      <h2 className="card-header"> Display Edit </h2>
       <DisplayForm display={display} cancel={cancel} save={save} />
+    </div>
     </div>
   );
 };

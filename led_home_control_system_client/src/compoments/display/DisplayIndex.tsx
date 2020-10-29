@@ -1,6 +1,7 @@
-import React from "react";
+import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 
+import DisplayContext from "../partials/DisplayContext";
 import { DisplayQuery } from "../../js/request";
 
 interface Display {
@@ -11,15 +12,15 @@ interface Display {
 }
 
 interface Props {
-  displays: Display[];
-  missingDisplays: Display[];
   update: Function;
   updateAll: Function;
 }
 
 const DisplayIndex = (props: Props) => {
-  const { missingDisplays, displays, update, updateAll } = props;
+  const { update, updateAll } = props;
   const history = useHistory();
+
+  const allDisplays = useContext(DisplayContext);
 
   const redirctToShow = (id: number) => {
     history.push(`/displays/${id}`);
@@ -46,9 +47,9 @@ const DisplayIndex = (props: Props) => {
             <h4 className="column_2 table-header">ipaddress</h4>
             <h4 className="column_3 table-header">On/Off</h4>
           </div>
-          {displays.length > 0 ? (
+          {allDisplays.displays.length > 0 ? (
             <>
-              {displays.map((display: Display) => (
+              {allDisplays.displays.map((display: Display) => (
                 <div
                   key={display.id}
                   className="display-list"
@@ -66,7 +67,7 @@ const DisplayIndex = (props: Props) => {
         </div>
       </div>
 
-      {missingDisplays.length > 0 ? (
+      {allDisplays.missingDisplays.length > 0 ? (
         <div className="card-index">
           <h2 className="card-header">Unavailable LED Display</h2>
           <div className="list-div">
@@ -83,7 +84,7 @@ const DisplayIndex = (props: Props) => {
               <h4 className="column_2 table-header">ipaddress</h4>
               <h4 className="column_3 table-header">search</h4>
             </div>
-            {missingDisplays.map((display: Display) => (
+            {allDisplays.missingDisplays.map((display: Display) => (
               <div key={display.id} className="display-list">
                 <p onClick={() => redirctToShow(display.id ? display.id : 0)}>
                   {display.name}

@@ -12,11 +12,11 @@ body {
   background: var(--background);
   width: 100vw;
 }
-h2 {
+/* h2 {
   font-size: 1.3em;
   font-weight: 700;
   margin-bottom: 1.1em;
-}
+} */
 h4 {
   font-size: 1.1em;
   font-weight: 500;
@@ -33,7 +33,8 @@ input {
 .DisplayIndex,
 .DisplayEdit,
 .ColourIndex,
-.ColourNew {
+.ColourNew,
+.ColourEdit {
   padding: 1em 1.5em;
   max-width: 1200px;
   margin: auto;
@@ -92,7 +93,15 @@ input {
   box-shadow: 0px 0px 5px var(--main-colour);
   border-radius: 0.5em;
   width: 700px;
-  padding: 0.5em 0.75em;
+  padding: 0.75em 0.75em;
+  margin: 0.5em auto 3em;
+}
+.card-colour {
+  background: var(--secondary-colour);
+  box-shadow: 0px 0px 5px var(--main-colour);
+  border-radius: 0.5em;
+  max-width: 1000px;
+  padding: 0.75em 0.75em;
   margin: 0.5em auto 3em;
 }
 .card {
@@ -103,14 +112,14 @@ input {
   box-shadow: 0px 0px 5px var(--main-colour);
   border-radius: 0.5em;
   width: 700px;
-  padding: 0.5em 0.75em;
+  padding: 0.75em 0.75em;
   margin: 0.5em auto;
 }
 .card-header {
   text-align: center;
   font-size: 1.5em;
   font-weight: 700;
-  margin-bottom: 0.5em;
+  margin-bottom: 1em;
   grid-column: 1/5;
   text-transform: capitalize;
 }
@@ -195,7 +204,7 @@ input {
 /* DISPLAY STYLES */
 .display-list {
   display: grid;
-  grid-template-columns: 200px 200px 200px 200px;
+  grid-template-columns: 200px 200px 125px 200px;
   padding: 0.25em;
 }
 .display-message{
@@ -251,22 +260,15 @@ input {
 /* COLOUR */
 .ColourForm {
   display: grid;
-  grid-template-columns: 90px 200px auto 160px;
+  grid-template-columns: 90px 200px auto 160px 160px;
   max-width: 1100px;
   margin: auto;
-}
-.colour-header {
-  grid-column: 1/4;
-  text-align: center;
-  font-size: 1.4em;
-  font-weight: 700;
-  margin-bottom: 1em;
 }
 .colour-label {
   margin-bottom: 0.25em;
 }
 .colour-btn-div {
-  grid-column: 3/5;
+  grid-column: 3/6;
   display: flex;
   justify-content: flex-end;
   margin-top: 1em;
@@ -275,7 +277,7 @@ input {
   border: 1px solid black;
   width: 150px;
   height: 104px;
-  grid-column: 4/5;
+  grid-column: 5/6;
   grid-row: 2/5;
   margin-left: 0.5em;
   margin-top: 0.25em;
@@ -299,7 +301,7 @@ input {
   display: grid;
   grid-template-columns: 90px auto 60px;
   margin: 0.25em 0;
-  grid-column: 1/4;
+  grid-column: 1/5;
 }
 .slider {
   -webkit-appearance: none;

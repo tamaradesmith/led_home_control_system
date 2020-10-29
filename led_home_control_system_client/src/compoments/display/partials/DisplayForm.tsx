@@ -178,7 +178,7 @@ const DisplayForm = (props: Props) => {
         />
       </div>
 
-      <div className="row5 column_3">
+      <div className="row5 btn-div">
         <button className=" btn btn_save" onClick={saveDisplay}>
           Save
         </button>
