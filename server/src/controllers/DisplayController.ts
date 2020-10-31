@@ -43,23 +43,20 @@ DisplayController.get(
   }
 );
 
-
 // LED ROUTES
 
 DisplayController.post(
-  "/led",
+  "/ledColour",
   async (req: Request, res: Response, next: NextFunction) => {
     const { colour, display } = req.body
     try {
-      const led = LedController.ledsColour(display, colour)
+      const led = LedController.ledsOneColour(display, colour)
       res.status(200);
     } catch (error) {
       next(error);
     }
   }
 );
-
-
 
 // CRUD ROUTES
 DisplayController.get(

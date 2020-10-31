@@ -194,7 +194,6 @@ const DisplayModel = {
       }
     });
   },
-
   async searchAll() {
     const displays = await this.getAll();
     const seaching = await searchPromise(displays, [], []);

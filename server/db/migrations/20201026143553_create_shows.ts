@@ -5,11 +5,8 @@ export async function up(knex: Knex): Promise<void> {
     .createTable("shows", (t: Knex.TableBuilder) => {
       t.bigIncrements("id");
       t.string("name").unique();
-      t.integer("display_id").nullable();;
-      t.foreign("display_id")
-        .references("displays.id")
-        .onDelete("SET NULL")
-        
+      t.integer("display_id").nullable();
+      t.foreign("display_id").references("displays.id").onDelete("SET NULL");
       t.timestamps(true, true);
     })
     .then(() =>
