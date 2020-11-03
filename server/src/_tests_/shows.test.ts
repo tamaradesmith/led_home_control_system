@@ -25,6 +25,7 @@ const patternShow = {
   pattern_length: 3,
   wait_time: 3,
   group_length: 2,
+  fade: 3,
 };
 
 beforeEach(function (done) {

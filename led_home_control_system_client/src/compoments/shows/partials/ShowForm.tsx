@@ -32,7 +32,7 @@ interface Display {
   ipaddress: string;
   led_number: number;
   id?: number;
-  default_on?: boolean
+  default_on?: boolean;
 }
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
@@ -41,20 +41,21 @@ interface Props {
 
 const ShowForm = (props: Props) => {
   const allDisplays = useContext(DisplayContext);
-  console.log("ShowForm -> allDisplays", allDisplays);
 
   const { save, cancel } = props;
 
   const [showTypes, setShowTypes] = useState([]);
-  const [displays, setDisplays] = useState<undefined | Display[]>([]);
-  const [selectedType, setSelectedType] = useState("pattern");
+  const [showName, setShowName] = useState("");
+  const [displays, setDisplays] = useState<Display[]>([]);
+  const [selectedType, setSelectedType] = useState({ type: "pattern", id: 1 });
   const [colourList, setColourList] = useState<Colour[] | undefined>();
-  const [testDisplay, setTestDisplay] = useState(
-     allDisplays.displays[0]
-  );
+  const [display, setDisplay] = useState(0);
+  const [testDisplay, setTestDisplay] = useState(0);
+  const [testDisplaySelected, setTestDisplaySelected] = useState(false);
 
   const getShowTypes = async () => {
     const types = await ShowQuery.getShowTypes();
+    console.log("getShowTypes -> types", types);
     setShowTypes(types);
   };
   const getColours = async () => {
@@ -64,14 +65,57 @@ const ShowForm = (props: Props) => {
 
   const handleType = () => {
     const type = (document.querySelector("#type") as HTMLInputElement).value;
-    setSelectedType(type);
+    setSelectedType(showTypes[parseInt(type)]);
   };
-  const handleSave = () => {};
+
+  const pickTestDisplay = () => {
+    const testValue = (document.querySelector(
+      "#testDisplay"
+    ) as HTMLInputElement).value;
+    setTestDisplay(parseInt(testValue));
+    setTestDisplaySelected(true);
+  };
+
+  const pickDisplay = () => {
+    const value = (document.querySelector("#display") as HTMLInputElement)
+      .value;
+    setDisplay(parseInt(value));
+    setTestDisplay(parseInt(value));
+    setTestDisplaySelected(true);
+  };
+
+  const handleChange = () => {
+    const value = (document.querySelector("#showName") as HTMLInputElement)
+      .value;
+    setShowName(value);
+  };
+
+  const getShowInfo = () => {
+    if (showName.length < 1) {
+      document.querySelector("#name")?.classList.add("missing_field");
+      document.querySelector("#missing")?.classList.remove("hidden");
+    }
+    const show: { name: string; type_id: number; display_id?: number } = {
+      name: showName,
+      type_id: selectedType.id,
+    };
+    if (display !== 0) {
+      show.display_id = display;
+    }
+    return show;
+  };
+
+  const handleSave = (cue: {}) => {
+    const show = getShowInfo();
+    save(show, cue)
+  };
 
   const handleTest = (showInfo: Show) => {
-console.log(testDisplay)
-    LedQuery.sendShow(testDisplay, showInfo)
-
+    if (!testDisplaySelected) {
+      alert("select a test display");
+    } else {
+      LedQuery.sendShow(testDisplay, showInfo);
+    }
   };
 
   useEffect(() => {
@@ -95,20 +139,55 @@ console.log(testDisplay)
       <input
         type="text"
         name="name"
+        id="showName"
         placeholder="Enter Show name"
         className="column_2_4"
+        value={showName}
+        onChange={handleChange}
       />
+      <p id="missing" className="hidden">
+        {" "}
+        Please add name{" "}
+      </p>
       <label htmlFor="display" className="column_1">
         display:
       </label>
-      <select name="display" className="column_2_4">
-        <option value="general">General</option>
+      <select
+        name="display"
+        id="display"
+        className="column_2_4"
+        onChange={pickDisplay}
+      >
+        <option value="0">General</option>
         {displays?.map((display) => (
           <option key={display.id} value={display.id}>
             {display.name}
           </option>
         ))}
       </select>
+
+      {display === 0 ? (
+        <>
+          <label htmlFor="testDisplay" className="column_1">
+            Test display:
+          </label>
+          <select
+            name="testDisplay"
+            id="testDisplay"
+            className="column_2_4"
+            onChange={pickTestDisplay}
+          >
+            <option value=""></option>
+
+            {displays?.map((display) => (
+              <option key={display.id} value={display.id}>
+                {display.name}
+              </option>
+            ))}
+          </select>
+        </>
+      ) : null}
+
       <label htmlFor="type" className="column_1">
         Type Of Show
       </label>
@@ -119,19 +198,20 @@ console.log(testDisplay)
         onChange={handleType}
       >
         <option></option>
-        {showTypes.map((type: Type) => (
-          <option key={type.id} value={type.type}>
+        {showTypes.map((type: Type, index) => (
+          <option key={type.id} value={index}>
             {type.type}
           </option>
         ))}
       </select>
 
       <div className="column_1_5">
-        {selectedType === "pattern" ? (
+        {selectedType.type === "pattern" ? (
           <PatternShow
             colours={colourList}
             handleSave={handleSave}
             handleTest={handleTest}
+            cancel={cancel}
           />
         ) : null}
       </div>

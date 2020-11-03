@@ -51,8 +51,10 @@ ColourController.post(
     if (ColourModel.validColour(colour)) {
       try {
         const savedColour = await ColourModel.create(colour);
+        console.log("savedColour", savedColour);
         res.status(200).send(savedColour[0]);
       } catch (error) {
+        console.log("error", error);
         next(error);
       }
     } else {

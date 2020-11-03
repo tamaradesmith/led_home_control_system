@@ -1,3 +1,5 @@
+import { create } from "domain";
+
 const BASE_URL = "http://localhost:4545";
 
 interface Display {
@@ -17,13 +19,19 @@ interface Colour {
   id?: number;
 }
 
-interface Show {
+interface Cue {
   id?: number;
   show_id?: number;
   wait_time: number;
   name?: string;
   pattern_length: number;
   group_length: number;
+}
+
+interface Show {
+  name: string;
+  type_id: number;
+  display_id?: number;
 }
 
 const DisplayQuery = {
@@ -168,6 +176,7 @@ const ColourQuery = {
     }
   },
 };
+
 const ShowQuery = {
   async getAll() {
     try {
@@ -183,6 +192,21 @@ const ShowQuery = {
     try {
       const res = await fetch(`${BASE_URL}/shows/types`, {
         credentials: "include",
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async create(show: Show, cue: Cue) {
+    try {
+      const res = await fetch(`${BASE_URL}/shows`, {
+        method: "post",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ show, cue }),
       });
       return res.json();
     } catch (error) {
@@ -215,15 +239,7 @@ const LedQuery = {
       return error;
     }
   },
-  async sendShow(
-    display: {
-      id?: number;
-      led_number: number;
-      ipaddress: string;
-      name: string;
-    },
-    show: Show
-  ) {
+  async sendShow(display: number, show: Cue) {
     try {
       const res = await fetch(`${BASE_URL}/shows/test`, {
         method: "POST",

@@ -7,7 +7,7 @@ export const ShowController: Router = express.Router();
 import { ShowModel } from "../model/ShowModel";
 // import { LedController } from "./LedController";
 
-var PatternModel = require("../model/PatternModel");
+var { PatternModel } = require("../model/PatternModel");
 
 // TYPES
 
@@ -72,10 +72,11 @@ ShowController.post(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
     const newShow = req.body.show;
+    const cue = req.body.cue
     const validShow = ShowModel.validShow(newShow, false);
     if (validShow === true) {
       try {
-        const show = await ShowModel.create(newShow);
+        const show = await ShowModel.create(newShow, cue);
         res.status(200).send(show[0]);
       } catch (error) {
         next(error);

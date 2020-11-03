@@ -13,9 +13,11 @@ interface Props {
   colours: Colour[] | undefined;
   handleSave: Function;
   handleTest: Function;
+  cancel: (event: React.MouseEvent<HTMLElement>) => void;
 }
+
 const PatternShow = (props: Props) => {
-  const { colours, handleSave, handleTest } = props;
+  const { colours, handleSave, handleTest, cancel } = props;
 
   const [colourListVisable, setColourListVisable] = useState(false);
   const [selectedColours, setSelectedColours] = useState<Colour[]>([]);
@@ -24,6 +26,7 @@ const PatternShow = (props: Props) => {
 
   const [waitTime, setWaitTime] = useState(1);
   const [groupSize, setGroupSize] = useState(1);
+  const [fade, setFade] = useState(1);
 
   const handleColourSelection = () => {
     const message = document.querySelector(
@@ -54,13 +57,17 @@ const PatternShow = (props: Props) => {
       case "groupSize":
         setGroupSize(parseInt(value));
         break;
+      case "fade":
+        setFade(parseInt(value));
+        break;
       default:
         break;
     }
   };
-  const getShowInfo = () => {
+
+  const getCueInfo = () => {
     let coloursId;
-  
+
     if (selectedColours.length > 1) {
       coloursId = selectedColours.map((colour) => {
         return colour.id;
@@ -70,6 +77,7 @@ const PatternShow = (props: Props) => {
         wait_time: waitTime,
         group_length: groupSize,
         pattern_length: coloursId.length * groupSize,
+        fade: fade,
       };
     } else {
       const message = document.querySelector(
@@ -80,12 +88,16 @@ const PatternShow = (props: Props) => {
   };
 
   const test = () => {
-    const showInfo = getShowInfo();
-    handleTest(showInfo)
+    const showInfo = getCueInfo();
+    handleTest(showInfo);
   };
 
-  const save = () => {};
-  const cancel = () => {
+  const save = () => {
+    const cue = getCueInfo();
+    handleSave(cue);
+  };
+
+  const cancelColour = () => {
     setSelectedColours(orginalColours);
     setOrginalColours([]);
     setColourListVisable(false);
@@ -122,7 +134,8 @@ const PatternShow = (props: Props) => {
         ))}
         <p id="colourMessage"></p>{" "}
       </div>
-      <label htmlFor="group" className="column_1">
+
+      <label htmlFor="groupSize" className="column_1">
         {" "}
         group number:
       </label>
@@ -134,7 +147,20 @@ const PatternShow = (props: Props) => {
         onChange={handleChange}
         value={groupSize}
       />
-      <label htmlFor="wait" className="column_1">
+
+      <label htmlFor="fade" className="column_1">
+        {" "}
+        fade time:
+      </label>
+      <input
+        type="number"
+        id="fade"
+        className="column_2"
+        onChange={handleChange}
+        value={fade}
+      />
+
+      <label htmlFor="waitTime" className="column_1">
         {" "}
         wait time:
       </label>
@@ -167,7 +193,7 @@ const PatternShow = (props: Props) => {
           selected={selectedColours}
           addColour={addColour}
           removeColour={removeColour}
-          cancel={cancel}
+          cancel={cancelColour}
           saveColours={saveColours}
         />
       </div>

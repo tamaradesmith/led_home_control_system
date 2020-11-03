@@ -93,9 +93,11 @@ DisplayController.post(
     const { display } = req.body;
     try {
       const validDisplay = DisplayModel.validDisplay(display);
-      if (validDisplay) {
+      console.log("validDisplay", validDisplay);
+      if (validDisplay === true) {
         try {
           const saveDisplay = await DisplayModel.create(display);
+          console.log("saveDisplay", saveDisplay);
           res.status(200).send(saveDisplay[0]);
         } catch (error) {
           next(error);

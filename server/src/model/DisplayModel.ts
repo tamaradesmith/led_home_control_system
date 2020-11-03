@@ -68,7 +68,7 @@ const DisplayModel = {
           "ipaddress",
           "led_number",
           "default_on",
-          "default_show",
+          "default_show"
         )
         .groupBy(
           "displays.name",
@@ -76,7 +76,7 @@ const DisplayModel = {
           "displays.id",
           "ipaddress",
           "default_on",
-          "default_show",
+          "default_show"
         )
         .orderBy("displays.name");
     } catch (error) {

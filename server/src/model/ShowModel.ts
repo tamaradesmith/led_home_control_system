@@ -1,9 +1,9 @@
-import { get } from "https";
 import { LedController } from "../controllers/LedController";
 
 var knex = require("../../db/client");
 
-var PatternModel = require("./PatternModel");
+import { PatternModel } from "./PatternModel";
+import { DisplayModel } from "./DisplayModel";
 
 interface Colour {
   name: string;
@@ -59,9 +59,14 @@ const ShowModel = {
       return error;
     }
   },
-  async create(show) {
+  async create(show, cue) {
     try {
-      return knex("shows").insert(show).returning("*");
+      const newShow =await knex("shows").insert(show).returning("id");
+      if (cue) {
+        cue.show_id = newShow[0];
+        const newCue = await PatternModel.create(cue);
+      }
+      return newShow;
     } catch (error) {
       return error;
     }
@@ -114,10 +119,11 @@ const ShowModel = {
     return valid ? valid : new Error("Invalid entry");
   },
 
-  async testShow(display, show) {
+  async testShow(displayId, show) {
     const colours = await getColours(show.colours, []);
+    const display = await DisplayModel.getOne(displayId);
     show.colours = colours;
-    const play = await LedController.playShow(display, show)
+    const play = await LedController.playShow(display[0], show);
   },
 };
 
