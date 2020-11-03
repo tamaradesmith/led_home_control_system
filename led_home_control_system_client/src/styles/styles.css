@@ -34,7 +34,8 @@ input {
 .DisplayEdit,
 .ColourIndex,
 .ColourNew,
-.ColourEdit {
+.ColourEdit,
+.ShowIndex {
   padding: 1em 1.5em;
   max-width: 1200px;
   margin: auto;
@@ -104,6 +105,14 @@ input {
   padding: 0.75em 0.75em;
   margin: 0.5em auto 3em;
 }
+.card-show {
+  background: var(--secondary-colour);
+  box-shadow: 0px 0px 5px var(--main-colour);
+  border-radius: 0.5em;
+  max-width: 700px;
+  padding: 0.75em 0.75em;
+  margin: 0.5em auto 3em;
+}
 .card {
   display: grid;
   grid-template-columns: 125px 100px 75px auto;
@@ -157,6 +166,9 @@ input {
 .column_1_5 {
   grid-column: 1/5;
 }
+.column_1_4 {
+  grid-column: 1/4;
+}
 .row5 {
   grid-row: 4/5;
 }
@@ -207,16 +219,16 @@ input {
   grid-template-columns: 200px 200px 125px 200px;
   padding: 0.25em;
 }
-.display-message{
+.display-message {
   text-align: center;
-  margin-top: .5em;
+  margin-top: 0.5em;
   font-size: 1.2em;
 }
-.table-header{
+.table-header {
   font-size: 1.1em;
   font-weight: 600;
   text-transform: capitalize;
-  margin-bottom: .5em;
+  margin-bottom: 0.5em;
 }
 .display-item {
   margin: 0 0.25em;
@@ -295,6 +307,22 @@ input {
 .swatch-label {
   text-align: center;
 }
+.swatch-rec{
+  border: 1px solid black;
+height: 25px;
+width: 75px;
+margin: .25em;
+}
+.swatch-square{
+  border: 1px solid black;
+height: 25px;
+width: 25px;
+margin: .25em;
+}
+.colours-selected-div{
+  display: flex;
+}
+
 
 /* SLIDER */
 .slider-div {
@@ -340,7 +368,7 @@ input {
 
 /* SHOWS */
 
-.ShowIndex {
+.ShowList, .ColourList {
   border: 1px solid var(--main-colour);
   border-radius: 0.5em;
   background: var(--secondary-colour);
@@ -351,4 +379,23 @@ input {
   right: 0;
   margin: auto;
   width: 500px;
+}
+.show-list{
+  display: grid;
+  grid-template-columns: 200px 100px auto;
+}
+.header-secondary{
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 1em auto .5em;
+}
+.card-pattern{
+  display: grid;
+  grid-template-columns: 125px 50px 100px auto;
+}
+.show-btn-div {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1em;
 }

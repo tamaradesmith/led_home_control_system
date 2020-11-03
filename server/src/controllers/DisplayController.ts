@@ -50,7 +50,7 @@ DisplayController.post(
   async (req: Request, res: Response, next: NextFunction) => {
     const { colour, display } = req.body
     try {
-      const led = LedController.ledsOneColour(display, colour)
+     LedController.ledsOneColour(display, colour)
       res.status(200);
     } catch (error) {
       next(error);
@@ -93,7 +93,7 @@ DisplayController.post(
     const { display } = req.body;
     try {
       const validDisplay = DisplayModel.validDisplay(display);
-      if (!validDisplay.message) {
+      if (validDisplay) {
         try {
           const saveDisplay = await DisplayModel.create(display);
           res.status(200).send(saveDisplay[0]);

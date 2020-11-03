@@ -1,13 +1,41 @@
+import { get } from "https";
+import { LedController } from "../controllers/LedController";
+
 var knex = require("../../db/client");
 
-import { PatternModel } from "./PatternModel";
+var PatternModel = require("./PatternModel");
+
+interface Colour {
+  name: string;
+  hue: number;
+  saturation: number;
+  lightness: number;
+  id?: number;
+}
+
+const getColours = async (coloursId, coloursInfo) => {
+  const colour = coloursId.shift();
+  if (coloursId.length > 0) {
+    const info = await knex("colours")
+      .select("id", "name", "hue", "saturation", "lightness")
+      .where({ id: colour });
+    coloursInfo.push(info[0]);
+    return await getColours(coloursId, coloursInfo);
+  } else {
+    const info = await knex("colours")
+      .select("id", "name", "hue", "saturation", "lightness")
+      .where({ id: colour });
+    coloursInfo.push(info[0]);
+    return await coloursInfo;
+  }
+};
 
 const ShowModel = {
   async getAll() {
     try {
       return await knex("shows")
-        .select("name", "display_id", "shows.id", "showTypes.type")
-        .join("showTypes", "showTypes.id", "type_id")
+        .select("name", "display_id", "shows.id", "type_id", "showTypes.type")
+        .join("showTypes", "showTypes.id", "shows.type_id")
         .groupBy("name", "display_id", "shows.id", "showTypes.type")
         .orderBy("name");
     } catch (error) {
@@ -51,6 +79,13 @@ const ShowModel = {
       return error;
     }
   },
+  async getShowTypes() {
+    try {
+      return knex("showTypes").select("*");
+    } catch (error) {
+      return error;
+    }
+  },
 
   validShow(show, update) {
     let valid = true;
@@ -77,6 +112,12 @@ const ShowModel = {
       }
     }
     return valid ? valid : new Error("Invalid entry");
+  },
+
+  async testShow(display, show) {
+    const colours = await getColours(show.colours, []);
+    show.colours = colours;
+    const play = await LedController.playShow(display, show)
   },
 };
 

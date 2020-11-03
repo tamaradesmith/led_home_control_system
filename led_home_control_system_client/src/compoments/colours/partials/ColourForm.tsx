@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext } from "react";
-import DisplayContext from '../../partials/DisplayContext'
+import DisplayContext from "../../partials/DisplayContext";
 
 import ColourSlider from "./ColourSlider";
 
@@ -27,14 +27,16 @@ interface Props {
 }
 
 const ColourForm = (props: Props) => {
-  const { cancel, save, editColour} = props;
-   const allDisplays = useContext(DisplayContext);
+  const { cancel, save, editColour } = props;
+  const allDisplays = useContext(DisplayContext);
 
   const [hue, setHue] = useState(0);
   const [saturation, setSaturation] = useState(100);
   const [lightness, setLightness] = useState(50);
   const [name, setName] = useState("");
-  const [testDisplay, setTestDisplay] = useState<undefined | Display>(allDisplays.displays.length === 1 ? allDisplays.displays[0]: undefined);
+  const [testDisplay, setTestDisplay] = useState<undefined | Display>(
+    allDisplays.displays.length === 1 ? allDisplays.displays[0] : undefined
+  );
   const HSL = [
     { type: "hue", max: 360, value: hue },
     { type: "saturation", max: 100, value: saturation },
@@ -127,7 +129,10 @@ const ColourForm = (props: Props) => {
         {"   "}
         *** Please add colour's name ***
       </p>
-      <label htmlFor="display" className="column_4"> Select Test Display: </label>
+      <label htmlFor="display" className="column_4">
+        {" "}
+        Select Test Display:{" "}
+      </label>
       <select id="testDisplay" name="display" onChange={handleTestDisplay}>
         <option></option>
         {allDisplays.displays.map((display, index) => (

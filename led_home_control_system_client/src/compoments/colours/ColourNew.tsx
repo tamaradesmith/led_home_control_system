@@ -21,6 +21,7 @@ interface Display {
 const ColourNew = () => {
   const history = useHistory();
 
+
   const cancel = () => {
     history.push("/colours");
   };
@@ -39,7 +40,7 @@ const ColourNew = () => {
   return (
     <div className="ColourNew">
       <div className="card-colour">
-        <h3 className="card-header"> Create New Colour Form</h3>
+        <h2 className="card-header"> Create New Colour Form</h2>
         <p id="errorMessage"></p>
         <ColourForm save={save} cancel={cancel} />
       </div>

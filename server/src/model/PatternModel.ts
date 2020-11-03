@@ -10,7 +10,7 @@ const joinColour = (colours: number[]) => {
   return colours.join(",");
 };
 
-export const PatternModel = {
+export var PatternModel = {
   async getOne(showId: number) {
     if (!showId) {
       return [];

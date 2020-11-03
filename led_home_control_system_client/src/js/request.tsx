@@ -17,6 +17,15 @@ interface Colour {
   id?: number;
 }
 
+interface Show {
+  id?: number;
+  show_id?: number;
+  wait_time: number;
+  name?: string;
+  pattern_length: number;
+  group_length: number;
+}
+
 const DisplayQuery = {
   async getAll() {
     try {
@@ -159,14 +168,41 @@ const ColourQuery = {
     }
   },
 };
+const ShowQuery = {
+  async getAll() {
+    try {
+      const res = await fetch(`${BASE_URL}/shows`, {
+        credentials: "include",
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async getShowTypes() {
+    try {
+      const res = await fetch(`${BASE_URL}/shows/types`, {
+        credentials: "include",
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+};
 
 const LedQuery = {
   async sendColour(
-    display: { id: number; led_number: number; ipaddress: string, name: string },
+    display: {
+      id: number;
+      led_number: number;
+      ipaddress: string;
+      name: string;
+    },
     colour: { hue: number; saturation: number; lightness: number }
   ) {
     try {
-      const res = await fetch(`${BASE_URL}/displays/led`, {
+      const res = await fetch(`${BASE_URL}/displays/ledColour`, {
         method: "post",
         credentials: "include",
         headers: {
@@ -179,6 +215,29 @@ const LedQuery = {
       return error;
     }
   },
+  async sendShow(
+    display: {
+      id?: number;
+      led_number: number;
+      ipaddress: string;
+      name: string;
+    },
+    show: Show
+  ) {
+    try {
+      const res = await fetch(`${BASE_URL}/shows/test`, {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ display, show }),
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
 };
 
-export { DisplayQuery, ColourQuery, LedQuery };
+export { DisplayQuery, ColourQuery, ShowQuery, LedQuery };

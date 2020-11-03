@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useHistory, match, RouteComponentProps } from "react-router-dom";
+import { useHistory, match } from "react-router-dom";
 import { ColourQuery } from "../../js/request";
 
 import ColourForm from "./partials/ColourForm";

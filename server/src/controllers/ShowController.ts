@@ -5,7 +5,37 @@ var express = require("express");
 export const ShowController: Router = express.Router();
 
 import { ShowModel } from "../model/ShowModel";
-import { PatternModel } from "../model/PatternModel";
+// import { LedController } from "./LedController";
+
+var PatternModel = require("../model/PatternModel");
+
+// TYPES
+
+ShowController.get(
+  "/types",
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const types = await ShowModel.getShowTypes();
+      res.status(200).send(types);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+// TEST SHOWS
+
+ShowController.post(
+  "/test",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { display, show } = req.body;
+    try {
+      ShowModel.testShow(display, show);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
 
 // CRUD ROUTES
 
@@ -123,7 +153,7 @@ ShowController.patch(
     const cue = req.body.cue;
     try {
       const updateCue = await PatternModel.update(cue);
-      res.status(200).send(updateCue[0])
+      res.status(200).send(updateCue[0]);
     } catch (error) {
       next(error);
     }

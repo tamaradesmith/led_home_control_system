@@ -10,18 +10,10 @@ interface Colour {
   lightness: number;
   id?: number;
 }
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-}
 
-interface Props {
-  displays: Display[];
-}
-const ColourIndex = (props: Props) => {
-  const { displays } = props;
+
+const ColourIndex = () => {
+
   const history = useHistory();
 
   const [colours, setColours] = useState([]);

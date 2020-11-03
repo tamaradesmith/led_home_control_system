@@ -1,3 +1,7 @@
+import { setInterval } from "timers";
+
+var knex = require("../../db/client");
+
 const axios = require("axios");
 
 export const LedController = {
@@ -12,10 +16,32 @@ export const LedController = {
       `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/allhsl/${result}`
     );
   },
-  async ledPattern(display, show) {
-    
-    
-  }
+  async playShow(display, show) {
+    const waitTime = setInterval(() => {
+      const string = createURLString(display.led_number, show);
+      console.log("playShow -> show.wait_time ", show.wait_time);
+      axios.post(
+        `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${string}`
+      );
+      const colourholder = show.colours.shift();
+      show.colours.push(colourholder);
+    }, show.wait_time * 1000);
+  },
 };
 
-// colourapp / fixture / ivan / channel / hsl2 / 300, 0.5, 0.0;
+const createURLString = (ledsCount, show) => {
+  let count = 0;
+  let urlString = "";
+  for (let i = 0; i < ledsCount; i++) {
+    const coloursInfo = show.colours;
+    urlString += `2,${coloursInfo[count].hue},${
+      coloursInfo[count].saturation / 100
+    },${coloursInfo[count].lightness / 100},`;
+    if (count >= show.pattern_length - 1) {
+      count = 0;
+    } else {
+      count++;
+    }
+  }
+  return urlString;
+};

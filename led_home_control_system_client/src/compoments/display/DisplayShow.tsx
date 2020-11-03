@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { match, useHistory } from "react-router-dom";
 
 import { DisplayQuery } from "../../js/request";
-import ShowIndex from "./partials/ShowIndex";
+import ShowList from "./partials/ShowList";
 
 interface DisplayParams {
   id: string;
@@ -146,7 +146,7 @@ const DisplayShow = (props: DisplaysProps) => {
         </div>*/}
       </div>
       <div className={!showlist ? "hidden" : ""}>
-        <ShowIndex
+        <ShowList
           shows={display.shows ? display.shows : []}
           cancel={cancelShow}
           save={saveShow}

@@ -11,6 +11,9 @@ import ColourIndex from "./compoments/colours/ColourIndex";
 import ColourNew from "./compoments/colours/ColourNew";
 import ColourEdit from "./compoments/colours/ColourEdit";
 
+import ShowIndex from "./compoments/shows/ShowIndex";
+import ShowNew from "./compoments/shows/ShowNew";
+
 import { DisplayQuery } from "./js/request";
 import { DisplayProvider } from "./compoments/partials/DisplayContext";
 
@@ -67,12 +70,6 @@ function App() {
     // };
   }, []);
 
-  //    <ThemeContext.Provider value = {theme}>
-  //       <div>
-  //       </div>
-  //     </ThemeContext.Provider>
-  //   );
-  // }
   const displaysValue = { displays, missingDisplays };
 
   return (
@@ -83,29 +80,19 @@ function App() {
           <Switch>
             <Route exact path="/">
               {" "}
-              <DisplayIndex
-    
-                updateAll={getAllDisplays}
-                update={updateDisplay}
-              />
+              <DisplayIndex updateAll={getAllDisplays} update={updateDisplay} />
             </Route>
             <Route exact path="/Displays">
-              <DisplayIndex
-         
-                updateAll={getAllDisplays}
-                update={updateDisplay}
-              />
+              <DisplayIndex updateAll={getAllDisplays} update={updateDisplay} />
             </Route>
             <Route exact path="/Displays/new" component={DisplayNew} />
             <Route exact path="/Displays/:id" component={DisplayShow} />
             <Route exact path="/Displays/:id/edit" component={DisplayEdit} />
             <Route exact path="/colours" component={ColourIndex} />
             <Route exact path="/colours/new" component={ColourNew} />
-            <Route
-              exact
-              path="/colours/:id/edit"
-              component={ColourEdit}
-            ></Route>
+            <Route exact path="/colours/:id/edit" component={ColourEdit} />
+            <Route exact path="/shows" component={ShowIndex} />
+            <Route exact path="/shows/new" component={ShowNew} />
           </Switch>
         </Router>
       </DisplayProvider>

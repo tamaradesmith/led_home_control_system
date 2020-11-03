@@ -102,7 +102,7 @@ const DisplayForm = (props: Props) => {
         name="name"
         id="name"
         placeholder="Enter display name"
-        className="column_2_3"
+        className="column_2_4"
         onChange={handleChange}
         defaultValue={display ? display.name : ""}
       />
@@ -126,7 +126,7 @@ const DisplayForm = (props: Props) => {
         {" "}
         Ip Adrress:
       </label>
-      <div className="column_2_3 form_ipadress">
+      <div className="column_2_4 form_ipadress">
         <input
           type="number"
           min="0"

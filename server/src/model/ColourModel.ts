@@ -8,7 +8,7 @@ interface Colour {
   lightness: number;
 }
 
-const ColourModel = {
+export const ColourModel = {
   async getAll() {
     try {
       return await knex("colours")
@@ -84,4 +84,5 @@ const ColourModel = {
   },
 };
 
-export { ColourModel };
+
+// export { ColourModel };
