@@ -12,11 +12,6 @@ body {
   background: var(--background);
   width: 100vw;
 }
-/* h2 {
-  font-size: 1.3em;
-  font-weight: 700;
-  margin-bottom: 1.1em;
-} */
 h4 {
   font-size: 1.1em;
   font-weight: 500;
@@ -398,4 +393,8 @@ margin: .25em;
   display: flex;
   justify-content: flex-end;
   margin-top: 1em;
+}
+.show-cue-div{
+  display: grid;
+  grid-template-columns: auto auto auto auto;
 }

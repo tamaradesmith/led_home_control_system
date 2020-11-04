@@ -30,7 +30,7 @@ const ShowNew = () => {
   const handleSave = async (show: Show, cue: Cue) => {
     const res = await ShowQuery.create(show, cue);
     if (typeof res === "number") {
-      history.push("/shows");
+      history.push(`/shows/${res}`);
     } else {
       const message = document.querySelector<HTMLElement>(
         "#errorMessage"

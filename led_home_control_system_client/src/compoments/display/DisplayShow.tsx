@@ -59,6 +59,7 @@ const DisplayShow = (props: DisplaysProps) => {
       message.innerText = "Something when wrong please try again";
     }
   };
+  
   const cancel = () => {
     setDeleteDiv(true);
   };
@@ -70,6 +71,7 @@ const DisplayShow = (props: DisplaysProps) => {
   const cancelShow = () => {
     setShowList(false);
   };
+
   const saveShow = async (show: Show) => {
     const displayUpdated = {
       name: display.name,
@@ -94,7 +96,6 @@ const DisplayShow = (props: DisplaysProps) => {
       <div className="card-div">
         <div className="card">
           <h4 className="card-header"> {display.name}</h4>
-          {/* <h6 className="card-header">Current Stauts</h6> */}
           <p className="card-label">Contection:</p>
           <p className="column_2">true</p>
           <p className="card-label column_3"> Stauts: </p>
@@ -127,23 +128,6 @@ const DisplayShow = (props: DisplaysProps) => {
             </button>
           </div>
         </div>
-        {/* 
-        <div className="card">
-          <h6 className="card-header">Setups</h6>
-          <p className="card-label"> startup:</p>
-          <p>Play </p>
-          <p className="card-label column_1"> default show: </p>
-          <p
-            className="column_2_4"
-            onClick={() => {
-              setShowList(showlist ? false : true);
-            }}
-          >
-            {" "}
-            red Move{" "}
-          </p>
-          <p>click change defeaut show</p>
-        </div>*/}
       </div>
       <div className={!showlist ? "hidden" : ""}>
         <ShowList

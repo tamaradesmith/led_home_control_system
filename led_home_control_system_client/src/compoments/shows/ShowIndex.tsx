@@ -1,4 +1,6 @@
 import React, { useState, useEffect, useContext } from "react";
+import { useHistory } from "react-router-dom";
+
 import DisplayContext from "../partials/DisplayContext";
 
 import { ShowQuery } from "../../js/request";
@@ -11,14 +13,8 @@ interface Show {
   display_name?: string;
 }
 
-// interface Display {
-//   name: string;
-//   ipaddress: string;
-//   led_number: number;
-//   id: number;
-// }
-
 const ShowIndex = () => {
+  const history = useHistory();
   const allDisplays = useContext(DisplayContext);
 
   const [shows, setShows] = useState([]);
@@ -31,7 +27,6 @@ const ShowIndex = () => {
         show.display_name = "general";
       } else {
         displays.forEach((display) => {
-          
           if (`${display.id}` === `${show.display_id}`) {
             show.display_name = display.name;
           }
@@ -39,6 +34,10 @@ const ShowIndex = () => {
       }
     });
     setShows(allShows);
+  };
+
+  const redirctToEdit = (id: number) => {
+    history.push(`/shows/${id}`);
   };
 
   useEffect(() => {
@@ -56,7 +55,13 @@ const ShowIndex = () => {
           <h4 className="column_3 table-header">display</h4>
         </div>
         {shows.map((show: Show) => (
-          <div key={show.id} className="show-list">
+          <div
+            key={show.id}
+            className="show-list"
+            onClick={() => {
+              redirctToEdit(show.id);
+            }}
+          >
             <p className="display-item toCapital">{show.name}</p>
             <p className="display-item"> {show.type}</p>
             <p className="display-item"> {show.display_name}</p>

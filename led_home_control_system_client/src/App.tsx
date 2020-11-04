@@ -12,7 +12,9 @@ import ColourNew from "./compoments/colours/ColourNew";
 import ColourEdit from "./compoments/colours/ColourEdit";
 
 import ShowIndex from "./compoments/shows/ShowIndex";
+import ShowShow from "./compoments/shows/ShowShow";
 import ShowNew from "./compoments/shows/ShowNew";
+import ShowEdit from "./compoments/shows/ShowEdit";
 
 import { DisplayQuery } from "./js/request";
 import { DisplayProvider } from "./compoments/partials/DisplayContext";
@@ -93,6 +95,8 @@ function App() {
             <Route exact path="/colours/:id/edit" component={ColourEdit} />
             <Route exact path="/shows" component={ShowIndex} />
             <Route exact path="/shows/new" component={ShowNew} />
+            <Route exact path="/shows/:id" component={ShowShow} />
+            <Route exact path="/shows/:id/edit" component={ShowEdit} />
           </Switch>
         </Router>
       </DisplayProvider>

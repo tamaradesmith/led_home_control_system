@@ -17,14 +17,27 @@ interface Colour {
   lightness: number;
   id?: number;
 }
+interface Cue {
+  id?: number;
+  show_id?: number;
+  wait_time: number;
+  pattern_length: number;
+  group_length: number;
+  fade: number;
+  colours: [];
+}
 
 interface Show {
   id?: number;
   show_id?: number;
   wait_time: number;
-  name?: string;
+  name: string;
   pattern_length: number;
   group_length: number;
+  display_id?: number;
+  type: string;
+  type_id: number;
+  cue?: Cue;
 }
 
 interface Display {
@@ -37,25 +50,32 @@ interface Display {
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   save: Function;
+  editShow?: Show;
 }
 
 const ShowForm = (props: Props) => {
   const allDisplays = useContext(DisplayContext);
 
-  const { save, cancel } = props;
+  const { save, cancel, editShow } = props;
 
-  const [showTypes, setShowTypes] = useState([]);
-  const [showName, setShowName] = useState("");
-  const [displays, setDisplays] = useState<Display[]>([]);
-  const [selectedType, setSelectedType] = useState({ type: "pattern", id: 1 });
+  // Lists
+  const [showTypes, setShowTypes] = useState([{ type: "", id: 0 }]);
   const [colourList, setColourList] = useState<Colour[] | undefined>();
+  const [displays, setDisplays] = useState<Display[]>([]);
+
+  // Show info
+
+  const [showName, setShowName] = useState("");
+  const [selectedType, setSelectedType] = useState({ type: "pattern", id: 1 });
   const [display, setDisplay] = useState(0);
   const [testDisplay, setTestDisplay] = useState(0);
   const [testDisplaySelected, setTestDisplaySelected] = useState(false);
 
+  // Edit
+  const [editPattern, setEditPattern] = useState<Cue | undefined>();
+
   const getShowTypes = async () => {
     const types = await ShowQuery.getShowTypes();
-    console.log("getShowTypes -> types", types);
     setShowTypes(types);
   };
   const getColours = async () => {
@@ -95,19 +115,27 @@ const ShowForm = (props: Props) => {
       document.querySelector("#name")?.classList.add("missing_field");
       document.querySelector("#missing")?.classList.remove("hidden");
     }
-    const show: { name: string; type_id: number; display_id?: number } = {
+    const show: {
+      name: string;
+      type_id: number;
+      display_id?: number;
+      id?: number;
+    } = {
       name: showName,
       type_id: selectedType.id,
     };
     if (display !== 0) {
       show.display_id = display;
     }
+    if (editShow) {
+      show.id = editShow.id;
+    }
     return show;
   };
 
   const handleSave = (cue: {}) => {
     const show = getShowInfo();
-    save(show, cue)
+    save(show, cue);
   };
 
   const handleTest = (showInfo: Show) => {
@@ -118,10 +146,32 @@ const ShowForm = (props: Props) => {
     }
   };
 
+  const getdefaultType = () => {
+    let defaultType = 0;
+    if (editShow) {
+      showTypes.forEach((type, index) => {
+        if (type.type === editShow.type) {
+          defaultType = index;
+        }
+      });
+    }
+    return defaultType;
+  };
+
   useEffect(() => {
     getShowTypes();
     getColours();
   }, []);
+
+  useEffect(() => {
+    if (editShow) {
+      setShowName(editShow.name);
+      setDisplay(editShow.display_id ? editShow.display_id : 0);
+      setTestDisplay(editShow.display_id ? editShow.display_id : 0);
+      setTestDisplaySelected(editShow.display_id ? true : false);
+      setEditPattern(editShow ? editShow.cue : undefined);
+    }
+  }, [editShow]);
 
   useEffect(() => {
     const joinDisplays = allDisplays.displays.concat(
@@ -196,10 +246,17 @@ const ShowForm = (props: Props) => {
         id="type"
         className="column_2_4"
         onChange={handleType}
+        value={getdefaultType()}
       >
         <option></option>
         {showTypes.map((type: Type, index) => (
-          <option key={type.id} value={index}>
+          <option
+            key={type.id}
+            value={index}
+            // defaultValue={
+            // editShow ? (type.type === editShow.type ? true : false) : false
+            // }
+          >
             {type.type}
           </option>
         ))}
@@ -212,6 +269,7 @@ const ShowForm = (props: Props) => {
             handleSave={handleSave}
             handleTest={handleTest}
             cancel={cancel}
+            editPattern={editPattern}
           />
         ) : null}
       </div>

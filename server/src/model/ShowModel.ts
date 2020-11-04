@@ -45,12 +45,15 @@ const ShowModel = {
   async getOne(id: number) {
     try {
       const show = await knex("shows")
-        .select("shows.name", "shows.display_id", "type")
+        .select("shows.name", "shows.display_id", "type", "shows.id")
         .where("shows.id", id)
         .join("showTypes", "showTypes.id", "type_id");
       if (show.length !== 0) {
         const cue = await PatternModel.getOne(id);
+        const colours = await getColours(cue.colours, []);
+        cue.colours = colours;
         show[0].cue = cue;
+
         return show;
       } else {
         return new Error("show does not exist");
@@ -61,7 +64,7 @@ const ShowModel = {
   },
   async create(show, cue) {
     try {
-      const newShow =await knex("shows").insert(show).returning("id");
+      const newShow = await knex("shows").insert(show).returning("id");
       if (cue) {
         cue.show_id = newShow[0];
         const newCue = await PatternModel.create(cue);
@@ -71,11 +74,18 @@ const ShowModel = {
       return error;
     }
   },
-  async update(id, show) {
+  async update(id, show, cue) {
     if (show.cue) {
       delete show.cue;
     }
-    return await knex("shows").where({ id }).update(show).returning("*");
+    const updateShow = await knex("shows")
+      .where({ id })
+      .update(show)
+      .returning("id");
+    if (cue) {
+      await PatternModel.update(cue);
+    }
+    return updateShow;
   },
   async delete(id: number) {
     try {

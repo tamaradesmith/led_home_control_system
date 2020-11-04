@@ -91,11 +91,11 @@ ShowController.patch(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     const id: number = parseInt(req.params.id);
-    const show = req.body.show;
+    const {show, cue} = req.body;
     const validShow = ShowModel.validShow(show, true);
     if (validShow === true) {
       try {
-        const updatedShow = await ShowModel.update(id, show);
+        const updatedShow = await ShowModel.update(id, show, cue);
         res.status(200).send(updatedShow[0]);
       } catch (error) {
         next(error);

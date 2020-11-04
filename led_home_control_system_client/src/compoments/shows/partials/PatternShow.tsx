@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ColourList from "../../colours/partials/ColourList";
 
 interface Colour {
@@ -9,15 +9,35 @@ interface Colour {
   id?: number;
 }
 
+interface Cue {
+  id?: number;
+  show_id?: number;
+  wait_time: number;
+  pattern_length: number;
+  group_length: number;
+  fade: number;
+  colours: [];
+}
+
+interface SaveCue {
+  id?: number;
+  wait_time: number;
+  group_length: number;
+  pattern_length: number;
+  fade: number;
+  colours: (number | undefined)[];
+}
+
 interface Props {
   colours: Colour[] | undefined;
   handleSave: Function;
   handleTest: Function;
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
+  editPattern: Cue | undefined;
 }
 
 const PatternShow = (props: Props) => {
-  const { colours, handleSave, handleTest, cancel } = props;
+  const { colours, handleSave, handleTest, cancel, editPattern } = props;
 
   const [colourListVisable, setColourListVisable] = useState(false);
   const [selectedColours, setSelectedColours] = useState<Colour[]>([]);
@@ -72,13 +92,18 @@ const PatternShow = (props: Props) => {
       coloursId = selectedColours.map((colour) => {
         return colour.id;
       });
-      return {
+      const cue: SaveCue = {
         colours: coloursId,
         wait_time: waitTime,
         group_length: groupSize,
         pattern_length: coloursId.length * groupSize,
         fade: fade,
+        id: undefined,
       };
+      if (editPattern) {
+        cue.id = editPattern.id;
+      }
+      return cue;
     } else {
       const message = document.querySelector(
         "#colourMessage"
@@ -107,6 +132,15 @@ const PatternShow = (props: Props) => {
     setOrginalColours([...selectedColours]);
     setColourListVisable(false);
   };
+
+  useEffect(() => {
+    if (editPattern) {
+      setSelectedColours(editPattern ? editPattern.colours : []);
+      setWaitTime(editPattern ? editPattern.wait_time : 1);
+      setFade(editPattern ? editPattern.fade : 1);
+      setGroupSize(editPattern ? editPattern.group_length : 1);
+    }
+  }, [editPattern]);
 
   return (
     <div className="PatternShow card-pattern">

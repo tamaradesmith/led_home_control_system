@@ -1,5 +1,3 @@
-import { create } from "domain";
-
 const BASE_URL = "http://localhost:4545";
 
 interface Display {
@@ -32,6 +30,7 @@ interface Show {
   name: string;
   type_id: number;
   display_id?: number;
+  id?: number | string;
 }
 
 const DisplayQuery = {
@@ -71,11 +70,15 @@ const DisplayQuery = {
     }
   },
   async delete(id: number) {
-    const res = await fetch(`${BASE_URL}/displays/${id}`, {
-      method: "DELETE",
-      credentials: "include",
-    });
-    return res.status;
+    try {
+      const res = await fetch(`${BASE_URL}/displays/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      return res.status;
+    } catch (error) {
+      return error;
+    }
   },
   async edit(id: number) {
     try {
@@ -188,6 +191,16 @@ const ShowQuery = {
       return error;
     }
   },
+  async getOne(id: number) {
+    try {
+      const res = await fetch(`${BASE_URL}/shows/${id}`, {
+        credentials: "include",
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
   async getShowTypes() {
     try {
       const res = await fetch(`${BASE_URL}/shows/types`, {
@@ -209,6 +222,32 @@ const ShowQuery = {
         body: JSON.stringify({ show, cue }),
       });
       return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async update(show: Show, cue: Cue) {
+    try {
+      const res = await fetch(`${BASE_URL}/shows/${show.id}`, {
+        method: "PATCH",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ show, cue }),
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async delete(id: number) {
+    try {
+      const res = await fetch(`${BASE_URL}/shows/${id}`, {
+        method: "delete",
+        credentials: "include",
+      });
+      return res.status;
     } catch (error) {
       return error;
     }
