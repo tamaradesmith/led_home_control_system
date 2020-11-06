@@ -21,19 +21,21 @@ export async function seed(knex: Knex): Promise<void> {
   await knex("showTypes").insert([
     { id: 1, type: "pattern" },
     { id: 2, type: "cue" },
+    { id: 3, type: "random" },
   ]);
   // SEED SHOWS
   await knex("shows").insert([
     { id: 1, name: "move red", type_id: 1 },
     { id: 2, name: "move green", type_id: 1 },
     { id: 3, name: "move blue", type_id: 1 },
-    { id: 4, name: "cue 1", display_id: 1, type_id: 2 },
+    { id: 4, name: "cue 1", display_id: 1, type_id: 3 },
     { id: 5, name: "cue 2", display_id: 1, type_id: 2 },
     { id: 6, name: "hudson", display_id: 1, type_id: 1 },
     { id: 7, name: "cue 4", display_id: 2, type_id: 2 },
     { id: 8, name: "aurora", display_id: 3, type_id: 2 },
-    { id: 9, name: "cue 6", display_id: 3, type_id: 2 },
-    { id: 10, name: "woodstock", type_id: 1 },
+    { id: 9, name: "cue 6", display_id: 3, type_id: 3 },
+    { id: 10, name: "woodstock", type_id: 3 },
+    { id: 11, name: "nermail", display_id: 1, type_id: 3 },
   ]);
   await knex("displays").where({ id: 1 }).update({ default_show: 1 });
   await knex("displays").where({ id: 2 }).update({ default_show: 7 });
@@ -49,6 +51,31 @@ export async function seed(knex: Knex): Promise<void> {
       pattern_length: 3,
       wait_time: 6,
       group_length: 2,
+    },
+  ]);
+
+  await knex("randomShows").insert([
+    { show_id: 9, fade: 3, wait_time: 1 },
+    {
+      show_id: 4,
+      hue_max: 200,
+      hue_min: 100,
+      saturation_min: 60,
+      saturation_max: 90,
+      lightness_min: 20,
+      lightness_max: 40,
+      fade: 3,
+      wait_time: 3,
+    },
+    {
+      show_id: 10,
+      hue_max: 260,
+      hue_min: 180,
+      saturation: 100,
+      lightness: 20,
+      fade: 4,
+      fade_random: true,
+      wait_time: 3,
     },
   ]);
 }

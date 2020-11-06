@@ -30,7 +30,8 @@ input {
 .ColourIndex,
 .ColourNew,
 .ColourEdit,
-.ShowIndex {
+.ShowIndex,
+.ShowNew {
   padding: 1em 1.5em;
   max-width: 1200px;
   margin: auto;
@@ -108,6 +109,16 @@ input {
   padding: 0.75em 0.75em;
   margin: 0.5em auto 3em;
 }
+.card-pattern {
+  display: grid;
+  grid-template-columns: 125px 50px 100px auto;
+  gap: 0.25em;
+}
+.card-random {
+  display: grid;
+  grid-template-columns: 125px 50px 75px 50px 75px 50px auto;
+  gap: 0.25em;
+}
 .card {
   display: grid;
   grid-template-columns: 125px 100px 75px auto;
@@ -126,6 +137,12 @@ input {
   margin-bottom: 1em;
   grid-column: 1/5;
   text-transform: capitalize;
+}
+.header-secondary {
+  text-align: center;
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 1em auto 0.5em;
 }
 .card-div {
   display: flex;
@@ -148,6 +165,12 @@ input {
 }
 .column_4 {
   grid-column: 4/5;
+}
+.column_6 {
+  grid-column: 5/6;
+}
+.column_7 {
+  grid-column: 7/8;
 }
 .column_2_3 {
   grid-column: 2/4;
@@ -302,22 +325,21 @@ input {
 .swatch-label {
   text-align: center;
 }
-.swatch-rec{
+.swatch-rec {
   border: 1px solid black;
-height: 25px;
-width: 75px;
-margin: .25em;
+  height: 25px;
+  width: 75px;
+  margin: 0.25em;
 }
-.swatch-square{
+.swatch-square {
   border: 1px solid black;
-height: 25px;
-width: 25px;
-margin: .25em;
+  height: 25px;
+  width: 25px;
+  margin: 0.25em;
 }
-.colours-selected-div{
+.colours-selected-div {
   display: flex;
 }
-
 
 /* SLIDER */
 .slider-div {
@@ -363,7 +385,8 @@ margin: .25em;
 
 /* SHOWS */
 
-.ShowList, .ColourList {
+.ShowList,
+.ColourList {
   border: 1px solid var(--main-colour);
   border-radius: 0.5em;
   background: var(--secondary-colour);
@@ -375,26 +398,27 @@ margin: .25em;
   margin: auto;
   width: 500px;
 }
-.show-list{
+.show-list {
   display: grid;
   grid-template-columns: 200px 100px auto;
 }
-.header-secondary{
-  text-align: center;
-  font-size: 1.2em;
-  font-weight: 600;
-  margin: 1em auto .5em;
+.selected {
+  background: var(--main-colour);
+  color: var(--secondary-colour);
+  padding: 0.15em;
+  margin: 0.15em 0;
 }
-.card-pattern{
-  display: grid;
-  grid-template-columns: 125px 50px 100px auto;
+.non-selected {
+  padding: 0.15em;
+  margin: 0.15em 0;
 }
+
 .show-btn-div {
   display: flex;
   justify-content: flex-end;
   margin-top: 1em;
 }
-.show-cue-div{
+.show-cue-div {
   display: grid;
   grid-template-columns: auto auto auto auto;
 }

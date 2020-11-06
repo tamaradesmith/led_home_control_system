@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import DisplayContext from "../../partials/DisplayContext";
 
 import PatternShow from "./PatternShow";
+import RandomShow from "./RandomShow";
 
 import { ColourQuery, LedQuery, ShowQuery } from "../../../js/request";
 
@@ -66,7 +67,7 @@ const ShowForm = (props: Props) => {
   // Show info
 
   const [showName, setShowName] = useState("");
-  const [selectedType, setSelectedType] = useState({ type: "pattern", id: 1 });
+  const [selectedType, setSelectedType] = useState({ type: "random", id: -1 });
   const [display, setDisplay] = useState(0);
   const [testDisplay, setTestDisplay] = useState(0);
   const [testDisplaySelected, setTestDisplaySelected] = useState(false);
@@ -76,8 +77,10 @@ const ShowForm = (props: Props) => {
 
   const getShowTypes = async () => {
     const types = await ShowQuery.getShowTypes();
+    console.log("getShowTypes -> types", types);
     setShowTypes(types);
   };
+
   const getColours = async () => {
     const colours = await ColourQuery.getAll();
     setColourList(colours);
@@ -85,7 +88,15 @@ const ShowForm = (props: Props) => {
 
   const handleType = () => {
     const type = (document.querySelector("#type") as HTMLInputElement).value;
-    setSelectedType(showTypes[parseInt(type)]);
+    if (type !== "-1") {
+      setSelectedType(showTypes[parseInt(type)]);
+      console.log(
+        "handleType -> showTypes[parseInt(type)]",
+        showTypes[parseInt(type)]
+      );
+    } else {
+      setSelectedType({ type: "", id: -1 });
+    }
   };
 
   const pickTestDisplay = () => {
@@ -147,14 +158,21 @@ const ShowForm = (props: Props) => {
   };
 
   const getdefaultType = () => {
-    let defaultType = 0;
-    if (editShow) {
+    let defaultType = -1;
+    if (selectedType) {
       showTypes.forEach((type, index) => {
-        if (type.type === editShow.type) {
+        if (type.type === selectedType.type) {
           defaultType = index;
+        } else if (editShow) {
+          showTypes.forEach((type, index) => {
+            if (type.type === editShow.type) {
+              defaultType = index;
+            }
+          });
         }
       });
     }
+    // console.log("getdefaultType -> defaultType", defaultType);
     return defaultType;
   };
 
@@ -248,7 +266,7 @@ const ShowForm = (props: Props) => {
         onChange={handleType}
         value={getdefaultType()}
       >
-        <option></option>
+        <option value={-1}></option>
         {showTypes.map((type: Type, index) => (
           <option
             key={type.id}
@@ -270,6 +288,18 @@ const ShowForm = (props: Props) => {
             handleTest={handleTest}
             cancel={cancel}
             editPattern={editPattern}
+          />
+        ) : null}
+      </div>
+
+      <div className="column_1_5">
+        {selectedType.type === "random" ? (
+          <RandomShow
+          // colours={colourList}
+          // handleSave={handleSave}
+          // handleTest={handleTest}
+          // cancel={cancel}
+          // editPattern={editPattern}
           />
         ) : null}
       </div>

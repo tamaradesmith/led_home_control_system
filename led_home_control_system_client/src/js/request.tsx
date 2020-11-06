@@ -293,6 +293,16 @@ const LedQuery = {
       return error;
     }
   },
+  async playShow(displayId: number, showId: number) {
+    try {
+      const res = await fetch(`${BASE_URL}/displays/${displayId}/shows/${showId}`, {
+        credentials: 'include'
+      })
+      return res.json();
+    } catch (error) {
+      return error
+    }
+  }
 };
 
 export { DisplayQuery, ColourQuery, ShowQuery, LedQuery };

@@ -8,7 +8,7 @@ import { ShowModel } from "../model/ShowModel";
 // import { LedController } from "./LedController";
 
 var { PatternModel } = require("../model/PatternModel");
-
+// import { RandomModel } from "../model/RandomModel";
 // TYPES
 
 ShowController.get(
@@ -72,12 +72,12 @@ ShowController.post(
   "/",
   async (req: Request, res: Response, next: NextFunction) => {
     const newShow = req.body.show;
-    const cue = req.body.cue
+    const cue = req.body.cue;
     const validShow = ShowModel.validShow(newShow, false);
     if (validShow === true) {
       try {
         const show = await ShowModel.create(newShow, cue);
-        res.status(200).send(show[0]);
+        res.status(200).send({ id: show[0] });
       } catch (error) {
         next(error);
       }
@@ -91,12 +91,12 @@ ShowController.patch(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     const id: number = parseInt(req.params.id);
-    const {show, cue} = req.body;
+    const { show, cue } = req.body;
     const validShow = ShowModel.validShow(show, true);
     if (validShow === true) {
       try {
         const updatedShow = await ShowModel.update(id, show, cue);
-        res.status(200).send(updatedShow[0]);
+        res.status(200).send({ id: updatedShow[0] });
       } catch (error) {
         next(error);
       }
@@ -127,7 +127,7 @@ ShowController.post(
   async (req: Request, res: Response, next: NextFunction) => {
     const cue = req.body.cue;
     try {
-      const savesCue = await PatternModel.create(cue);
+      const savesCue = await ShowModel.createCue(cue);
       res.status(200).send(savesCue[0]);
     } catch (error) {
       next(error);
@@ -138,9 +138,9 @@ ShowController.post(
 ShowController.get(
   "/:id/cue",
   async (req: Request, res: Response, next: NextFunction) => {
-    const id: number = parseInt(req.params.id);
+    const showId: number = parseInt(req.params.id);
     try {
-      const cue = await PatternModel.getOne(id);
+      const cue = await ShowModel.getOneCue(showId);
       res.status(200).send(cue);
     } catch (error) {
       next(error);
@@ -153,7 +153,7 @@ ShowController.patch(
   async (req: Request, res: Response, next: NextFunction) => {
     const cue = req.body.cue;
     try {
-      const updateCue = await PatternModel.update(cue);
+      const updateCue = await ShowModel.updateCue(cue);
       res.status(200).send(updateCue[0]);
     } catch (error) {
       next(error);

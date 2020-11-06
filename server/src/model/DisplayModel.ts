@@ -1,3 +1,6 @@
+import { LedController } from "../controllers/LedController";
+import { ShowModel } from "./ShowModel";
+
 const axios = require("axios");
 var knex = require("../../db/client");
 
@@ -135,6 +138,7 @@ const DisplayModel = {
       return error;
     }
   },
+
   // Extra Functions
   validDisplay(display: Display) {
     if (display.shows) {
@@ -209,6 +213,13 @@ const DisplayModel = {
   },
   async getCurrentShow(id: number) {
     return await knex("shows").select("name", "id").where({ id });
+  },
+
+  async playShow(id, showId) {
+    const display = await this.getOne(id);
+    const show = await ShowModel.getOne(showId);
+    const play = await LedController.playShow(display[0], show[0].cue);
+    return "playing show?"
   },
 };
 

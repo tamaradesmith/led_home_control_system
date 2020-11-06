@@ -67,7 +67,7 @@ describe("Edit", () => {
     expect(res.body).toHaveProperty("ipaddress", "192.168.1.123");
     expect(res.body).toHaveProperty("id", "1");
     expect(res.body).toHaveProperty("led_number", 16);
-    expect(res.body.shows).toHaveLength(7);
+    expect(res.body.shows).toHaveLength(8);
   });
 });
 

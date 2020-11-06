@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { match, useHistory } from "react-router-dom";
 
-import { DisplayQuery } from "../../js/request";
+import { DisplayQuery, LedQuery } from "../../js/request";
 import ShowList from "./partials/ShowList";
 
 interface DisplayParams {
@@ -59,8 +59,9 @@ const DisplayShow = (props: DisplaysProps) => {
       message.innerText = "Something when wrong please try again";
     }
   };
-  
+
   const cancel = () => {
+    playShow(display.default_show);
     setDeleteDiv(true);
   };
 
@@ -84,6 +85,10 @@ const DisplayShow = (props: DisplaysProps) => {
     await DisplayQuery.update(displayUpdated);
     setShowList(false);
     getDisplay();
+  };
+
+  const playShow = async (show: Show) => {
+    await LedQuery.playShow(display.id, show.id);
   };
 
   useEffect(() => {
@@ -131,10 +136,11 @@ const DisplayShow = (props: DisplaysProps) => {
       </div>
       <div className={!showlist ? "hidden" : ""}>
         <ShowList
-          shows={display.shows ? display.shows : []}
+          shows={display.shows ? display.shows : display.shows[0]}
           cancel={cancelShow}
           save={saveShow}
           current={display.default_show}
+          play={playShow}
         />
       </div>
 

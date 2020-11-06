@@ -6,7 +6,7 @@ var express = require("express");
 export const DisplayController: Router = express.Router();
 
 import { DisplayModel } from "../model/DisplayModel";
-import { ColourController } from "./ColourController";
+// import { ColourController } from "./ColourController";
 import { LedController } from "./LedController";
 
 interface Display {
@@ -57,6 +57,18 @@ DisplayController.post(
     }
   }
 );
+
+DisplayController.get('/:id/shows/:showId', 
+  async (req: Request, res: Response, next: NextFunction) => {
+  const {id , showId} = req.params;
+  try {
+      DisplayModel.playShow(id, showId);
+      res.status(200).send('playing')
+  } catch (error) {
+    next(error)
+  }
+  }
+)
 
 // CRUD ROUTES
 DisplayController.get(

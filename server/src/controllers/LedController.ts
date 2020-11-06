@@ -4,7 +4,7 @@
 
 const axios = require("axios");
 
-let waitTime;
+const waitTime = {};
 
 export const LedController = {
   async ledsOneColour(display, colour) {
@@ -18,12 +18,12 @@ export const LedController = {
       `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/allhsl/${result}`
     );
   },
-  async playShow(display, show) {
-    if (waitTime !== undefined) {
-      clearInterval(waitTime);
+  async playShow(display, cue) {
+    if (waitTime[display.name] !== undefined) {
+      clearInterval(waitTime[display.name]);
     }
-    waitTime = setInterval(() => {
-      const string = createURLString(display.led_number, show);
+    waitTime[display.name] = setInterval(() => {
+      const string = createURLString(display.led_number, cue);
       try {
         axios.post(
           `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${string}`
@@ -31,20 +31,20 @@ export const LedController = {
       } catch (error) {
         return error;
       }
-      const colourholder = show.colours.shift();
-      show.colours.push(colourholder);
-    }, (show.wait_time + show.fade) * 1000);
+      const colourholder = cue.colours.shift();
+      cue.colours.push(colourholder);
+    }, (cue.wait_time + cue.fade) * 1000);
   },
 };
-const createURLString = (ledsCount, show) => {
+const createURLString = (ledsCount, cue) => {
   let count = 0;
   let urlString = "";
   for (let i = 0; i < ledsCount; i++) {
-    const coloursInfo = show.colours[count];
-    urlString += `${show.fade},${coloursInfo.hue},${
+    const coloursInfo = cue.colours[count];
+    urlString += `${cue.fade},${coloursInfo.hue},${
       coloursInfo.saturation / 100
     },${coloursInfo.lightness / 100},`;
-    if (count >= show.pattern_length - 1) {
+    if (count >= cue.pattern_length - 1) {
       count = 0;
     } else {
       count++;

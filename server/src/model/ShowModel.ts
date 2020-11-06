@@ -4,6 +4,7 @@ var knex = require("../../db/client");
 
 import { PatternModel } from "./PatternModel";
 import { DisplayModel } from "./DisplayModel";
+import { RandomModel } from "./RandomModel";
 
 interface Colour {
   name: string;
@@ -30,6 +31,21 @@ const getColours = async (coloursId, coloursInfo) => {
   }
 };
 
+const getPatternShow = async (id: number) => {
+  const cue = await PatternModel.getOne(id);
+  let colours: Colour;
+  if (cue.length > 0) {
+    colours = await getColours(cue.colours, []);
+    cue.colours = colours;
+  }
+  return cue;
+};
+
+const getRandomShow = async (id: number) => {
+  const cue = await RandomModel.getOne(id);
+  return cue;
+};
+
 const ShowModel = {
   async getAll() {
     try {
@@ -49,11 +65,17 @@ const ShowModel = {
         .where("shows.id", id)
         .join("showTypes", "showTypes.id", "type_id");
       if (show.length !== 0) {
-        const cue = await PatternModel.getOne(id);
-        const colours = await getColours(cue.colours, []);
-        cue.colours = colours;
+        let cue;
+        switch (show[0].type) {
+          case "pattern":
+            cue = await getPatternShow(id);
+            break;
+          case "random":
+            cue = await getRandomShow(id);
+          default:
+            break;
+        }
         show[0].cue = cue;
-
         return show;
       } else {
         return new Error("show does not exist");
@@ -102,6 +124,52 @@ const ShowModel = {
     }
   },
 
+  // CUES
+  async getOneCue(showId) {
+    const show = await this.getOne(showId);
+    let cue;
+    switch (show[0].type) {
+      case "pattern":
+        cue = await PatternModel.getOne(showId);
+        break;
+      case "random":
+        cue = await RandomModel.getOne(showId);
+
+      default:
+        break;
+    }
+    return cue;
+  },
+  async createCue(cue) {
+    const show = await this.getOne(cue.show_id);
+    let savedCue;
+    switch (show[0].type) {
+      case "pattern":
+        savedCue = await PatternModel.create(cue);
+        break;
+      case "random":
+        savedCue = await RandomModel.create(cue);
+      default:
+        break;
+    }
+    return savedCue;
+  },
+  async updateCue(cue) {
+    const show = await this.getOne(cue.show_id);
+    let updatedCue;
+    switch (show[0].type) {
+      case "pattern":
+        updatedCue = await PatternModel.update(cue);
+        break;
+      case "random":
+        updatedCue = await RandomModel.update(cue);
+      default:
+        break;
+    }
+    return updatedCue;
+  },
+
+  // VALIDS
   validShow(show, update) {
     let valid = true;
     if (show.type) {

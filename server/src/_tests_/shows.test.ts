@@ -1,7 +1,6 @@
 process.env.NODE_ENV = "test";
 
 import request from "supertest";
-import { isRegExp } from "util";
 import { app } from "../../index";
 const knex = require("../../db/client");
 
@@ -15,7 +14,7 @@ interface Show {
 
 const show: Show = {
   name: "test show",
-  id: 11,
+  id: 25,
   type_id: 1,
 };
 const patternShow = {
@@ -26,6 +25,14 @@ const patternShow = {
   wait_time: 3,
   group_length: 2,
   fade: 3,
+};
+
+const randomShow = {
+  show_id: 11,
+  saturation: 60,
+  lightness: 50,
+  fade: 2,
+  wait_time: 4,
 };
 
 beforeEach(function (done) {
@@ -48,12 +55,12 @@ describe("INDEX", () => {
   it("should get all Shows in DB", async () => {
     const res = await request(app).get("/shows");
     expect(200);
-    expect(res.body).toHaveLength(10);
+    expect(res.body).toHaveLength(11);
     expect(res.body[0].name).toBe("aurora");
     expect(res.body[0]).toHaveProperty("type");
     expect(res.body[2].name).toBe("cue 2");
     expect(res.body[5].name).toBe("hudson");
-    expect(res.body[9].name).toBe("woodstock");
+    expect(res.body[10].name).toBe("woodstock");
   });
 });
 
@@ -64,7 +71,7 @@ describe("SHOW", () => {
     expect(res.body).toHaveProperty("name", "move red");
     expect(res.body).toHaveProperty("display_id", null);
     expect(res.body).toHaveProperty("type", "pattern");
-    expect(res.body).toHaveProperty('cue')
+    expect(res.body).toHaveProperty("cue");
   });
 
   it("should get show and have name, with  displays_id ", async () => {
@@ -73,7 +80,6 @@ describe("SHOW", () => {
     expect(res.body).toHaveProperty("name", "hudson");
     expect(res.body).toHaveProperty("display_id", 1);
     expect(res.body).toHaveProperty("cue");
-
   });
 
   it("should have a display_id 0f null after display is deleted", async () => {
@@ -103,29 +109,25 @@ describe("CREATE", () => {
   it("should create a new show", async () => {
     const res = await request(app).post("/shows").send({ show });
     expect(200);
-    expect(res.body).toHaveProperty("name", "test show");
-    expect(res.body).toHaveProperty("id", "11");
-    expect(res.body).toHaveProperty("display_id", null);
+    expect(res.body).toHaveProperty("id", "25");
   });
 
   it("should create a new show with display id", async () => {
     show.display_id = 1;
     const res = await request(app).post("/shows").send({ show });
     expect(200);
-    expect(res.body).toHaveProperty("name", "test show");
-    expect(res.body).toHaveProperty("id", "11");
-    expect(res.body).toHaveProperty("display_id", 1);
+    expect(res.body).toHaveProperty("id", "25");
   });
 
   it("should not create Show with missing params", async () => {
-    const invalidShow = { id: 11, display_id: 1, type_id: 1 };
+    const invalidShow = { id: 25, display_id: 1, type_id: 1 };
     const res = await request(app).post("/shows").send({ show: invalidShow });
     expect(422);
     expect(res.ok).toBe(false);
   });
 
   it("should not create Show with missing params", async () => {
-    const invalidShow = { id: 11, display_id: 1, name: "missing type" };
+    const invalidShow = { id: 25, display_id: 1, name: "missing type" };
     const res = await request(app).post("/shows").send({ show: invalidShow });
     expect(422);
     expect(res.ok).toBe(false);
@@ -133,7 +135,7 @@ describe("CREATE", () => {
 
   it("should not create show with extra params", async () => {
     const invalidShow = {
-      id: 11,
+      id: 25,
       display_id: 1,
       name: "extra params",
       extraParams: "should not save",
@@ -151,7 +153,6 @@ describe("UPDATE", () => {
     updateShow.name = "new name";
     const res = await request(app).patch("/shows/2").send({ show: updateShow });
     expect(200);
-    expect(res.body).toHaveProperty("name", "new name");
     expect(res.body).toHaveProperty("id", "2");
   });
 
@@ -164,6 +165,8 @@ describe("UPDATE", () => {
     expect(res.ok).toBe(false);
   });
 });
+
+// PATTERN
 
 describe("PATTERN SHOW", () => {
   it("CREATE Pattern show", async () => {
@@ -200,5 +203,50 @@ describe("PATTERN SHOW", () => {
     expect(res.body).toHaveProperty("colours", ["1", "2", "2", "1"]);
     expect(res.body).toHaveProperty("pattern_length", 4);
     expect(res.body).toHaveProperty("wait_time", 3);
+  });
+});
+
+// RANDOM SHOWS
+
+describe("RANDOM SHOWS", () => {
+  it("gets one Random show", async () => {
+    const res = await request(app).get("/shows/9/cue");
+    expect(200);
+    expect(res.body).toHaveProperty("id");
+    expect(res.body).toHaveProperty("fade", 3);
+    expect(res.body).toHaveProperty("fade_random", false);
+    expect(res.body).toHaveProperty("wait_time", 1);
+    expect(res.body).toHaveProperty("wait_random", false);
+    expect(res.body).toHaveProperty("hue_min", 0);
+    expect(res.body).toHaveProperty("hue_max", 360);
+    expect(res.body).toHaveProperty("hue", -1);
+    expect(res.body).toHaveProperty("saturation_min", 0);
+    expect(res.body).toHaveProperty("saturation_max", 100);
+    expect(res.body).toHaveProperty("lightness_min", 0);
+    expect(res.body).toHaveProperty("lightness_max", 100);
+    expect(res.body).toHaveProperty("saturation", -1);
+    expect(res.body).toHaveProperty("lightness", -1);
+    expect(res.body).toHaveProperty("show_id", "9");
+  });
+  it("Should Create random cue", async () => {
+    const res = await request(app)
+      .post(`/shows/${randomShow.show_id}/cue`)
+      .send({ cue: randomShow });
+    expect(200);
+    expect(res.body).toHaveProperty("id", "4");
+    expect(res.body).toHaveProperty("wait_time", 4);
+    expect(res.body).toHaveProperty("saturation", 60);
+    expect(res.body).toHaveProperty("lightness", 50);
+  });
+  it("should update a random cue", async () => {
+    const cueInfo = await request(app).get("/shows/9/cue");
+    const cue = cueInfo.body;
+    cue.wait_time = 10;
+    cue.saturation = 100;
+    const res = await request(app).patch("/shows/9/cue").send({ cue });
+    expect(200);
+    expect(res.body).toHaveProperty("saturation", 100);
+    expect(res.body).toHaveProperty("wait_time", 10);
+    expect(res.body).toHaveProperty("show_id", "9");
   });
 });
