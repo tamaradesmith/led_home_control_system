@@ -29,22 +29,22 @@ const ShowNew = () => {
 
   const handleSave = async (show: Show, cue: Cue) => {
     const res = await ShowQuery.create(show, cue);
-    if (typeof res === "number") {
-      history.push(`/shows/${res}`);
+    console.log("handleSave -> res", res);
+    if (typeof parseInt(res.id) === "number") {
+      history.push(`/shows/${res.id}`);
     } else {
       const message = document.querySelector<HTMLElement>(
         "#errorMessage"
       ) as HTMLElement;
-      message.innerText = res;
+      message.innerText = res.message;
     }
   };
 
   return (
     <div className="ShowNew">
       <div className="card-show">
-        <p id="errorMessage"></p>
-
         <h2 className="card-header">New Show Form</h2>
+        <p id="errorMessage"></p>
         <ShowForm cancel={cancel} save={handleSave} />
       </div>
     </div>

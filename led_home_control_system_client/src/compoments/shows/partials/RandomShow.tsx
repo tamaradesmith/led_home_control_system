@@ -1,32 +1,162 @@
 import React, { useState } from "react";
-interface Props {}
+interface Props {
+  cancel: (event: React.MouseEvent<HTMLElement>) => void;
+  handleSave: Function;
+  handleTest: Function;
+}
 
 const RandomShow = (props: Props) => {
+  const { cancel, handleSave, handleTest } = props;
+
   const [saturation, setSaturation] = useState(100);
   const [lightness, setLightness] = useState(50);
-  const [fade, setfade] = useState(1);
+  const [fade, setFade] = useState(1);
   const [waitTime, setWaitTime] = useState(1);
+  const [hue, setHue] = useState({ max: 360, min: 0 });
+
+  const [waitTimeRandom, setWaitTimeRandom] = useState(false);
+  const [fadeRandom, setFadeRandom] = useState(false);
+  const [hueRandom, setHueRandom] = useState(false);
+
+  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = event.target;
+    switch (id) {
+      case "wait":
+        setWaitTime(parseInt(value));
+        break;
+      case "saturation":
+        setSaturation(parseInt(value));
+        break;
+      case "lightness":
+        setLightness(parseInt(value));
+        break;
+      case "fade":
+        setFade(parseInt(value));
+        break;
+      case "hueMin":
+        checkHue(parseInt(value), "min");
+        break;
+      case "hueMax":
+        checkHue(parseInt(value), "max");
+        break;
+      default:
+        break;
+    }
+  };
+
+  const checkHue = (value: number, key: string) => {
+    const newHue = Object.assign({}, hue);
+
+    switch (key) {
+      case "min":
+        if (value >= newHue.max) {
+          newHue.max = value + 1;
+        }
+        newHue.min = value;
+        break;
+      case "max":
+        if (value <= newHue.min) {
+          newHue.min = value - 1;
+        }
+        newHue.max = value;
+        break;
+      default:
+        break;
+    }
+    setHue(newHue);
+  };
+
+  const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const target = event.target;
+    switch (target.id) {
+      case "hueRandom":
+        if(hueRandom){
+          setHue({max: 360, min: 0})
+        }
+        setHueRandom(hueRandom ? false : true);
+
+        break;
+      case "fadeRandom":
+        setFadeRandom(fadeRandom ? false : true);
+        break;
+      case "waitTimeRandom":
+        setWaitTimeRandom(waitTimeRandom ? false : true);
+        break;
+      default:
+        break;
+    }
+  };
+
+  const getCueInfo = () => {
+    const cue = {
+      saturation,
+      lightness,
+      fade,
+      fade_random: fadeRandom,
+      wait_time: waitTime,
+      wait_random: waitTimeRandom,
+      hue_max: hue.max,
+      hue_min: hue.min,
+    };
+    return cue;
+  };
+
+  const test = () => {
+    const cue = getCueInfo();
+    handleTest(cue);
+  };
+
+  const save = () => {
+    const cue = getCueInfo();
+    handleSave(cue);
+  };
 
   return (
     <div className="RandomShow card-random">
       <h4 className="header-secondary column_1_4">Random Cue</h4>
       <p className="column_7"> Random</p>
+
       <label htmlFor="fade" className="column_1">
-        Fade Time
+        {!fadeRandom ? <>Fade Time: </> : <>Max Fade Time:</>}
       </label>
-      <input type="number" name="fade" id="fade" min="0"></input>
 
+      <input
+        type="number"
+        name="fade"
+        id="fade"
+        value={fade}
+        onChange={handleChange}
+      />
 
-      <input type="checkbox" className="column_7" id="fadeRandom" name="fadeRandom" value="fadeRandom" />
+      <input
+        type="checkbox"
+        className="column_7 random_checkbox"
+        id="fadeRandom"
+        name="fadeRandom"
+        value="fadeRandom"
+        onChange={handleCheck}
+      />
 
       <label htmlFor="wait" className="column_1">
-        Wait Time
+        {!waitTimeRandom ? <>Wait Time: </> : <>Max Wait Time:</>}
       </label>
-      <input type="number" name="wait" id="wait" min="0"></input>
+      <input
+        type="number"
+        name="wait"
+        id="wait"
+        min="0"
+        value={waitTime}
+        onChange={handleChange}
+      />
 
-
-
-      <input type="checkbox" className="column_7" id="waitTimeRandom" name="waitTimeRandom" value="waitTimeRandom" />
+      <input
+        type="checkbox"
+        className="column_7 random_checkbox"
+        id="waitTimeRandom"
+        name="waitTimeRandom"
+        value="waitTimeRandom"
+        onChange={handleCheck}
+      />
 
       <label htmlFor="saturation" className="column_1">
         Saturation
@@ -37,20 +167,9 @@ const RandomShow = (props: Props) => {
         id="saturation"
         min="0"
         max="100"
-      ></input>
-
-      <label htmlFor="SaturationMin" className="">
-        Min:
-      </label>
-      <input type="number" name="SaturationMin" id="SaturationMin" min="0" max="99"></input>
-      <label htmlFor="saturationMax" className="">
-        Max:
-      </label>
-      <input type="number" name="saturationMax" id="saturationMax" min="1" max="100"></input>
-
-      <input type="checkbox" className="column_7" id="saturationRandom" name="saturationRandom" value="saturationRandom" />
-
-
+        value={saturation}
+        onChange={handleChange}
+      />
 
       <label htmlFor="lightness" className="column_1">
         Lightness
@@ -61,38 +180,65 @@ const RandomShow = (props: Props) => {
         id="lightness"
         min="0"
         max="100"
-      ></input>
+        value={lightness}
+        onChange={handleChange}
+      />
+      <p className="column_1">
+        {" "}
+        {!hueRandom ? <>Hue Unlimited: </> : <>Hue Limits: </>}{" "}
+      </p>
 
-      <label htmlFor="lightnessMin" className="">
-        Min:
-      </label>
-      <input type="number" name="lightnessMin" id="lightnessMin" min="0" max="99"></input>
-      <label htmlFor="lightnessMax" className="">
-        Max:
-      </label>
-      <input type="number" name="lightnessMax" id="lightnessMax" min="1" max="100"></input>
+      {hueRandom ? (
+        <>
+          <label htmlFor="hueMin" className="">
+            Min:
+          </label>
+          <input
+            type="number"
+            name="hueMin"
+            id="hueMin"
+            min="0"
+            max="359"
+            onChange={handleChange}
+            value={hue.min}
+          />
 
-      <input type="checkbox" className="column_7" id="lightnessRandom" name="lightnessRandom" value="lightnessRandom" />
-      
-
-      <label htmlFor="hue" className="column_1">
-        Hue
-      </label>
-      <input type="number" name="hue" id="hue" min="0" max="360"></input>
-
-      <label htmlFor="hueMin" className="">
-        Min:
-      </label>
-      <input type="number" name="hueMin" id="hueMin" min="0" max="359"></input>
-      <label htmlFor="hueMax" className="">
-        Max:
-      </label>
-      <input type="number" name="hueMax" id="hueMax" min="1" max="360"></input>
-      
-      <input type="checkbox" className="column_7" id="hueRandom" name="hueRandom" value="hueRandom" />
-
-      
-
+          <label htmlFor="hueMax" className="">
+            Max:
+          </label>
+          <input
+            type="number"
+            name="hueMax"
+            id="hueMax"
+            min="1"
+            max="360"
+            onChange={handleChange}
+            value={hue.max}
+          />
+        </>
+      ) : null}
+      <input
+        type="checkbox"
+        className="column_7 random_checkbox"
+        id="hueRandom"
+        name="hueRandom"
+        value="hueRandom"
+        onChange={handleCheck}
+      />
+      <div className="show-btn-div column_1_7">
+        <button className="btn btn_save" onClick={test}>
+          {" "}
+          Test
+        </button>
+        <button className="btn btn_save" onClick={save}>
+          {" "}
+          Save
+        </button>
+        <button className="btn btn_cancel" onClick={cancel}>
+          {" "}
+          Cancel
+        </button>
+      </div>
     </div>
   );
 };

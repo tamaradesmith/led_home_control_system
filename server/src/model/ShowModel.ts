@@ -46,6 +46,17 @@ const getRandomShow = async (id: number) => {
   return cue;
 };
 
+const getTypeName = async (typeId) => {
+  const types = await knex("showTypes").select("*");
+  let name: string = "";
+  types.forEach((type) => {
+    if (type.id === typeId) {
+      name = type.type;
+    }
+  });
+  return name;
+};
+
 const ShowModel = {
   async getAll() {
     try {
@@ -88,8 +99,18 @@ const ShowModel = {
     try {
       const newShow = await knex("shows").insert(show).returning("id");
       if (cue) {
+        const type = await getTypeName(show.type_id);
         cue.show_id = newShow[0];
-        const newCue = await PatternModel.create(cue);
+        let newCue;
+        switch (type) {
+          case "pattern":
+            newCue = await PatternModel.create(cue);
+            break;
+          case "random":
+            newCue = await RandomModel.create(cue);
+          default:
+            break;
+        }
       }
       return newShow;
     } catch (error) {
@@ -188,7 +209,6 @@ const ShowModel = {
     if (!show.name || show.name.length < 1) {
       valid = false;
     }
-
     if (!show.type_id || show.type_id < 1) {
       if (!update) {
         valid = false;
@@ -198,10 +218,20 @@ const ShowModel = {
   },
 
   async testShow(displayId, show) {
-    const colours = await getColours(show.colours, []);
     const display = await DisplayModel.getOne(displayId);
-    show.colours = colours;
-    const play = await LedController.playShow(display[0], show);
+    switch (show.type) {
+      case "pattern":
+        const colours = await getColours(show.colours, []);
+        show.colours = colours;
+        const play = await LedController.playShow(display[0], show);
+        break;
+      case "random":
+        await LedController.playShowRadom(display[0], show);
+        break;
+      default:
+        return "missing show type";
+        break;
+    }
   },
 };
 

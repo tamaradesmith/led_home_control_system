@@ -11,13 +11,8 @@ export async function up(knex: Knex): Promise<void> {
       t.boolean("wait_random").defaultTo(false);
       t.integer("hue_min").defaultTo(0);
       t.integer("hue_max").defaultTo(360);
-       t.integer('hue').defaultTo(-1)
-      t.integer("saturation_min").defaultTo(0);
-      t.integer("saturation_max").defaultTo(100);
-      t.integer("saturation").defaultTo(-1);
-      t.integer("lightness_max").defaultTo(100);
-      t.integer("lightness_min").defaultTo(0);
-      t.integer("lightness").defaultTo(-1);
+      t.integer("saturation").defaultTo(100);
+      t.integer("lightness").defaultTo(50);
       t.bigInteger("show_id");
       t.foreign("show_id").references("shows.id").onDelete("CASCADE");
     }

@@ -1,12 +1,9 @@
-// import { setInterval } from "timers";
-
-// var knex = require("../../db/client");
-
 const axios = require("axios");
 
 const waitTime = {};
 
 export const LedController = {
+  // TEXT COLOUR
   async ledsOneColour(display, colour) {
     let result = "";
     for (let i = 0; display.led_number > i; i++) {
@@ -18,6 +15,10 @@ export const LedController = {
       `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/allhsl/${result}`
     );
   },
+
+  // TEST AND PLAY SHOW
+
+  // Pattern
   async playShow(display, cue) {
     if (waitTime[display.name] !== undefined) {
       clearInterval(waitTime[display.name]);
@@ -35,8 +36,26 @@ export const LedController = {
       cue.colours.push(colourholder);
     }, (cue.wait_time + cue.fade) * 1000);
   },
+
+  // Random
+  async playShowRadom(display, cue) {
+    if (waitTime[display.name] !== undefined) {
+      clearInterval(waitTime[display.name]);
+    }
+    waitTime[display.name] = setInterval(() => {
+      const string = createURLStringRandom(display.led_number, cue);
+      try {
+        axios.post(
+          `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${string}`
+        );
+      } catch (error) {
+        return error;
+      }
+    }, (randomWait(cue.wait_time, cue.wait_random) + cue.fade) * 1000);
+  },
 };
-const createURLString = (ledsCount, cue) => {
+
+const createURLString = (ledsCount: number, cue) => {
   let count = 0;
   let urlString = "";
   for (let i = 0; i < ledsCount; i++) {
@@ -51,4 +70,26 @@ const createURLString = (ledsCount, cue) => {
     }
   }
   return urlString;
+};
+
+const createURLStringRandom = (ledsCount: number, cue) => {
+  let urlString = "";
+  for (let i = 0; i < ledsCount; i++) {
+    let hue = Math.round(Math.random() * cue.hue_max);
+    while (hue < cue.hue_min) {
+      hue = Math.round(Math.random() * cue.hue_max);
+    }
+    let fade = cue.fade;
+    if (cue.fade_random) {
+      fade = Math.round(Math.random() * cue.fade);
+    }
+    urlString += `${fade},${hue},${cue.saturation / 100},${
+      cue.lightness / 100
+    },`;
+  }
+  return urlString;
+};
+
+const randomWait = (max: number, random) => {
+  return random ? Math.round(Math.random() * max) : max;
 };

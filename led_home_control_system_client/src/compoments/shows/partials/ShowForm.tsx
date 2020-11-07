@@ -67,7 +67,7 @@ const ShowForm = (props: Props) => {
   // Show info
 
   const [showName, setShowName] = useState("");
-  const [selectedType, setSelectedType] = useState({ type: "random", id: -1 });
+  const [selectedType, setSelectedType] = useState({ type: "", id: -1 });
   const [display, setDisplay] = useState(0);
   const [testDisplay, setTestDisplay] = useState(0);
   const [testDisplaySelected, setTestDisplaySelected] = useState(false);
@@ -77,7 +77,6 @@ const ShowForm = (props: Props) => {
 
   const getShowTypes = async () => {
     const types = await ShowQuery.getShowTypes();
-    console.log("getShowTypes -> types", types);
     setShowTypes(types);
   };
 
@@ -90,10 +89,6 @@ const ShowForm = (props: Props) => {
     const type = (document.querySelector("#type") as HTMLInputElement).value;
     if (type !== "-1") {
       setSelectedType(showTypes[parseInt(type)]);
-      console.log(
-        "handleType -> showTypes[parseInt(type)]",
-        showTypes[parseInt(type)]
-      );
     } else {
       setSelectedType({ type: "", id: -1 });
     }
@@ -150,6 +145,7 @@ const ShowForm = (props: Props) => {
   };
 
   const handleTest = (showInfo: Show) => {
+    showInfo.type = selectedType.type
     if (!testDisplaySelected) {
       alert("select a test display");
     } else {
@@ -172,7 +168,6 @@ const ShowForm = (props: Props) => {
         }
       });
     }
-    // console.log("getdefaultType -> defaultType", defaultType);
     return defaultType;
   };
 
@@ -271,9 +266,6 @@ const ShowForm = (props: Props) => {
           <option
             key={type.id}
             value={index}
-            // defaultValue={
-            // editShow ? (type.type === editShow.type ? true : false) : false
-            // }
           >
             {type.type}
           </option>
@@ -296,9 +288,9 @@ const ShowForm = (props: Props) => {
         {selectedType.type === "random" ? (
           <RandomShow
           // colours={colourList}
-          // handleSave={handleSave}
-          // handleTest={handleTest}
-          // cancel={cancel}
+          handleSave={handleSave}
+          handleTest={handleTest}
+          cancel={cancel}
           // editPattern={editPattern}
           />
         ) : null}
