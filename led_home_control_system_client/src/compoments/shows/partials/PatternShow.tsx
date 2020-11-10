@@ -109,12 +109,15 @@ const PatternShow = (props: Props) => {
         "#colourMessage"
       ) as HTMLInputElement;
       message.innerText = "please pick two or more colours";
+      return false;
     }
   };
 
   const test = () => {
     const showInfo = getCueInfo();
-    handleTest(showInfo);
+    if (showInfo !== false) {
+      handleTest(showInfo);
+    }
   };
 
   const save = () => {

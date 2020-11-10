@@ -12,7 +12,6 @@ export const RandomModel = {
     return cue[0];
   },
   async create(cue) {
-    console.log("create -> cue", cue);
     return await knex("randomShows").insert([cue]).returning("*");
   },
   async update(cue) {

@@ -145,7 +145,13 @@ const ShowForm = (props: Props) => {
   };
 
   const handleTest = (showInfo: Show) => {
-    showInfo.type = selectedType.type
+    if (selectedType){
+      showInfo.type = selectedType.type
+      
+    } else {
+      alert("select a test type");
+
+    }
     if (!testDisplaySelected) {
       alert("select a test display");
     } else {
@@ -183,6 +189,11 @@ const ShowForm = (props: Props) => {
       setTestDisplay(editShow.display_id ? editShow.display_id : 0);
       setTestDisplaySelected(editShow.display_id ? true : false);
       setEditPattern(editShow ? editShow.cue : undefined);
+      showTypes.forEach(type =>{
+        if (editShow.type === type.type){
+          setSelectedType(type)
+        }
+      })
     }
   }, [editShow]);
 

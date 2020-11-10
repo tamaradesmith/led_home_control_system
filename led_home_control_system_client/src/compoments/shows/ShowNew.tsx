@@ -29,9 +29,9 @@ const ShowNew = () => {
 
   const handleSave = async (show: Show, cue: Cue) => {
     const res = await ShowQuery.create(show, cue);
-    console.log("handleSave -> res", res);
     if (typeof parseInt(res.id) === "number") {
-      history.push(`/shows/${res.id}`);
+      history.push(`/shows/${res.id
+      }`);
     } else {
       const message = document.querySelector<HTMLElement>(
         "#errorMessage"

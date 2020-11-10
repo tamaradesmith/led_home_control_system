@@ -30,6 +30,7 @@ export const LedController = {
           `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${string}`
         );
       } catch (error) {
+        error.log("playShow -> error", error);
         return error;
       }
       const colourholder = cue.colours.shift();
@@ -49,6 +50,7 @@ export const LedController = {
           `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${string}`
         );
       } catch (error) {
+        error.log("playShowRadom -> error", error);
         return error;
       }
     }, (randomWait(cue.wait_time, cue.wait_random) + cue.fade) * 1000);

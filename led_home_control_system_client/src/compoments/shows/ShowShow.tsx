@@ -2,11 +2,16 @@ import React, { useState, useEffect } from "react";
 import { match, useHistory } from "react-router-dom";
 import { ShowQuery } from "../../js/request";
 
+import PatternShowDetails from "./partials/PatternShowDetails";
+import RandomShow from "./partials/RandomShow";
+import RandomShowDetails from "./partials/RandomShowDetails";
+
 interface Show {
   name: string;
   type_id: number;
   display_id?: number;
-  cue: {};
+  cue: PatternCue | RandomCue;
+  type: string;
 }
 
 interface Colour {
@@ -17,14 +22,29 @@ interface Colour {
   id?: number;
 }
 
-interface Cue {
+interface PatternCue {
   id?: number;
   show_id?: number;
   wait_time: number;
-  pattern_length: number;
+  pattern_length?: number;
   group_length: number;
   fade: number;
-  colour: [];
+  colours: Colour[] | [];
+  type?: string;
+}
+
+interface RandomCue {
+  id?: number;
+  show_id?: number;
+  wait_time: number;
+  wait_random: boolean;
+  fade: number;
+  fade_random: boolean;
+  hue_max: number;
+  hue_min: number;
+  lightness: number;
+  saturation: number;
+  type?: string;
 }
 
 interface ShowParams {
@@ -54,14 +74,18 @@ const ShowShow = (props: Props) => {
     group_length: 0,
   });
 
+
   const [deleteDiv, setDeleteDiv] = useState(true);
 
   const getShow = async () => {
     const savedShow = await ShowQuery.getOne(parseInt(match.params.id));
+    const showCue = savedShow.cue;
+    showCue.type = savedShow.type;
     setShow(savedShow);
-    setCue(savedShow.cue);
+    setCue(showCue);
   };
 
+ 
   const editShow = () => {
     history.push(`/shows/${show.id}/edit`);
   };
@@ -86,6 +110,13 @@ const ShowShow = (props: Props) => {
     }
   };
 
+  const instanceOfRandomCue = (object: any): object is RandomCue => {
+    return object.type === "random";
+  };
+  const instanceOfPatternCue = (object: any): object is PatternCue => {
+    return object.type === "pattern";
+  };
+
   useEffect(() => {
     getShow();
   }, []);
@@ -99,28 +130,14 @@ const ShowShow = (props: Props) => {
           {" "}
           display: {show.display_id === null ? "General" : show.display_id}
         </p>
-        <div className="show-cue-div">
+        <div >
           <h4 className="column_1_5 header-secondary"> Cue</h4>
-          <div className="colours-selected-div column_1_5">
-            <p> colour: </p>
-            {cue ? (
-              <>
-                {cue.colours.map((colour: Colour, index) => (
-                  <div
-                    key={index}
-                    className="swatch-square"
-                    style={{
-                      background: `hsl(${colour.hue}, ${colour.saturation}%, ${colour.lightness}%)`,
-                    }}
-                  ></div>
-                ))}
-              </>
-            ) : null}
-          </div>
-          <p> fade time: {cue.fade} seconds</p>
-          <p>wait time: {cue.wait_time} seconds</p>
-          <p>group size: {cue.group_length} </p>
+
+          {instanceOfPatternCue(cue) ? <PatternShowDetails cue={cue} /> : null}
+
+          {instanceOfRandomCue(cue) ? <RandomShowDetails cue={cue} /> : null}
         </div>
+
         <div className="btn-div">
           <button onClick={editShow} className="btn btn_save">
             Edit

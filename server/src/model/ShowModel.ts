@@ -34,7 +34,7 @@ const getColours = async (coloursId, coloursInfo) => {
 const getPatternShow = async (id: number) => {
   const cue = await PatternModel.getOne(id);
   let colours: Colour;
-  if (cue.length > 0) {
+  if (cue.colours) {
     colours = await getColours(cue.colours, []);
     cue.colours = colours;
   }

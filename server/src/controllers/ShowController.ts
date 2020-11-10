@@ -77,7 +77,6 @@ ShowController.post(
     if (validShow === true) {
       try {
         const show = await ShowModel.create(newShow, cue);
-        console.log("show", show);
         res.status(200).send({ id: show[0] });
       } catch (error) {
         next(error);
