@@ -35,6 +35,18 @@ const randomShow = {
   wait_time: 4,
 };
 
+const cueShow = {
+  show_id: 5,
+  time_code: 5,
+  cue_id: 26,
+  leds: [
+    { led_number: 1, fade: 4, colour_id: 3 },
+    { led_number: 2, fade: 2, colour_id: 1 },
+    { led_number: 3, fade: 1, colour_id: 3 },
+    { led_number: 5, fade: 6, colour_id: 2 },
+  ],
+};
+
 beforeEach(function (done) {
   knex.migrate.rollback().then(function () {
     knex.migrate.latest().then(function () {
@@ -219,13 +231,8 @@ describe("RANDOM SHOWS", () => {
     expect(res.body).toHaveProperty("wait_random", false);
     expect(res.body).toHaveProperty("hue_min", 0);
     expect(res.body).toHaveProperty("hue_max", 360);
-    expect(res.body).toHaveProperty("hue", -1);
-    expect(res.body).toHaveProperty("saturation_min", 0);
-    expect(res.body).toHaveProperty("saturation_max", 100);
-    expect(res.body).toHaveProperty("lightness_min", 0);
-    expect(res.body).toHaveProperty("lightness_max", 100);
-    expect(res.body).toHaveProperty("saturation", -1);
-    expect(res.body).toHaveProperty("lightness", -1);
+    expect(res.body).toHaveProperty("saturation", 100);
+    expect(res.body).toHaveProperty("lightness", 50);
     expect(res.body).toHaveProperty("show_id", "9");
   });
   it("Should Create random cue", async () => {
@@ -249,4 +256,44 @@ describe("RANDOM SHOWS", () => {
     expect(res.body).toHaveProperty("wait_time", 10);
     expect(res.body).toHaveProperty("show_id", "9");
   });
+});
+
+describe("CUE SHOWS", () => {
+  it("should get One Cue Shows", async () => {
+    const res = await request(app).get("/shows/5");
+    expect(200);
+    expect(res.body).toHaveProperty("name", "cue 2");
+    expect(res.body).toHaveProperty("type", "cue");
+    expect(res.body).toHaveProperty("cue");
+    expect(res.body.cue).toHaveLength(4);
+    expect(res.body.cue[0]).toHaveProperty("time_code", 0);
+    expect(res.body.cue[1]).toHaveProperty("time_code", 2);
+    expect(res.body.cue[0]).toHaveProperty("show_id", "5");
+  });
+  it("should have cue listing all led on that cue", async () => {
+    const res = await request(app).get("/shows/5");
+    const leds = res.body.cue[0].leds;
+    expect(200);
+    expect(res.body).toHaveProperty("name", "cue 2");
+    expect(leds).toHaveLength(4);
+    expect(leds[0]).toHaveProperty("fade", 0);
+    expect(leds[1]).toHaveProperty("led_number", 2);
+    expect(leds[3]).toHaveProperty("cue_id", 1);
+  });
+   it("should have  leds should have colour info", async () => {
+     const res = await request(app).get("/shows/5");
+     const led = res.body.cue[0].leds[0].colour;
+     expect(200);
+     expect(res.body).toHaveProperty("name", "cue 2");
+     expect(led).toHaveProperty("hue", 360);
+     expect(led).toHaveProperty("saturation", 70);
+     expect(led).toHaveProperty("lightness", 100);
+     expect(led).toHaveProperty("id", '1');
+   });
+   it('should create a new cue for cue Show', async()=>{
+     
+    const res = await request(app).post("/shows/5/cue").send({ cue: cueShow });
+    expect(200);
+    expect(res.text).toBe( "26");
+   })
 });

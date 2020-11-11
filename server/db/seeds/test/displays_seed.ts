@@ -60,10 +60,6 @@ export async function seed(knex: Knex): Promise<void> {
       show_id: 4,
       hue_max: 200,
       hue_min: 100,
-      saturation_min: 60,
-      saturation_max: 90,
-      lightness_min: 20,
-      lightness_max: 40,
       fade: 3,
       wait_time: 3,
     },
@@ -78,4 +74,35 @@ export async function seed(knex: Knex): Promise<void> {
       wait_time: 3,
     },
   ]);
+  try {
+    
+    await knex("cueShows").insert([
+      { show_id: 5, time_code: 0 },
+      { show_id: 5, time_code: 2 },
+      { show_id: 5, time_code: 6 },
+      { show_id: 5, time_code: 7 },
+    ]);
+  } catch (error) {
+  console.log("error", error);
+    
+  }
+try {
+  
+  await knex("cueLeds").insert([
+    { cue_id: 1, fade: 0, led_number: 1, colour_id: 1 },
+    { cue_id: 1, fade: 1, led_number: 2, colour_id: 1 },
+    { cue_id: 1, fade: 2, led_number: 3, colour_id: 2 },
+    { cue_id: 1, fade: 3, led_number: 4, colour_id: 3 },
+    { cue_id: 2, fade: 0, led_number: 1, colour_id: 1 },
+    { cue_id: 2, fade: 3, led_number: 4, colour_id: 3 },
+    { cue_id: 2, fade: 2, led_number: 3, colour_id: 2 },
+    { cue_id: 3, fade: 3, led_number: 4, colour_id: 3 },
+    { cue_id: 3, fade: 1, led_number: 2, colour_id: 1 },
+    { cue_id: 4, fade: 1, led_number: 2, colour_id: 1 },
+    { cue_id: 4, fade: 0, led_number: 1, colour_id: 1 },
+  ]);
+} catch (error) {
+console.log("error", error);
+  
+}
 }

@@ -5,6 +5,7 @@ var knex = require("../../db/client");
 import { PatternModel } from "./PatternModel";
 import { DisplayModel } from "./DisplayModel";
 import { RandomModel } from "./RandomModel";
+import { CueModel } from "./CueModel";
 
 interface Colour {
   name: string;
@@ -46,6 +47,11 @@ const getRandomShow = async (id: number) => {
   return cue;
 };
 
+const getcueShow = async (id: number) => {
+  const cues = await CueModel.getOneshows(id);
+  return cues;
+};
+
 const getTypeName = async (typeId) => {
   const types = await knex("showTypes").select("*");
   let name: string = "";
@@ -83,6 +89,9 @@ const ShowModel = {
             break;
           case "random":
             cue = await getRandomShow(id);
+          case "cue":
+            cue = await getcueShow(id);
+
           default:
             break;
         }
@@ -170,11 +179,16 @@ const ShowModel = {
         break;
       case "random":
         savedCue = await RandomModel.create(cue);
+        break;
+      case "cue":
+        savedCue = await CueModel.create(cue);
+        break;
       default:
         break;
     }
     return savedCue;
   },
+
   async updateCue(cue) {
     const show = await this.getOne(cue.show_id);
     let updatedCue;
