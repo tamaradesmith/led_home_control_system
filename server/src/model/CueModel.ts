@@ -1,5 +1,13 @@
 var knex = require("../../db/client");
 
+interface Led {
+  id?: number;
+  colour_id: number;
+  led_number: number;
+  fade: number;
+  cue_id: number;
+}
+
 const getCuesLeds = async (cues, cuesAndLeds) => {
   const cue = cues.shift();
   if (cues.length > 0) {
@@ -43,6 +51,23 @@ const saveLeds = async (cueId, leds) => {
   return ledSaved;
 };
 
+const updateLeds = async (leds) => {
+  const led = leds.shift();
+  try {
+    const updated = knex("cueLeds")
+      .where({ id: led.id })
+      .update(led)
+      .returning("id");
+  } catch (error) {
+    console.log("updateLeds -> error", error);
+  }
+  if (leds.length > 0) {
+    return updateLeds(leds);
+  } else {
+    return "finished";
+  }
+};
+
 export const CueModel = {
   async getOneshows(showId) {
     if (!showId) {
@@ -66,5 +91,25 @@ export const CueModel = {
       .returning("id");
     await saveLeds(savedcue[0], cue.leds);
     return savedcue;
+  },
+  async update(cues) {
+    let leds;
+    const toUpdate = cues.map(
+      (cue: {
+        id: number;
+        time_code: number;
+        show_id: number;
+        leds: Led[];
+      }) => {
+        leds = cue.leds;
+        return { id: cue.id, time_code: cue.time_code, show_id: cue.show_id };
+      }
+    );
+    const updatedCue = await knex("cueShows")
+      .where({ id: toUpdate[0].id })
+      .update(toUpdate[0])
+      .returning("*");
+    const updatedLeds =await updateLeds(leds);
+    return updatedCue;
   },
 };

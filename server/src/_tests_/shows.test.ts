@@ -47,6 +47,34 @@ const cueShow = {
   ],
 };
 
+const newCueShow = {
+  id: 25,
+  name: "new cue show",
+  type: "cue",
+  type_id: 2,
+  cue: [
+    {
+      time_code: 4,
+      leds: [
+        { led_number: 1, fade: 4, colour_id: 3 },
+        { led_number: 2, fade: 2, colour_id: 1 },
+        { led_number: 3, fade: 1, colour_id: 3 },
+        { led_number: 5, fade: 6, colour_id: 2 },
+      ],
+    },
+  ],
+};
+
+const newCue = {
+  time_code: 4,
+  leds: [
+    { led_number: 1, fade: 4, colour_id: 3 },
+    { led_number: 2, fade: 2, colour_id: 1 },
+    { led_number: 3, fade: 1, colour_id: 3 },
+    { led_number: 5, fade: 6, colour_id: 2 },
+  ],
+};
+
 beforeEach(function (done) {
   knex.migrate.rollback().then(function () {
     knex.migrate.latest().then(function () {
@@ -280,20 +308,53 @@ describe("CUE SHOWS", () => {
     expect(leds[1]).toHaveProperty("led_number", 2);
     expect(leds[3]).toHaveProperty("cue_id", 1);
   });
-   it("should have  leds should have colour info", async () => {
-     const res = await request(app).get("/shows/5");
-     const led = res.body.cue[0].leds[0].colour;
-     expect(200);
-     expect(res.body).toHaveProperty("name", "cue 2");
-     expect(led).toHaveProperty("hue", 360);
-     expect(led).toHaveProperty("saturation", 70);
-     expect(led).toHaveProperty("lightness", 100);
-     expect(led).toHaveProperty("id", '1');
-   });
-   it('should create a new cue for cue Show', async()=>{
-     
+  it("should have  leds should have colour info", async () => {
+    const res = await request(app).get("/shows/5");
+    const led = res.body.cue[0].leds[0].colour;
+    expect(200);
+    expect(res.body).toHaveProperty("name", "cue 2");
+    expect(led).toHaveProperty("hue", 360);
+    expect(led).toHaveProperty("saturation", 70);
+    expect(led).toHaveProperty("lightness", 100);
+    expect(led).toHaveProperty("id", "1");
+  });
+  it("should create a new cue for cue Show", async () => {
     const res = await request(app).post("/shows/5/cue").send({ cue: cueShow });
     expect(200);
-    expect(res.text).toBe( "26");
-   })
+    expect(res.text).toBe("26");
+  });
+  it("show create a new show with one cue", async () => {
+    const createShow = await request(app)
+      .post("/shows")
+      .send({ show: newCueShow, cue: newCue });
+    const res = await request(app).get(`/shows/${createShow.body.id}`);
+    const cue = res.body.cue;
+    expect(200);
+    expect(res.body).toHaveProperty("id", "25");
+    expect(res.body).toHaveProperty("name", "new cue show");
+    expect(cue).toHaveLength(1);
+    expect(cue[0]).toHaveProperty("time_code", 4);
+    expect(cue[0]).toHaveProperty("leds");
+    expect(cue[0].leds[0]).toHaveProperty("colour_id", 3);
+    expect(cue[0].leds[0]).toHaveProperty("cue_id");
+    expect(cue[0].leds[0]).toHaveProperty("fade", 4);
+    expect(cue[0].leds[0]).toHaveProperty("led_number", 1);
+  });
+  it("should update an execting cue show Cue", async () => {
+    const exectingShow = await request(app).get("/shows/7");
+    const cue = exectingShow.body;
+    cue.cue[0].time_code = 5;
+    cue.cue[0].leds[0] = {
+      id: "12",
+      fade: 4,
+      led_number: 1,
+      colour_id: 1,
+      cue_id: 5,
+    };
+    const res = await request(app)
+      .patch("/shows/7")
+      .send({ show: cue, cue: cue.cue });
+    expect(200);
+    expect(res.body).toHaveProperty("id", '7');
+  });
 });

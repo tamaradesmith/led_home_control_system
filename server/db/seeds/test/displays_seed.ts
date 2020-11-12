@@ -81,6 +81,7 @@ export async function seed(knex: Knex): Promise<void> {
       { show_id: 5, time_code: 2 },
       { show_id: 5, time_code: 6 },
       { show_id: 5, time_code: 7 },
+      { show_id: 7, time_code: 7 },
     ]);
   } catch (error) {
   console.log("error", error);
@@ -100,6 +101,7 @@ try {
     { cue_id: 3, fade: 1, led_number: 2, colour_id: 1 },
     { cue_id: 4, fade: 1, led_number: 2, colour_id: 1 },
     { cue_id: 4, fade: 0, led_number: 1, colour_id: 1 },
+    { cue_id: 5, fade: 0, led_number: 1, colour_id: 3 },
   ]);
 } catch (error) {
 console.log("error", error);

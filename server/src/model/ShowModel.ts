@@ -56,11 +56,66 @@ const getTypeName = async (typeId) => {
   const types = await knex("showTypes").select("*");
   let name: string = "";
   types.forEach((type) => {
-    if (type.id === typeId) {
+    if (parseInt(type.id) === typeId) {
       name = type.type;
     }
   });
   return name;
+};
+
+const validCueShow = (show) => {
+  if (show.type) {
+    delete show.type;
+  }
+  let valid = true;
+  const validParam = ["name", "type_id", "id", "cue"];
+  const validCueParams = ["time_code", "leds", "show_id"];
+  const validLedParams = ["colour_id", "fade", "led_number", "cue_id"];
+  if (show.type) {
+    delete show.type;
+  }
+  const keys = Object.keys(show);
+  keys.forEach((key) => {
+    if (!validParam.includes(key) && key !== "display_id") {
+      valid = false;
+    }
+  });
+  if (!show.name || show.name.length < 1) {
+    valid = false;
+  }
+
+  if (!show.type_id || show.type_id < 1) {
+    valid = false;
+  }
+  if (show.cue) {
+    const keysCue = Object.keys(show.cue[0]);
+    const cue = show.cue[0];
+
+    keysCue.forEach((key) => {
+      if (!validCueParams.includes(key) && key !== "id") {
+        valid = false;
+      }
+
+      if (cue.time_code < 0 || typeof cue.time_code !== "number") {
+        valid = false;
+      }
+      const keysCueLed = Object.keys(show.cue[0].leds[0]);
+      keysCueLed.forEach((key) => {
+        if (!validLedParams.includes(key) && key !== "id") {
+          valid = false;
+        }
+        if (typeof cue.leds[0][key] !== "number" && key !== "id") {
+          valid = false;
+        }
+        if (cue.leds[key] < 0 && key !== "fade") {
+          valid = false;
+        }
+      });
+    });
+  } else {
+    valid = false;
+  }
+  return valid;
 };
 
 const ShowModel = {
@@ -78,7 +133,7 @@ const ShowModel = {
   async getOne(id: number) {
     try {
       const show = await knex("shows")
-        .select("shows.name", "shows.display_id", "type", "shows.id")
+        .select("shows.name", "shows.display_id", "type", "shows.id", "type_id")
         .where("shows.id", id)
         .join("showTypes", "showTypes.id", "type_id");
       if (show.length !== 0) {
@@ -105,6 +160,12 @@ const ShowModel = {
     }
   },
   async create(show, cue) {
+    if (show.type) {
+      delete show.type;
+    }
+    if (show.cue) {
+      delete show.cue;
+    }
     try {
       const newShow = await knex("shows").insert(show).returning("id");
       if (cue) {
@@ -117,6 +178,10 @@ const ShowModel = {
             break;
           case "random":
             newCue = await RandomModel.create(cue);
+            break;
+          case "cue":
+            newCue = await CueModel.create(cue);
+            break;
           default:
             break;
         }
@@ -126,7 +191,7 @@ const ShowModel = {
       return error;
     }
   },
-  async update(id, show, cue) {
+  async update(id, show, cue, type) {
     if (show.cue) {
       delete show.cue;
     }
@@ -135,7 +200,23 @@ const ShowModel = {
       .update(show)
       .returning("id");
     if (cue) {
-      await PatternModel.update(cue);
+      switch (type) {
+        case "pattern":
+          await PatternModel.update(cue);
+          break;
+
+        case "random":
+          await RandomModel.update(cue);
+          break;
+
+        case "cue":
+    
+          await CueModel.update(cue);
+          break;
+
+        default:
+          break;
+      }
     }
     return updateShow;
   },
@@ -207,25 +288,29 @@ const ShowModel = {
   // VALIDS
   validShow(show, update) {
     let valid = true;
-    if (show.type) {
-      delete show.type;
-    }
-    if (show.cue) {
-      delete show.cue;
-    }
-    const validParam = ["name", "display_id", "id", "type_id"];
-    const keys = Object.keys(show);
-    keys.forEach((key) => {
-      if (!validParam.includes(key)) {
+    if (show.type === "cue") {
+      valid = validCueShow(show);
+    } else {
+      if (show.type) {
+        delete show.type;
+      }
+      if (show.cue) {
+        delete show.cue;
+      }
+      const validParam = ["name", "display_id", "id", "type_id"];
+      const keys = Object.keys(show);
+      keys.forEach((key) => {
+        if (!validParam.includes(key)) {
+          valid = false;
+        }
+      });
+      if (!show.name || show.name.length < 1) {
         valid = false;
       }
-    });
-    if (!show.name || show.name.length < 1) {
-      valid = false;
-    }
-    if (!show.type_id || show.type_id < 1) {
-      if (!update) {
-        valid = false;
+      if (!show.type_id || show.type_id < 1) {
+        if (!update) {
+          valid = false;
+        }
       }
     }
     return valid ? valid : new Error("Invalid entry");
