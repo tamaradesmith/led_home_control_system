@@ -39,7 +39,7 @@ export const LedController = {
   },
 
   // Random
-  async playShowRadom(display, cue) {
+  async playShowRandom(display, cue) {
     if (waitTime[display.name] !== undefined) {
       clearInterval(waitTime[display.name]);
     }
@@ -54,6 +54,27 @@ export const LedController = {
         return error;
       }
     }, (randomWait(cue.wait_time, cue.wait_random) + cue.fade) * 1000);
+  },
+
+  async testCue(display, cue) {
+    if (waitTime[display.name] !== undefined) {
+      clearInterval(waitTime[display.name]);
+    }
+    await this.ledsOneColour(display, {
+      hue: 0,
+      saturation: 100,
+      lightness: 0,
+    });
+
+    const urlstring = createURLStringCue(display.led_number, cue.leds);
+    try {
+      axios.post(
+        `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlstring}`
+      );
+    } catch (error) {
+      error.log("playShowRadom -> error", error);
+      return error;
+    }
   },
 };
 
@@ -94,4 +115,19 @@ const createURLStringRandom = (ledsCount: number, cue) => {
 
 const randomWait = (max: number, random) => {
   return random ? Math.round(Math.random() * max) : max;
+};
+
+const createURLStringCue = (ledsCount, leds) => {
+  let urlString: string[] = [];
+  for (let i = 0; i < ledsCount; i++) {
+    urlString.push("0,-1,0,0");
+  }
+  leds.forEach((led) => {
+    const colour = led.colour;
+    urlString[led.led_number] = `${led.fade},${colour.hue},${
+      colour.saturation / 100
+    },${colour.lightness}
+    `;
+  });
+  return urlString.join(",");
 };

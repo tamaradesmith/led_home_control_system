@@ -27,11 +27,14 @@ const ShowNew = () => {
     history.push("/shows");
   };
 
-  const handleSave = async (show: Show, cue: Cue) => {
+  const handleSave = async (show: Show, cue: Cue, type: string) => {
     const res = await ShowQuery.create(show, cue);
     if (typeof parseInt(res.id) === "number") {
-      history.push(`/shows/${res.id
-      }`);
+      if (type !== "cue") {
+        history.push(`/shows/${res.id}`);
+      } else {
+        return res.id;
+      }
     } else {
       const message = document.querySelector<HTMLElement>(
         "#errorMessage"

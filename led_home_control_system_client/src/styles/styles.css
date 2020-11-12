@@ -187,7 +187,7 @@ input {
 .column_1_4 {
   grid-column: 1/4;
 }
-.column_1_7{
+.column_1_7 {
   grid-column: 1/7;
 }
 .row5 {
@@ -330,9 +330,12 @@ input {
 }
 .swatch-rec {
   border: 1px solid black;
-  height: 25px;
-  width: 75px;
+  height: 40px;
+  width: 125px;
   margin: 0.25em;
+  text-align: center;
+  color: var(--secondary-colour)
+ /* -webkit-text-stroke: 1px white; */
 }
 .swatch-square {
   border: 1px solid black;
@@ -425,6 +428,44 @@ input {
   display: grid;
   grid-template-columns: auto auto auto auto;
 }
-.random_checkbox{
+.random_checkbox {
   margin-left: 25px;
+}
+/* CUE SHOW */
+
+.led-cue-div {
+  display: flex;
+  flex-wrap: wrap;
+}
+.led-div {
+  width: 100px;
+  border: 1px solid black;
+  color: #451f55;
+  margin: .25em;
+  padding: .25em;
+}
+.led-number {
+  width: 40px;
+}
+.swatch-led{
+   border: 1px solid black;
+  height: 30px;
+  width: 75px;
+  margin: 0.25em auto;
+}
+.cue-colour-list{
+  box-shadow: 0px 0px 5px var(--main-colour);
+  border-radius: 0.5em;
+  background: var(--secondary-colour);
+  padding: 0.25em 0.5em;
+  position: absolute;
+  top: 350px;
+  left: 0;
+  right: 0;
+  margin: auto;
+  width: 500px;
+}
+.cue-swatch-list{
+  display: flex;
+  
 }

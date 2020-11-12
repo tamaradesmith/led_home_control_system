@@ -29,6 +29,7 @@ const ShowList = (props: Props) => {
 
   useEffect(() => {
     setCurrentShow(current ? current : shows[0]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [current]);
 
   return (

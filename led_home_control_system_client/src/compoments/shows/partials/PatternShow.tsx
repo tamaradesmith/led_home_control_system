@@ -147,7 +147,7 @@ const PatternShow = (props: Props) => {
 
   return (
     <div className="PatternShow card-pattern">
-      <h4 className="header-secondary column_1_4">PatternShow</h4>
+      <h4 className="header-secondary column_1_4">Pattern Show</h4>
 
       <label htmlFor="colour" className="column_1">
         {" "}

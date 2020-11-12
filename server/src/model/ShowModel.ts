@@ -146,7 +146,6 @@ const ShowModel = {
             cue = await getRandomShow(id);
           case "cue":
             cue = await getcueShow(id);
-
           default:
             break;
         }
@@ -180,7 +179,12 @@ const ShowModel = {
             newCue = await RandomModel.create(cue);
             break;
           case "cue":
-            newCue = await CueModel.create(cue);
+            try {
+              newCue = await CueModel.create(cue);
+            } catch (error) {
+              return error
+            }
+        
             break;
           default:
             break;
@@ -210,7 +214,6 @@ const ShowModel = {
           break;
 
         case "cue":
-    
           await CueModel.update(cue);
           break;
 
@@ -325,7 +328,10 @@ const ShowModel = {
         const play = await LedController.playShow(display[0], show);
         break;
       case "random":
-        await LedController.playShowRadom(display[0], show);
+        await LedController.playShowRandom(display[0], show);
+        break;
+      case "cue":
+        await LedController.testCue(display[0], show);
         break;
       default:
         return "missing show type";

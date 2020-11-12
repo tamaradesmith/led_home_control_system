@@ -17,7 +17,7 @@ const getCuesLeds = async (cues, cuesAndLeds) => {
     cuesAndLeds.push(cue);
     return await getCuesLeds(cues, cuesAndLeds);
   } else {
-    const leds = await knex("cueLeds").select("*").where({ cue_id: cue.id });
+    const leds = await knex("cueLeds").select("*").where({ cue_show_id: cue.id });
     cue.leds = leds;
     cuesAndLeds.push(cue);
     return cuesAndLeds;
@@ -43,12 +43,22 @@ const getColours = async (leds, LedsWithColours) => {
   }
 };
 
-const saveLeds = async (cueId, leds) => {
-  leds.forEach((led) => {
-    led.cue_id = cueId;
+const saveLeds = async (cueId: number, leds) => {
+  const toSaveLeds = leds.map((led) => {
+    const newLedInfo = {
+      cue_show_id: cueId,
+      led_colour: parseInt(led.colour.id),
+      fade: parseInt(led.fade),
+      led_number: parseInt(led.led_number),
+    };
+    return newLedInfo;
   });
-  const ledSaved = await knex("cueLeds").insert(leds).returning("id");
-  return ledSaved;
+  try {
+    const ledSaved = await knex("cueLeds").insert(toSaveLeds).returning("id");
+    return ledSaved;
+  } catch (error) {
+    return error;
+  }
 };
 
 const updateLeds = async (leds) => {
@@ -59,7 +69,7 @@ const updateLeds = async (leds) => {
       .update(led)
       .returning("id");
   } catch (error) {
-    console.log("updateLeds -> error", error);
+    return error;
   }
   if (leds.length > 0) {
     return updateLeds(leds);
@@ -109,7 +119,7 @@ export const CueModel = {
       .where({ id: toUpdate[0].id })
       .update(toUpdate[0])
       .returning("*");
-    const updatedLeds =await updateLeds(leds);
+    const updatedLeds = await updateLeds(leds);
     return updatedCue;
   },
 };

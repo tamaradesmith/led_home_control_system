@@ -14,21 +14,12 @@ interface Cue {
   type?: string;
 }
 
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-
 interface Props {
   cue: Cue;
 }
 
 const RandomShowDetails = (props: Props) => {
   const { cue } = props;
-  console.log("RandomShowDetails -> cue", cue);
 
   return (
     <div className="RandomShowDetails">

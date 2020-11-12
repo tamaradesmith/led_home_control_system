@@ -75,7 +75,6 @@ export async function seed(knex: Knex): Promise<void> {
     },
   ]);
   try {
-    
     await knex("cueShows").insert([
       { show_id: 5, time_code: 0 },
       { show_id: 5, time_code: 2 },
@@ -84,27 +83,24 @@ export async function seed(knex: Knex): Promise<void> {
       { show_id: 7, time_code: 7 },
     ]);
   } catch (error) {
-  console.log("error", error);
-    
+    return error;
   }
-try {
-  
-  await knex("cueLeds").insert([
-    { cue_id: 1, fade: 0, led_number: 1, colour_id: 1 },
-    { cue_id: 1, fade: 1, led_number: 2, colour_id: 1 },
-    { cue_id: 1, fade: 2, led_number: 3, colour_id: 2 },
-    { cue_id: 1, fade: 3, led_number: 4, colour_id: 3 },
-    { cue_id: 2, fade: 0, led_number: 1, colour_id: 1 },
-    { cue_id: 2, fade: 3, led_number: 4, colour_id: 3 },
-    { cue_id: 2, fade: 2, led_number: 3, colour_id: 2 },
-    { cue_id: 3, fade: 3, led_number: 4, colour_id: 3 },
-    { cue_id: 3, fade: 1, led_number: 2, colour_id: 1 },
-    { cue_id: 4, fade: 1, led_number: 2, colour_id: 1 },
-    { cue_id: 4, fade: 0, led_number: 1, colour_id: 1 },
-    { cue_id: 5, fade: 0, led_number: 1, colour_id: 3 },
-  ]);
-} catch (error) {
-console.log("error", error);
-  
-}
+  try {
+    await knex("cueLeds").insert([
+      { cue_id: 1, fade: 0, led_number: 1, colour_id: 1 },
+      { cue_id: 1, fade: 1, led_number: 2, colour_id: 1 },
+      { cue_id: 1, fade: 2, led_number: 3, colour_id: 2 },
+      { cue_id: 1, fade: 3, led_number: 4, colour_id: 3 },
+      { cue_id: 2, fade: 0, led_number: 1, colour_id: 1 },
+      { cue_id: 2, fade: 3, led_number: 4, colour_id: 3 },
+      { cue_id: 2, fade: 2, led_number: 3, colour_id: 2 },
+      { cue_id: 3, fade: 3, led_number: 4, colour_id: 3 },
+      { cue_id: 3, fade: 1, led_number: 2, colour_id: 1 },
+      { cue_id: 4, fade: 1, led_number: 2, colour_id: 1 },
+      { cue_id: 4, fade: 0, led_number: 1, colour_id: 1 },
+      { cue_id: 5, fade: 0, led_number: 1, colour_id: 3 },
+    ]);
+  } catch (error) {
+    return error;
+  }
 }

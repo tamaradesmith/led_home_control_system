@@ -64,19 +64,19 @@ export const ColourModel = {
       vaild = false;
     }
 
-    if (colour.hue < 0 || colour.hue > 360 || !colour.hue) {
+    if (colour.hue < -0.99 || colour.hue > 360) {
       vaild = false;
     }
 
     if (
-      colour.saturation < 0 ||
+      colour.saturation < -0.99 ||
       colour.saturation > 100 ||
       !colour.saturation
     ) {
       vaild = false;
     }
 
-    if (colour.lightness < 0 || colour.lightness > 100 || !colour.lightness) {
+    if (colour.lightness < -0.99 || colour.lightness > 100) {
       vaild = false;
     }
 

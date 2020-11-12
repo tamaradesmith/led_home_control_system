@@ -3,7 +3,6 @@ import { match, useHistory } from "react-router-dom";
 import { ShowQuery } from "../../js/request";
 
 import PatternShowDetails from "./partials/PatternShowDetails";
-import RandomShow from "./partials/RandomShow";
 import RandomShowDetails from "./partials/RandomShowDetails";
 
 interface Show {
@@ -79,6 +78,7 @@ const ShowShow = (props: Props) => {
 
   const getShow = async () => {
     const savedShow = await ShowQuery.getOne(parseInt(match.params.id));
+    console.log("getShow -> savedShow", savedShow);
     const showCue = savedShow.cue;
     showCue.type = savedShow.type;
     setShow(savedShow);
@@ -119,6 +119,7 @@ const ShowShow = (props: Props) => {
 
   useEffect(() => {
     getShow();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

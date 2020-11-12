@@ -5,6 +5,7 @@ import PatternShow from "./PatternShow";
 import RandomShow from "./RandomShow";
 
 import { ColourQuery, LedQuery, ShowQuery } from "../../../js/request";
+import CueShow from "./CueShow";
 
 interface Type {
   id: number;
@@ -16,7 +17,7 @@ interface Colour {
   hue: number;
   saturation: number;
   lightness: number;
-  id?: number;
+  id: number;
 }
 interface Cue {
   id?: number;
@@ -45,9 +46,10 @@ interface Display {
   name: string;
   ipaddress: string;
   led_number: number;
-  id?: number;
+  id?: number | string;
   default_on?: boolean;
 }
+
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   save: Function;
@@ -67,10 +69,12 @@ const ShowForm = (props: Props) => {
   // Show info
 
   const [showName, setShowName] = useState("");
-  const [selectedType, setSelectedType] = useState({ type: "", id: -1 });
+  const [selectedType, setSelectedType] = useState({ type: "cue", id: 2 });
   const [display, setDisplay] = useState(0);
   const [testDisplay, setTestDisplay] = useState(0);
   const [testDisplaySelected, setTestDisplaySelected] = useState(false);
+
+  const [displayCue, setDisplayCue] = useState<Display | undefined>();
 
   // Edit
   const [editPattern, setEditPattern] = useState<Cue | undefined>();
@@ -108,6 +112,13 @@ const ShowForm = (props: Props) => {
     setDisplay(parseInt(value));
     setTestDisplay(parseInt(value));
     setTestDisplaySelected(true);
+    if (selectedType.type === "cue") {
+      displays.forEach((display) => {
+        if (display.id == parseInt(value)) {
+          setDisplayCue(display);
+        }
+      });
+    }
   };
 
   const handleChange = () => {
@@ -141,16 +152,18 @@ const ShowForm = (props: Props) => {
 
   const handleSave = (cue: {}) => {
     const show = getShowInfo();
-    save(show, cue);
+  
+    const saved = save(show, cue,selectedType.type);
+    return saved;
   };
 
+  const saveCue = () =>{console.log('save cue')}
+
   const handleTest = (showInfo: Show) => {
-    if (selectedType){
-      showInfo.type = selectedType.type
-      
+    if (selectedType) {
+      showInfo.type = selectedType.type;
     } else {
       alert("select a test type");
-
     }
     if (!testDisplaySelected) {
       alert("select a test display");
@@ -189,12 +202,13 @@ const ShowForm = (props: Props) => {
       setTestDisplay(editShow.display_id ? editShow.display_id : 0);
       setTestDisplaySelected(editShow.display_id ? true : false);
       setEditPattern(editShow ? editShow.cue : undefined);
-      showTypes.forEach(type =>{
-        if (editShow.type === type.type){
-          setSelectedType(type)
+      showTypes.forEach((type) => {
+        if (editShow.type === type.type) {
+          setSelectedType(type);
         }
-      })
+      });
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [editShow]);
 
   useEffect(() => {
@@ -202,6 +216,7 @@ const ShowForm = (props: Props) => {
       allDisplays.missingDisplays
     );
     setDisplays(joinDisplays);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [allDisplays]);
 
   return (
@@ -223,44 +238,6 @@ const ShowForm = (props: Props) => {
         {" "}
         Please add name{" "}
       </p>
-      <label htmlFor="display" className="column_1">
-        display:
-      </label>
-      <select
-        name="display"
-        id="display"
-        className="column_2_4"
-        onChange={pickDisplay}
-      >
-        <option value="0">General</option>
-        {displays?.map((display) => (
-          <option key={display.id} value={display.id}>
-            {display.name}
-          </option>
-        ))}
-      </select>
-
-      {display === 0 ? (
-        <>
-          <label htmlFor="testDisplay" className="column_1">
-            Test display:
-          </label>
-          <select
-            name="testDisplay"
-            id="testDisplay"
-            className="column_2_4"
-            onChange={pickTestDisplay}
-          >
-            <option value=""></option>
-
-            {displays?.map((display) => (
-              <option key={display.id} value={display.id}>
-                {display.name}
-              </option>
-            ))}
-          </select>
-        </>
-      ) : null}
 
       <label htmlFor="type" className="column_1">
         Type Of Show
@@ -274,14 +251,57 @@ const ShowForm = (props: Props) => {
       >
         <option value={-1}></option>
         {showTypes.map((type: Type, index) => (
-          <option
-            key={type.id}
-            value={index}
-          >
+          <option key={type.id} value={index}>
             {type.type}
           </option>
         ))}
       </select>
+
+      <label htmlFor="display" className="column_1">
+        display:
+      </label>
+      <select
+        name="display"
+        id="display"
+        className="column_2_4"
+        onChange={pickDisplay}
+      >
+        {selectedType.type === "cue" ? (
+          <option value="-1"></option>
+        ) : (
+          <option value="0">General</option>
+        )}
+        {displays?.map((display) => (
+          <option key={display.id} value={display.id}>
+            {display.name}
+          </option>
+        ))}
+      </select>
+      {selectedType.type !== "cue" ? (
+        <>
+          {display === 0 ? (
+            <>
+              <label htmlFor="testDisplay" className="column_1">
+                Test display:
+              </label>
+              <select
+                name="testDisplay"
+                id="testDisplay"
+                className="column_2_4"
+                onChange={pickTestDisplay}
+              >
+                <option value=""></option>
+
+                {displays?.map((display) => (
+                  <option key={display.id} value={display.id}>
+                    {display.name}
+                  </option>
+                ))}
+              </select>
+            </>
+          ) : null}
+        </>
+      ) : null}
 
       <div className="column_1_5">
         {selectedType.type === "pattern" ? (
@@ -298,11 +318,21 @@ const ShowForm = (props: Props) => {
       <div className="column_1_5">
         {selectedType.type === "random" ? (
           <RandomShow
-          // colours={colourList}
-          handleSave={handleSave}
-          handleTest={handleTest}
-          cancel={cancel}
-          // editPattern={editPattern}
+            handleSave={handleSave}
+            handleTest={handleTest}
+            cancel={cancel}
+          />
+        ) : null}
+      </div>
+      <div className="column_1_5">
+        {selectedType.type === "cue" ? (
+          <CueShow
+            colours={colourList}
+            handleSave={handleSave}
+            handleTest={handleTest}
+            handleSaveCue={saveCue}
+            cancel={cancel}
+            display={displayCue}
           />
         ) : null}
       </div>
