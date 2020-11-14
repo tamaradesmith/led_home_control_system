@@ -1,0 +1,50 @@
+.timeline {
+  width: 95%;
+  height: 25px;
+  border: 1px solid black;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0.5em auto 0;
+  padding: 0.5em;
+}
+.timeline-cue-div {
+  width: 95%;
+  margin: 0 auto .5em;
+  padding:  0 0.5em;
+  /* display: flex; */
+  position: relative;
+}
+.timeline-cue{
+ width: 75px;
+ position: absolute;
+ /* left: 20% */
+}
+.cue-list {
+  display: flex;
+  align-items: center;
+  margin-left: 1.5em;
+}
+.led-swatch {
+  width: 30px;
+  height: 25px;
+  margin: 0.5em;
+  padding: 0.25em;
+  border: 1px solid black;
+}
+.cue-name {
+  font-size: 1.1em;
+  font-weight: 700;
+  margin-top: 0.5em;
+  margin-left: 0.5em;
+}
+.led-label {
+  margin: 0.25;
+  color: white;
+  text-align: center;
+}
+.cue-header {
+  font-size: 1.2em;
+  font-weight: 700;
+  margin: 2em 0 1em;
+}

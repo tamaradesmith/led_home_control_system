@@ -11,16 +11,29 @@ interface Led {
 const getCuesLeds = async (cues, cuesAndLeds) => {
   const cue = cues.shift();
   if (cues.length > 0) {
-    const leds = await knex("cueLeds").select("*").where({ cue_id: cue.id });
+    try {
+      const leds = await knex("cueLeds")
+        .select("*")
+        .where({ cue_show_id: cue.id })
+        .groupBy("led_number", "cueLeds.id")
+        .orderBy("led_number", "cue_show_id", "id", "fade", "led_colour");
+      const ledWithColour = await getColours(leds, []);
+      cue.leds = ledWithColour;
+      cuesAndLeds.push(cue);
+      return await getCuesLeds(cues, cuesAndLeds);
+    } catch (error) {
+      console.log("getCuesLeds -> error", error);
+    }
+  } else {
+    const leds = await knex("cueLeds")
+      .select("*")
+      .where({ cue_show_id: cue.id })
+      .groupBy("led_number", "cueLeds.id")
+      .orderBy("led_number", "cue_show_id", "id", "fade", "led_colour");
     const ledWithColour = await getColours(leds, []);
     cue.leds = ledWithColour;
     cuesAndLeds.push(cue);
-    return await getCuesLeds(cues, cuesAndLeds);
-  } else {
-    const leds = await knex("cueLeds").select("*").where({ cue_show_id: cue.id });
-    cue.leds = leds;
-    cuesAndLeds.push(cue);
-    return cuesAndLeds;
+    return await cuesAndLeds;
   }
 };
 
@@ -29,14 +42,14 @@ const getColours = async (leds, LedsWithColours) => {
   if (leds.length > 0) {
     const info = await knex("colours")
       .select("id", "name", "hue", "saturation", "lightness")
-      .where({ id: led.colour_id });
+      .where({ id: led.led_colour });
     led.colour = info[0];
     LedsWithColours.push(led);
     return await getColours(leds, LedsWithColours);
   } else {
     const info = await knex("colours")
       .select("id", "name", "hue", "saturation", "lightness")
-      .where({ id: led.colour_id });
+      .where({ id: led.led_colour });
     led.colour = info[0];
     LedsWithColours.push(led);
     return await LedsWithColours;
@@ -86,9 +99,11 @@ export const CueModel = {
     try {
       const cues = await knex("cueShows")
         .select("*")
-        .where({ show_id: showId });
-      const leds = await getCuesLeds(cues, []);
-      return leds;
+        .where({ show_id: showId })
+        .groupBy("time_code", "cueShows.id")
+        .orderBy("time_code", "show_id", "id");
+      const cuesAndLeds = await getCuesLeds(cues, []);
+      return cuesAndLeds;
     } catch (error) {
       return error;
     }

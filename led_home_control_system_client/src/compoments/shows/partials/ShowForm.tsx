@@ -152,12 +152,15 @@ const ShowForm = (props: Props) => {
 
   const handleSave = (cue: {}) => {
     const show = getShowInfo();
-  
-    const saved = save(show, cue,selectedType.type);
+
+    const saved = save(show, cue, selectedType.type);
     return saved;
   };
 
-  const saveCue = () =>{console.log('save cue')}
+  const saveCue = async (showId: number, cue: Cue) => {
+    const savedCue = await ShowQuery.createCue(showId, cue);
+    return savedCue;
+  };
 
   const handleTest = (showInfo: Show) => {
     if (selectedType) {

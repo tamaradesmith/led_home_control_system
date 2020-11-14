@@ -2,27 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ShowQuery } from "../../../js/request";
 import ColourCueList from "../../colours/partials/colourCueList";
 
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id: number;
-}
-
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number | string;
-  default_on?: boolean;
-}
-
-interface Led {
-  fade: number;
-  colour: Colour;
-  led_number: number;
-}
+import "../../../styles/cueShowStyles.css";
 
 interface Props {
   colours: Colour[] | undefined;
@@ -62,7 +42,22 @@ const CueShow = (props: Props) => {
   const [colourListVisable, setColourListVisable] = useState(false);
   const [currentLed, setCurrentLed] = useState(noLed);
 
-  const [cueList, setCuelist] = useState([]);
+  const [cueList, setCuelist] = useState([
+    {
+      time_code: -1,
+
+      leds: [
+        {
+          led_number: -1,
+          fade: 0,
+          colour: { lightness: -1, hue: -1, saturation: -1 },
+        },
+      ],
+    },
+  ]);
+
+  const [timeCode, setTimeCode] = useState(0);
+  const [totalTimeCode, setTotalTimeCode] = useState(0);
 
   const changedLedValue = () => {
     const colours: Led[] = [];
@@ -71,7 +66,7 @@ const CueShow = (props: Props) => {
         colours.push(led);
       }
     });
-    return { leds: colours };
+    return { leds: colours, time_code: timeCode + totalTimeCode };
   };
 
   const save = async () => {
@@ -81,14 +76,18 @@ const CueShow = (props: Props) => {
       if (show) {
         setShowId(show);
       } else {
-        console.log(show);
+        console.log(leds);
       }
     } else {
-      handleSaveCue(leds);
+      await handleSaveCue(showId, leds);
+      setTotalTimeCode(timeCode + totalTimeCode);
+      setTimeCode(0);
+      getCues();
     }
   };
 
   const test = () => {
+    
     const leds = changedLedValue();
     handleTest(leds);
   };
@@ -101,6 +100,11 @@ const CueShow = (props: Props) => {
   const handleChangeFade = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = parseInt(event.target.id.slice(5));
     ledsList[id].fade = parseInt(event.target.value);
+  };
+
+  const handleChangeTimeCode = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const value = parseInt(event.target.value);
+    setTimeCode(value);
   };
 
   const selectColour = (colour: Colour) => {
@@ -119,10 +123,23 @@ const CueShow = (props: Props) => {
     setCurrentLed(selectedLed);
   };
 
-  useEffect(() => {
+  const getCues = async () => {
+    const cues = await ShowQuery.getOne(showId);
+    setCuelist(cues.cue);
+    createLedList();
+  };
+
+  const createLedList = () => {
+    setLedList([
+      {
+        led_number: 0,
+        colour: { id: -1, hue: -1, saturation: -1, lightness: -1, name: "" },
+        fade: 0,
+      },
+    ]);
+    let i = 0;
+    const result = [];
     if (display) {
-      let i = 0;
-      const result = [];
       while (i < display.led_number) {
         result.push({
           led_number: i,
@@ -131,20 +148,26 @@ const CueShow = (props: Props) => {
         });
         i++;
       }
-      setLedList(result);
+    }
+    setLedList(result);
+  };
+
+  useEffect(() => {
+    if (display) {
+      createLedList();
     }
   }, [display]);
 
   useEffect(() => {
-    const getCues = async () => {
-      const cues = await ShowQuery.getOne(showId);
-      setCuelist(cues.cues)
-    };
     if (showId !== -1) {
       getCues();
     }
   }, [showId]);
 
+
+  useEffect(()=>{
+    console.log('total time ', totalTimeCode)
+  },[totalTimeCode])
   return (
     <div>
       <div className="CueShow card-pattern">
@@ -153,7 +176,14 @@ const CueShow = (props: Props) => {
         <label htmlFor="time_code" className="column_1">
           Wait Time:{" "}
         </label>
-        <input type="number" id="time_code" min="0" />
+        <input
+          type="number"
+          id="time_code"
+          min="0"
+          value={timeCode}
+          onChange={handleChangeTimeCode}
+        />
+
         <div className="column_1_5 led-cue-div">
           {ledsList.map((led) => (
             <div key={led.led_number} className="led-div">
@@ -181,15 +211,20 @@ const CueShow = (props: Props) => {
                 max="99"
                 className="led-number"
                 onChange={handleChangeFade}
+                value={led.fade}
               />
             </div>
           ))}
         </div>
 
         <div className="show-btn-div column_1_5">
-          <button className="btn btn_save" onClick={test}>
+          <button className="btn-big btn_save" onClick={test}>
             {" "}
-            Test
+            Test Show
+          </button>
+          <button className="btn-big btn_save" onClick={test}>
+            {" "}
+            Test Cue
           </button>
           <button className="btn btn_save" onClick={save}>
             {" "}
@@ -207,6 +242,32 @@ const CueShow = (props: Props) => {
           cancel={cancelColour}
           selectColour={selectColour}
         />
+      </div>
+
+      <div>
+        {cueList[0].time_code !== -1 ? (
+          <>
+            {cueList.map((cue, index) => (
+              <div key={index}>
+                <p className="cue-name">Cue {index + 1}</p>
+                <div className="cue-list">
+                  <p>Wait Time: {cue.time_code}</p>
+                  {cue.leds.map((led, index) => (
+                    <div
+                      key={`${index}-led`}
+                      className="led-swatch"
+                      style={{
+                        background: `hsl(${led.colour.hue}, ${led.colour.saturation}%, ${led.colour.lightness}%)`,
+                      }}
+                    >
+                      <p>{led.led_number}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </>
+        ) : null}
       </div>
     </div>
   );

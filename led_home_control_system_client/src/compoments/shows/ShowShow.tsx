@@ -4,47 +4,7 @@ import { ShowQuery } from "../../js/request";
 
 import PatternShowDetails from "./partials/PatternShowDetails";
 import RandomShowDetails from "./partials/RandomShowDetails";
-
-interface Show {
-  name: string;
-  type_id: number;
-  display_id?: number;
-  cue: PatternCue | RandomCue;
-  type: string;
-}
-
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-
-interface PatternCue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  pattern_length?: number;
-  group_length: number;
-  fade: number;
-  colours: Colour[] | [];
-  type?: string;
-}
-
-interface RandomCue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  wait_random: boolean;
-  fade: number;
-  fade_random: boolean;
-  hue_max: number;
-  hue_min: number;
-  lightness: number;
-  saturation: number;
-  type?: string;
-}
+import CueShowDetails from "./partials/CueShowDetails";
 
 interface ShowParams {
   id: string;
@@ -66,26 +26,87 @@ const ShowShow = (props: Props) => {
     id: 0,
   });
 
-  const [cue, setCue] = useState({
-    colours: [],
+  const [cuePattern, setCuePattern] = useState({
+    id: -1,
+    wait_time: -1,
+    group_length: 1,
     fade: 0,
-    wait_time: 0,
-    group_length: 0,
+    colours: [
+      {
+        name: "",
+        hue: 0,
+        saturation: -1,
+        lightness: -1,
+        id: -1,
+      },
+      {
+        name: "",
+        hue: 0,
+        saturation: -1,
+        lightness: -1,
+        id: -1,
+      },
+    ],
+    show_id: -1,
   });
-
+  const [CueRandom, setCueRandom] = useState({
+    id: -1,
+    wait_time: -1,
+    fade: 0,
+    wait_random: false,
+    fade_random: false,
+    hue_max: 360,
+    hue_min: 0,
+    lightness: 50,
+    saturation: 100,
+    show_id: -1,
+  });
+  const [cueCues, setCueCues] = useState([{
+    id: -1,
+    time_code: -1,
+    show_id: -1,
+    leds: [
+      {
+        id: -1,
+        fade: 0,
+        led_colour: -1,
+        led_number: -1,
+        colour: {
+          name: "", 
+          hue: 0,
+          saturation: -1,
+          lightness: -1,
+          id: -1,
+        },
+      },
+    ],
+  }]);
 
   const [deleteDiv, setDeleteDiv] = useState(true);
 
   const getShow = async () => {
     const savedShow = await ShowQuery.getOne(parseInt(match.params.id));
-    console.log("getShow -> savedShow", savedShow);
     const showCue = savedShow.cue;
     showCue.type = savedShow.type;
+
     setShow(savedShow);
-    setCue(showCue);
+    switch (showCue.type) {
+      case "pattern":
+        setCuePattern(showCue);
+        break;
+      case "random":
+        setCueRandom(showCue);
+        break;
+      case "cue":
+        setCueCues(showCue);
+        break;
+
+      default:
+        break;
+    }
+    // setCue(showCue);
   };
 
- 
   const editShow = () => {
     history.push(`/shows/${show.id}/edit`);
   };
@@ -111,10 +132,13 @@ const ShowShow = (props: Props) => {
   };
 
   const instanceOfRandomCue = (object: any): object is RandomCue => {
-    return object.type === "random";
+    return object === "random";
   };
   const instanceOfPatternCue = (object: any): object is PatternCue => {
-    return object.type === "pattern";
+    return object === "pattern";
+  };
+  const instanceOfCueCue = (object: any): object is CueCue => {
+    return object === "cue";
   };
 
   useEffect(() => {
@@ -131,12 +155,20 @@ const ShowShow = (props: Props) => {
           {" "}
           display: {show.display_id === null ? "General" : show.display_id}
         </p>
-        <div >
+        <div>
           <h4 className="column_1_5 header-secondary"> Cue</h4>
 
-          {instanceOfPatternCue(cue) ? <PatternShowDetails cue={cue} /> : null}
+          {instanceOfPatternCue(show.type) ? (
+            <PatternShowDetails cue={cuePattern} />
+          ) : null}
 
-          {instanceOfRandomCue(cue) ? <RandomShowDetails cue={cue} /> : null}
+          {instanceOfRandomCue(show.type) ? (
+            <RandomShowDetails cue={CueRandom} />
+          ) : null}
+
+          {instanceOfCueCue(show.type) ? (
+            <CueShowDetails cues={cueCues} />
+          ) : null}
         </div>
 
         <div className="btn-div">

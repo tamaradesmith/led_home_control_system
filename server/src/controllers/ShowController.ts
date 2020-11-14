@@ -127,6 +127,7 @@ ShowController.post(
   "/:id/cue",
   async (req: Request, res: Response, next: NextFunction) => {
     const cue = req.body.cue;
+    console.log("cue", cue);
     try {
       const savesCue = await ShowModel.createCue(cue);
       res.status(200).send(savesCue[0]);

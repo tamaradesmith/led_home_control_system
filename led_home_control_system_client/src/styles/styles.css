@@ -57,6 +57,15 @@ input {
   border: 1px solid var(--main-colour);
   font-size: 0.85em;
 }
+.btn-big {
+  padding: 0.25em 0.5em;
+  margin: 0.25em;
+  border-radius: 0.5em;
+  width: 100px;
+  height: 30px;
+  border: 1px solid var(--main-colour);
+  font-size: 0.85em;
+}
 .btn_save {
   background: var(--main-colour);
   color: var(--secondary-colour);
@@ -334,8 +343,8 @@ input {
   width: 125px;
   margin: 0.25em;
   text-align: center;
-  color: var(--secondary-colour)
- /* -webkit-text-stroke: 1px white; */
+  color: var(--secondary-colour);
+  /* -webkit-text-stroke: 1px white; */
 }
 .swatch-square {
   border: 1px solid black;
@@ -441,19 +450,19 @@ input {
   width: 100px;
   border: 1px solid black;
   color: #451f55;
-  margin: .25em;
-  padding: .25em;
+  margin: 0.25em;
+  padding: 0.25em;
 }
 .led-number {
   width: 40px;
 }
-.swatch-led{
-   border: 1px solid black;
+.swatch-led {
+  border: 1px solid black;
   height: 30px;
   width: 75px;
   margin: 0.25em auto;
 }
-.cue-colour-list{
+.cue-colour-list {
   box-shadow: 0px 0px 5px var(--main-colour);
   border-radius: 0.5em;
   background: var(--secondary-colour);
@@ -465,7 +474,6 @@ input {
   margin: auto;
   width: 500px;
 }
-.cue-swatch-list{
+.cue-swatch-list {
   display: flex;
-  
 }

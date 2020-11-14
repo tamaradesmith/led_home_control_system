@@ -1,26 +1,7 @@
 import React from "react";
 
-interface Cue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  pattern_length?: number;
-  group_length: number;
-  fade: number;
-  type?: string;
-  colours: Colour[];
-}
-
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-
 interface Props {
-  cue: Cue;
+  cue: PatternCue;
 }
 
 const PatternShowDetails = (props: Props) => {
@@ -30,9 +11,9 @@ const PatternShowDetails = (props: Props) => {
       <div className="show-cue-div">
         <div className="colours-selected-div column_1_5">
           <p> colour: </p>
-          {cue ? (
+          {cue.colours ? (
             <>
-              {cue.colours.map((colour: Colour, index) => (
+              {cue.colours.map((colour: Colour, index: number) => (
                 <div
                   key={index}
                   className="swatch-square"
