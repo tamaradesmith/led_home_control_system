@@ -28,9 +28,9 @@ ShowController.get(
 ShowController.post(
   "/test",
   async (req: Request, res: Response, next: NextFunction) => {
-    const { display, show } = req.body;
+    const { display, show, type } = req.body;
     try {
-      ShowModel.testShow(display, show);
+      ShowModel.testShow(display, show, type);
     } catch (error) {
       next(error);
     }
@@ -77,6 +77,7 @@ ShowController.post(
     if (validShow === true) {
       try {
         const show = await ShowModel.create(newShow, cue);
+
         res.status(200).send({ id: show[0] });
       } catch (error) {
         next(error);
@@ -92,7 +93,7 @@ ShowController.patch(
   async (req: Request, res: Response, next: NextFunction) => {
     const id: number = parseInt(req.params.id);
     const { show, cue } = req.body;
-    const type = show.type
+    const type = show.type;
     const validShow = ShowModel.validShow(show, true);
     if (validShow === true) {
       try {
@@ -126,10 +127,10 @@ ShowController.delete(
 ShowController.post(
   "/:id/cue",
   async (req: Request, res: Response, next: NextFunction) => {
-    const cue = req.body.cue;
-    console.log("cue", cue);
+    const { cue } = req.body;
+    const showId = parseInt(req.params.id);
     try {
-      const savesCue = await ShowModel.createCue(cue);
+      const savesCue = await ShowModel.createCue(showId, cue);
       res.status(200).send(savesCue[0]);
     } catch (error) {
       next(error);

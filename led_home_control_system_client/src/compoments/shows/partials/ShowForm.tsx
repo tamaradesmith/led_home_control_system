@@ -164,6 +164,22 @@ const ShowForm = (props: Props) => {
 
   const handleTest = (showInfo: Show) => {
     if (selectedType) {
+     
+      showInfo.type = selectedType.type;
+
+    } else {
+      alert("select a test type");
+    }
+    if (!testDisplaySelected) {
+      alert("select a test display");
+    } else {
+      console.log("handleTest -> showInfo", showInfo);
+      LedQuery.sendShow(testDisplay, showInfo, selectedType.type);
+    }
+  };
+
+  const handleCueTest = (showInfo: Show) => {
+    if (selectedType) {
       showInfo.type = selectedType.type;
     } else {
       alert("select a test type");
@@ -171,7 +187,7 @@ const ShowForm = (props: Props) => {
     if (!testDisplaySelected) {
       alert("select a test display");
     } else {
-      LedQuery.sendShow(testDisplay, showInfo);
+      LedQuery.sendShow(testDisplay, showInfo, selectedType.type);
     }
   };
 
@@ -333,6 +349,7 @@ const ShowForm = (props: Props) => {
             colours={colourList}
             handleSave={handleSave}
             handleTest={handleTest}
+            handleCueTest={handleCueTest}
             handleSaveCue={saveCue}
             cancel={cancel}
             display={displayCue}

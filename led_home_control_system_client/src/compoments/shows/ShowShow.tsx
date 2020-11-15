@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { match, useHistory } from "react-router-dom";
-import { ShowQuery } from "../../js/request";
+import { ShowQuery, LedQuery } from "../../js/request";
 
 import PatternShowDetails from "./partials/PatternShowDetails";
 import RandomShowDetails from "./partials/RandomShowDetails";
@@ -21,7 +21,7 @@ const ShowShow = (props: Props) => {
   const [show, setShow] = useState({
     name: "",
     type: "",
-    display_id: null,
+    display_id: -1,
     cue: {},
     id: 0,
   });
@@ -61,26 +61,28 @@ const ShowShow = (props: Props) => {
     saturation: 100,
     show_id: -1,
   });
-  const [cueCues, setCueCues] = useState([{
-    id: -1,
-    time_code: -1,
-    show_id: -1,
-    leds: [
-      {
-        id: -1,
-        fade: 0,
-        led_colour: -1,
-        led_number: -1,
-        colour: {
-          name: "", 
-          hue: 0,
-          saturation: -1,
-          lightness: -1,
+  const [cueCues, setCueCues] = useState([
+    {
+      id: -1,
+      time_code: -1,
+      show_id: -1,
+      leds: [
+        {
           id: -1,
+          fade: 0,
+          led_colour: -1,
+          led_number: -1,
+          colour: {
+            name: "",
+            hue: 0,
+            saturation: -1,
+            lightness: -1,
+            id: -1,
+          },
         },
-      },
-    ],
-  }]);
+      ],
+    },
+  ]);
 
   const [deleteDiv, setDeleteDiv] = useState(true);
 
@@ -105,6 +107,10 @@ const ShowShow = (props: Props) => {
         break;
     }
     // setCue(showCue);
+  };
+
+  const playShow = async () => {
+    const playing = await LedQuery.sendShow(show.display_id, cueCues, show.type);
   };
 
   const editShow = () => {
@@ -172,6 +178,11 @@ const ShowShow = (props: Props) => {
         </div>
 
         <div className="btn-div">
+          {instanceOfCueCue(show.type) ? (
+            <button onClick={playShow} className="btn btn_save">
+              play
+            </button>
+          ) : null}
           <button onClick={editShow} className="btn btn_save">
             Edit
           </button>

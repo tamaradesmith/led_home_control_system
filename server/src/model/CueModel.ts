@@ -9,7 +9,9 @@ interface Led {
 }
 
 const getCuesLeds = async (cues, cuesAndLeds) => {
+  console.log("getCuesLeds -> cues", cues);
   const cue = cues.shift();
+  console.log("getCuesLeds -> cue", cue);
   if (cues.length > 0) {
     try {
       const leds = await knex("cueLeds")
@@ -17,6 +19,7 @@ const getCuesLeds = async (cues, cuesAndLeds) => {
         .where({ cue_show_id: cue.id })
         .groupBy("led_number", "cueLeds.id")
         .orderBy("led_number", "cue_show_id", "id", "fade", "led_colour");
+      console.log("getCuesLeds -> leds", leds);
       const ledWithColour = await getColours(leds, []);
       cue.leds = ledWithColour;
       cuesAndLeds.push(cue);
@@ -56,20 +59,26 @@ const getColours = async (leds, LedsWithColours) => {
   }
 };
 
-const saveLeds = async (cueId: number, leds) => {
-  const toSaveLeds = leds.map((led) => {
-    const newLedInfo = {
-      cue_show_id: cueId,
-      led_colour: parseInt(led.colour.id),
-      fade: parseInt(led.fade),
-      led_number: parseInt(led.led_number),
-    };
-    return newLedInfo;
+const saveLeds = async (cueId: number, cues) => {
+  const savedCues = cues.map((cue) => {
+    const toSaveLeds = cue.leds.map((led) => {
+      const newLedInfo = {
+        cue_show_id: cueId,
+        led_colour: parseInt(led.colour.id),
+        fade: parseInt(led.fade),
+        led_number: parseInt(led.led_number),
+      };
+      return newLedInfo;
+    });
+    return toSaveLeds;
   });
   try {
-    const ledSaved = await knex("cueLeds").insert(toSaveLeds).returning("id");
+    console.log("saveLeds -> savedCues", savedCues);
+    const ledSaved = await knex("cueLeds").insert(savedCues[0]).returning("id");
+    console.log("saveLeds -> ledSaved", ledSaved);
     return ledSaved;
   } catch (error) {
+    console.log("saveLeds -> error", error);
     return error;
   }
 };
@@ -109,12 +118,14 @@ export const CueModel = {
     }
   },
   async create(cue) {
+    console.log("create -> cue", cue);
     const savedcue = await knex("cueShows")
       .insert([
         { id: cue.cue_id, time_code: cue.time_code, show_id: cue.show_id },
       ])
       .returning("id");
-    await saveLeds(savedcue[0], cue.leds);
+      console.log("create -> savedcue", savedcue);
+    await saveLeds(savedcue[0], cue);
     return savedcue;
   },
   async update(cues) {

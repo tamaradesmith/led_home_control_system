@@ -254,8 +254,8 @@ const ShowModel = {
     }
     return cue;
   },
-  async createCue(cue) {
-    const show = await this.getOne(cue.show_id);
+  async createCue(showId: number, cue) {
+    const show = await this.getOne(showId);
     let savedCue;
     switch (show[0].type) {
       case "pattern":
@@ -319,9 +319,9 @@ const ShowModel = {
     return valid ? valid : new Error("Invalid entry");
   },
 
-  async testShow(displayId, show) {
+  async testShow(displayId, show, type: string) {
     const display = await DisplayModel.getOne(displayId);
-    switch (show.type) {
+    switch (type) {
       case "pattern":
         const colours = await getColours(show.colours, []);
         show.colours = colours;
@@ -331,7 +331,8 @@ const ShowModel = {
         await LedController.playShowRandom(display[0], show);
         break;
       case "cue":
-        await LedController.testCue(display[0], show);
+        
+        await LedController.playCueShow(display[0], show);
         break;
       default:
         return "missing show type";

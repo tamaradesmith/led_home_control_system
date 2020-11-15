@@ -8,6 +8,7 @@ interface Props {
   colours: Colour[] | undefined;
   handleSave: Function;
   handleTest: Function;
+  handleCueTest: Function;
   handleSaveCue: Function;
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   display: Display | undefined;
@@ -24,9 +25,10 @@ const CueShow = (props: Props) => {
     colours,
     handleSave,
     handleTest,
+    handleSaveCue,
+    handleCueTest,
     cancel,
     display,
-    handleSaveCue,
   } = props;
 
   // Lists
@@ -66,30 +68,42 @@ const CueShow = (props: Props) => {
         colours.push(led);
       }
     });
-    return { leds: colours, time_code: timeCode + totalTimeCode };
+    
+    const info =
+      showId === -1
+        ? [{ time_code: timeCode + totalTimeCode, leds: colours }]
+        : [{ time_code: timeCode + totalTimeCode, leds: colours,  show_id: showId}]; ;
+    return info;
   };
 
   const save = async () => {
     const leds = changedLedValue();
     if (showId === -1) {
       const show = await handleSave(leds);
+      
       if (show) {
         setShowId(show);
       } else {
-        console.log(leds);
+        console.log(leds, 'what?');
       }
     } else {
-      await handleSaveCue(showId, leds);
+    const cueSaved =  await handleSaveCue(showId, leds);
+    console.log("save -> cueSaved", cueSaved);
       setTotalTimeCode(timeCode + totalTimeCode);
       setTimeCode(0);
       getCues();
     }
   };
 
-  const test = () => {
-    
+  const test = (type: string) => {
     const leds = changedLedValue();
-    handleTest(leds);
+    if (type === "show") {
+      const allCues = cueList;
+      allCues.push(leds[0]);
+      handleCueTest(allCues);
+    } else {
+      handleTest(leds);
+    }
   };
 
   const cancelColour = () => {
@@ -99,7 +113,9 @@ const CueShow = (props: Props) => {
 
   const handleChangeFade = (event: React.ChangeEvent<HTMLInputElement>) => {
     const id = parseInt(event.target.id.slice(5));
-    ledsList[id].fade = parseInt(event.target.value);
+    const ledsFade = [...ledsList];
+    ledsFade[id].fade = parseInt(event.target.value);
+    setLedList(ledsFade);
   };
 
   const handleChangeTimeCode = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,6 +141,7 @@ const CueShow = (props: Props) => {
 
   const getCues = async () => {
     const cues = await ShowQuery.getOne(showId);
+    console.log("getCues -> cues", cues);
     setCuelist(cues.cue);
     createLedList();
   };
@@ -164,10 +181,6 @@ const CueShow = (props: Props) => {
     }
   }, [showId]);
 
-
-  useEffect(()=>{
-    console.log('total time ', totalTimeCode)
-  },[totalTimeCode])
   return (
     <div>
       <div className="CueShow card-pattern">
@@ -218,11 +231,21 @@ const CueShow = (props: Props) => {
         </div>
 
         <div className="show-btn-div column_1_5">
-          <button className="btn-big btn_save" onClick={test}>
+          <button
+            className="btn-big btn_save"
+            onClick={() => {
+              test("show");
+            }}
+          >
             {" "}
             Test Show
           </button>
-          <button className="btn-big btn_save" onClick={test}>
+          <button
+            className="btn-big btn_save"
+            onClick={() => {
+              test("cue");
+            }}
+          >
             {" "}
             Test Cue
           </button>

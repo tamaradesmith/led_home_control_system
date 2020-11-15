@@ -56,7 +56,9 @@ export const LedController = {
     }, (randomWait(cue.wait_time, cue.wait_random) + cue.fade) * 1000);
   },
 
-  async testCue(display, cue) {
+  // CUE SHOW
+
+  async playCueShow(display, cues) {
     if (waitTime[display.name] !== undefined) {
       clearInterval(waitTime[display.name]);
     }
@@ -66,14 +68,35 @@ export const LedController = {
       lightness: 0,
     });
 
-    const urlstring = createURLStringCue(display.led_number, cue.leds);
-    try {
-      axios.post(
-        `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlstring}`
-      );
-    } catch (error) {
-      error.log("playShowRadom -> error", error);
-      return error;
+    const urlString = createURLStringCue(display.led_number, cues);
+    if (urlString.length === 1) {
+      try {
+        axios.post(
+          `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlString[0].url}`
+        );
+      } catch (error) {
+        error.log("playShowRadom -> error", error);
+        return error;
+      }
+    } else {
+      let index = 0;
+      let startTime = new Date().getTime() / 1000;
+      waitTime[display.name] = setInterval(() => {
+        if (
+          urlString[index].time_code + startTime <=
+          new Date().getTime() / 1000
+        ) {
+          axios.post(
+            `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlString[index].url}`
+          );
+          if (index === urlString.length - 1) {
+            index = 0;
+            startTime = new Date().getTime() / 1000;
+          } else {
+            index++;
+          }
+        }
+      }, 500);
     }
   },
 };
@@ -117,17 +140,20 @@ const randomWait = (max: number, random) => {
   return random ? Math.round(Math.random() * max) : max;
 };
 
-const createURLStringCue = (ledsCount, leds) => {
-  let urlString: string[] = [];
-  for (let i = 0; i < ledsCount; i++) {
-    urlString.push("0,-1,0,0");
-  }
-  leds.forEach((led) => {
-    const colour = led.colour;
-    urlString[led.led_number] = `${led.fade},${colour.hue},${
-      colour.saturation / 100
-    },${colour.lightness}
-    `;
+const createURLStringCue = (ledsCount, cues) => {
+  const urlAll = cues.map((cue) => {
+    let urlString: string[] = [];
+    for (let i = 0; i < ledsCount; i++) {
+      urlString.push("0,-1,100,0");
+    }
+    cue.leds.forEach((led) => {
+      const colour = led.colour;
+      urlString[led.led_number] = `${led.fade},${colour.hue},${
+        colour.saturation / 100
+      },${colour.lightness}`;
+    });
+    return { url: urlString.join(","), time_code: cue.time_code };
   });
-  return urlString.join(",");
+  console.log("createURLStringCue -> urlAll", urlAll);
+  return urlAll;
 };

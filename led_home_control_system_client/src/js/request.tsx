@@ -24,7 +24,7 @@ interface Cue {
   name?: string;
   pattern_length: number;
   group_length: number;
-  type?: number | string
+  type?: number | string;
 }
 
 interface Show {
@@ -254,7 +254,7 @@ const ShowQuery = {
     }
   },
   async createCue(showId: number, cue: Cue) {
-    cue.show_id = showId
+    cue.show_id = showId;
     try {
       const res = await fetch(`${BASE_URL}/shows/${showId}/cue`, {
         method: "POST",
@@ -264,7 +264,7 @@ const ShowQuery = {
         },
         body: JSON.stringify({ cue }),
       });
-      return res.json(); 
+      return res.json();
     } catch (error) {
       return error;
     }
@@ -295,7 +295,11 @@ const LedQuery = {
       return error;
     }
   },
-  async sendShow(display: number, show: Cue) {
+  async sendShow(
+    display: number,
+    show: PatternCue | CueCue[] | RandomCue | Cue,
+    type: string
+    ) {
     try {
       const res = await fetch(`${BASE_URL}/shows/test`, {
         method: "POST",
@@ -303,8 +307,9 @@ const LedQuery = {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ display, show }),
+        body: JSON.stringify({ display, show, type}),
       });
+
       return res.json();
     } catch (error) {
       return error;
