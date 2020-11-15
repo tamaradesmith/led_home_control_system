@@ -81,22 +81,38 @@ export const LedController = {
     } else {
       let index = 0;
       let startTime = new Date().getTime() / 1000;
+      let endTime = -1;
       waitTime[display.name] = setInterval(() => {
         if (
+          urlString[index] &&
           urlString[index].time_code + startTime <=
-          new Date().getTime() / 1000
+            new Date().getTime() / 1000 &&
+          index <= urlString.length - 1
         ) {
+          if (
+            urlString[index] &&
+            endTime <
+              urlString[index].time_code + startTime + urlString[index].waitTime
+          ) {
+            endTime =
+              urlString[index].time_code +
+              startTime +
+              urlString[index].waitTime;
+          }
           axios.post(
             `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlString[index].url}`
           );
-          if (index === urlString.length - 1) {
+          index++;
+        } else if (index >= urlString.length - 1) {
+          if (
+          (new Date().getTime() / 1000) >= endTime
+          ) {
             index = 0;
             startTime = new Date().getTime() / 1000;
-          } else {
-            index++;
+            endTime = -1;
           }
         }
-      }, 500);
+      }, 300);
     }
   },
 };
@@ -142,18 +158,25 @@ const randomWait = (max: number, random) => {
 
 const createURLStringCue = (ledsCount, cues) => {
   const urlAll = cues.map((cue) => {
+    let max = 0;
     let urlString: string[] = [];
     for (let i = 0; i < ledsCount; i++) {
-      urlString.push("0,-1,100,0");
+      urlString.push("*,1,100,0");
     }
     cue.leds.forEach((led) => {
       const colour = led.colour;
       urlString[led.led_number] = `${led.fade},${colour.hue},${
         colour.saturation / 100
       },${colour.lightness}`;
+      if (led.fade > max) {
+        max = led.fade;
+      }
     });
-    return { url: urlString.join(","), time_code: cue.time_code };
+    return {
+      url: urlString.join(","),
+      time_code: cue.time_code,
+      waitTime: max,
+    };
   });
-  console.log("createURLStringCue -> urlAll", urlAll);
   return urlAll;
 };

@@ -173,7 +173,6 @@ const ShowForm = (props: Props) => {
     if (!testDisplaySelected) {
       alert("select a test display");
     } else {
-      console.log("handleTest -> showInfo", showInfo);
       LedQuery.sendShow(testDisplay, showInfo, selectedType.type);
     }
   };

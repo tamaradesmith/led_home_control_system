@@ -68,11 +68,17 @@ const CueShow = (props: Props) => {
         colours.push(led);
       }
     });
-    
+
     const info =
       showId === -1
         ? [{ time_code: timeCode + totalTimeCode, leds: colours }]
-        : [{ time_code: timeCode + totalTimeCode, leds: colours,  show_id: showId}]; ;
+        : [
+            {
+              time_code: timeCode + totalTimeCode,
+              leds: colours,
+              show_id: showId,
+            },
+          ];
     return info;
   };
 
@@ -80,15 +86,13 @@ const CueShow = (props: Props) => {
     const leds = changedLedValue();
     if (showId === -1) {
       const show = await handleSave(leds);
-      
       if (show) {
         setShowId(show);
       } else {
-        console.log(leds, 'what?');
+        console.log(leds, "what?");
       }
     } else {
-    const cueSaved =  await handleSaveCue(showId, leds);
-    console.log("save -> cueSaved", cueSaved);
+      const cueSaved = await handleSaveCue(showId, leds);
       setTotalTimeCode(timeCode + totalTimeCode);
       setTimeCode(0);
       getCues();
@@ -141,7 +145,6 @@ const CueShow = (props: Props) => {
 
   const getCues = async () => {
     const cues = await ShowQuery.getOne(showId);
-    console.log("getCues -> cues", cues);
     setCuelist(cues.cue);
     createLedList();
   };

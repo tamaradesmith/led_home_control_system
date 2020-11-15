@@ -169,22 +169,25 @@ const ShowModel = {
       const newShow = await knex("shows").insert(show).returning("id");
       if (cue) {
         const type = await getTypeName(show.type_id);
-        cue.show_id = newShow[0];
+        cue[0].show_id = newShow[0];
         let newCue;
         switch (type) {
           case "pattern":
+            cue.show_id = newShow[0];
             newCue = await PatternModel.create(cue);
             break;
           case "random":
+            cue.show_id = newShow[0];
             newCue = await RandomModel.create(cue);
             break;
           case "cue":
             try {
-              newCue = await CueModel.create(cue);
+              cue[0].show_id = newShow[0];
+              newCue = await CueModel.create(cue[0]);
             } catch (error) {
-              return error
+              return error;
             }
-        
+
             break;
           default:
             break;
@@ -214,7 +217,7 @@ const ShowModel = {
           break;
 
         case "cue":
-          await CueModel.update(cue);
+          await CueModel.update(cue[0]);
           break;
 
         default:
@@ -265,7 +268,7 @@ const ShowModel = {
         savedCue = await RandomModel.create(cue);
         break;
       case "cue":
-        savedCue = await CueModel.create(cue);
+        savedCue = await CueModel.create(cue[0]);
         break;
       default:
         break;
@@ -331,7 +334,6 @@ const ShowModel = {
         await LedController.playShowRandom(display[0], show);
         break;
       case "cue":
-        
         await LedController.playCueShow(display[0], show);
         break;
       default:
