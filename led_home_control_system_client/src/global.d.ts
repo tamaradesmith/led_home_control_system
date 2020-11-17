@@ -10,8 +10,18 @@ interface Show {
   name: string;
   type_id: number;
   display_id?: number;
-  cue: PatternCue | RandomCue | CueCue;
   type: string;
+  id: number;
+}
+
+interface CueShow extends Show {
+  cue?: CueCue;
+}
+interface PatternShow extends Show {
+  cue?: PatternCue;
+}
+interface RandomShow extends Show {
+  cue?: RandomCue;
 }
 
 interface Colour {
@@ -26,6 +36,11 @@ interface Led {
   fade: number;
   colour: Colour;
   led_number: number;
+}
+
+interface Type {
+  id: number;
+  type: string;
 }
 
 // CUE TYPES

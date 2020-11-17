@@ -90,7 +90,6 @@ const ShowShow = (props: Props) => {
     const savedShow = await ShowQuery.getOne(parseInt(match.params.id));
     const showCue = savedShow.cue;
     showCue.type = savedShow.type;
-
     setShow(savedShow);
     switch (showCue.type) {
       case "pattern":

@@ -1,21 +1,7 @@
 import React from "react";
 
-interface Cue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  wait_random: boolean;
-  fade: number;
-  fade_random: boolean;
-  hue_max: number;
-  hue_min: number;
-  lightness: number;
-  saturation: number;
-  type?: string;
-}
-
 interface Props {
-  cue: Cue;
+  cue: RandomCue;
 }
 
 const RandomShowDetails = (props: Props) => {

@@ -32,11 +32,29 @@ const ShowEdit = (props: Props) => {
   const history = useHistory();
   const match = props.match;
 
-  const [show, setShow] = useState();
+  const [cueShow, setCueShow] = useState();
+  const [randomShow, setRandomShow] = useState();
+  const [patternShow, setPatternShow] = useState();
+  const [type, setType] = useState("");
 
   const getShow = async () => {
     const savedShow = await ShowQuery.getOne(parseInt(match.params.id));
-    setShow(savedShow);
+    switch (savedShow.type) {
+      case "cue":
+        setCueShow(savedShow);
+        setType("cue");
+        break;
+      case "pattern":
+        setPatternShow(savedShow);
+        setType("pattern");
+        break;
+      case "random":
+        setRandomShow(savedShow);
+        setType("random");
+        break;
+      default:
+        break;
+    }
   };
 
   const cancel = () => {
@@ -65,7 +83,14 @@ const ShowEdit = (props: Props) => {
       <div className="card-show">
         <h2 className="card-header"> Edit Show</h2>
         <p id="errorMessage"></p>
-        <ShowForm cancel={cancel} save={handleUpdate} editShow={show} />
+        <ShowForm
+          cancel={cancel}
+          save={handleUpdate}
+          cueShow={cueShow}
+          patternShow={patternShow}
+          randomShow={randomShow}
+          editShow={type}
+        />
       </div>
     </div>
   );

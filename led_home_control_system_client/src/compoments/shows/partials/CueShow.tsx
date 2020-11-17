@@ -12,6 +12,7 @@ interface Props {
   handleSaveCue: Function;
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   display: Display | undefined;
+  editCue?: CueShow;
 }
 
 const noLed = {
@@ -29,6 +30,7 @@ const CueShow = (props: Props) => {
     handleCueTest,
     cancel,
     display,
+    editCue,
   } = props;
 
   // Lists
@@ -89,7 +91,7 @@ const CueShow = (props: Props) => {
       if (show) {
         setShowId(show);
       } else {
-        console.log(leds, "what?");
+        console.log(leds, " ", show);
       }
     } else {
       const cueSaved = await handleSaveCue(showId, leds);
@@ -171,6 +173,21 @@ const CueShow = (props: Props) => {
     }
     setLedList(result);
   };
+
+  const editCueLeds = () => {};
+
+  const delectCue = () => {};
+
+
+  // USEE EFFECT
+
+  useEffect(() => {
+    if (editCue) {
+      if (editCue.id) {
+        setShowId(editCue.id);
+      }
+    }
+  }, [editCue]);
 
   useEffect(() => {
     if (display) {
@@ -289,6 +306,14 @@ const CueShow = (props: Props) => {
                       <p>{led.led_number}</p>
                     </div>
                   ))}
+                  <button className="btn btn_save" onClick={editCueLeds}>
+                    {" "}
+                    edit
+                  </button>{" "}
+                  <button className="btn btn_cancel" onClick={delectCue}>
+                    {" "}
+                    delete
+                  </button>
                 </div>
               </div>
             ))}

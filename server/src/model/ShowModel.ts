@@ -144,6 +144,7 @@ const ShowModel = {
             break;
           case "random":
             cue = await getRandomShow(id);
+            break;
           case "cue":
             cue = await getcueShow(id);
           default:

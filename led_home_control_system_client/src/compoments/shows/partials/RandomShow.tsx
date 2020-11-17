@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   handleSave: Function;
   handleTest: Function;
+  editRandom?: RandomShow;
 }
 
 const RandomShow = (props: Props) => {
-  const { cancel, handleSave, handleTest } = props;
+  const { cancel, handleSave, handleTest, editRandom } = props;
 
   const [saturation, setSaturation] = useState(100);
   const [lightness, setLightness] = useState(50);
@@ -70,8 +71,8 @@ const RandomShow = (props: Props) => {
     const target = event.target;
     switch (target.id) {
       case "hueRandom":
-        if(hueRandom){
-          setHue({max: 360, min: 0})
+        if (hueRandom) {
+          setHue({ max: 360, min: 0 });
         }
         setHueRandom(hueRandom ? false : true);
 
@@ -111,6 +112,28 @@ const RandomShow = (props: Props) => {
     handleSave(cue);
   };
 
+  const instanceOfRandomCue = (object: any): object is RandomCue => {
+    return object === "random";
+  };
+
+  useEffect(() => {
+    if (editRandom) {
+      const cue = editRandom.cue;
+      if (cue){
+        setFade(cue.fade)
+        setFadeRandom(cue.fade_random);
+        setHue({max: cue.hue_max, min: cue.hue_min})
+        setLightness(cue.lightness)
+        setSaturation(cue.saturation)
+        setWaitTime(cue.wait_time)
+        setWaitTimeRandom(cue.wait_random)
+        if (cue.hue_max !== 360 || cue.hue_min !== 0){
+          setHueRandom(true)
+        }
+      }
+    }
+  }, [editRandom]);
+
   return (
     <div className="RandomShow card-random">
       <h4 className="header-secondary column_1_4">Random Cue</h4>
@@ -135,6 +158,7 @@ const RandomShow = (props: Props) => {
         name="fadeRandom"
         value="fadeRandom"
         onChange={handleCheck}
+        checked={fadeRandom}
       />
 
       <label htmlFor="wait" className="column_1">
@@ -156,6 +180,7 @@ const RandomShow = (props: Props) => {
         name="waitTimeRandom"
         value="waitTimeRandom"
         onChange={handleCheck}
+        checked={waitTimeRandom}
       />
 
       <label htmlFor="saturation" className="column_1">
@@ -224,6 +249,7 @@ const RandomShow = (props: Props) => {
         name="hueRandom"
         value="hueRandom"
         onChange={handleCheck}
+        checked={hueRandom}
       />
       <div className="show-btn-div column_1_7">
         <button className="btn btn_save" onClick={test}>

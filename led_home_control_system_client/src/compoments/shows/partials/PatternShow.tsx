@@ -1,23 +1,6 @@
 import React, { useState, useEffect } from "react";
 import ColourList from "../../colours/partials/ColourList";
 
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-
-interface Cue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  pattern_length: number;
-  group_length: number;
-  fade: number;
-  colours: [];
-}
 
 interface SaveCue {
   id?: number;
@@ -33,7 +16,7 @@ interface Props {
   handleSave: Function;
   handleTest: Function;
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
-  editPattern: Cue | undefined;
+  editPattern?: PatternShow;
 }
 
 const PatternShow = (props: Props) => {
@@ -136,12 +119,17 @@ const PatternShow = (props: Props) => {
     setColourListVisable(false);
   };
 
+ const instanceOfPatternCue = (object: any): object is PatternCue => {
+   return object === "pattern";
+ };
+
   useEffect(() => {
     if (editPattern) {
-      setSelectedColours(editPattern ? editPattern.colours : []);
-      setWaitTime(editPattern ? editPattern.wait_time : 1);
-      setFade(editPattern ? editPattern.fade : 1);
-      setGroupSize(editPattern ? editPattern.group_length : 1);
+      setWaitTime(
+        (instanceOfPatternCue(editPattern.type) && editPattern.cue) ?   (editPattern.cue.wait_time )? editPattern.cue.wait_time : 1  : 1
+      );
+      setFade(editPattern.cue ? editPattern.cue.fade : 1);
+      setGroupSize(editPattern.cue ? editPattern.cue.group_length : 1);
     }
   }, [editPattern]);
 

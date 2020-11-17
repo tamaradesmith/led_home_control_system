@@ -7,59 +7,21 @@ import RandomShow from "./RandomShow";
 import { ColourQuery, LedQuery, ShowQuery } from "../../../js/request";
 import CueShow from "./CueShow";
 
-interface Type {
-  id: number;
-  type: string;
-}
-
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id: number;
-}
-interface Cue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  pattern_length: number;
-  group_length: number;
-  fade: number;
-  colours: [];
-}
-
-interface Show {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  name: string;
-  pattern_length: number;
-  group_length: number;
-  display_id?: number;
-  type: string;
-  type_id: number;
-  cue?: Cue;
-}
-
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number | string;
-  default_on?: boolean;
-}
-
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   save: Function;
-  editShow?: Show;
+  cueShow?: CueShow;
+  patternShow?: PatternShow;
+  randomShow?: RandomShow;
+  editShow?: string;
 }
 
 const ShowForm = (props: Props) => {
   const allDisplays = useContext(DisplayContext);
 
-  const { save, cancel, editShow } = props;
+  const { save, cancel, cueShow, randomShow, patternShow, editShow } = props;
+
+  //STATES:
 
   // Lists
   const [showTypes, setShowTypes] = useState([{ type: "", id: 0 }]);
@@ -77,8 +39,11 @@ const ShowForm = (props: Props) => {
   const [displayCue, setDisplayCue] = useState<Display | undefined>();
 
   // Edit
-  const [editPattern, setEditPattern] = useState<Cue | undefined>();
+  const [editPattern, setEditPattern] = useState<PatternShow | undefined>();
+  const [editRandom, setEditRandom] = useState<RandomShow | undefined>();
+  const [editCueList, setEditCueList] = useState<CueShow | undefined>();
 
+  // Functions
   const getShowTypes = async () => {
     const types = await ShowQuery.getShowTypes();
     setShowTypes(types);
@@ -144,8 +109,15 @@ const ShowForm = (props: Props) => {
     if (display !== 0) {
       show.display_id = display;
     }
-    if (editShow) {
-      show.id = editShow.id;
+
+    if (cueShow) {
+      show.id = cueShow.id;
+    }
+    if (patternShow) {
+      show.id = patternShow.id;
+    }
+    if (randomShow) {
+      show.id = randomShow.id;
     }
     return show;
   };
@@ -157,36 +129,32 @@ const ShowForm = (props: Props) => {
     return saved;
   };
 
-  const saveCue = async (showId: number, cue: Cue) => {
+  const saveCue = async (showId: number, cue: CueCue) => {
     const savedCue = await ShowQuery.createCue(showId, cue);
     return savedCue;
   };
 
-  const handleTest = (showInfo: Show) => {
+  const handleTest = (showInfo: PatternCue | RandomCue | CueCue[]) => {
     if (selectedType) {
-     
-      showInfo.type = selectedType.type;
-
+      if (!testDisplaySelected) {
+        alert("select a test display");
+      } else {
+        LedQuery.sendShow(testDisplay, showInfo, selectedType.type);
+      }
     } else {
       alert("select a test type");
-    }
-    if (!testDisplaySelected) {
-      alert("select a test display");
-    } else {
-      LedQuery.sendShow(testDisplay, showInfo, selectedType.type);
     }
   };
 
-  const handleCueTest = (showInfo: Show) => {
+  const handleCueTest = (showInfo: CueCue[]) => {
     if (selectedType) {
-      showInfo.type = selectedType.type;
+      if (!testDisplaySelected) {
+        alert("select a test display");
+      } else {
+        LedQuery.sendShow(testDisplay, showInfo, selectedType.type);
+      }
     } else {
       alert("select a test type");
-    }
-    if (!testDisplaySelected) {
-      alert("select a test display");
-    } else {
-      LedQuery.sendShow(testDisplay, showInfo, selectedType.type);
     }
   };
 
@@ -198,7 +166,7 @@ const ShowForm = (props: Props) => {
           defaultType = index;
         } else if (editShow) {
           showTypes.forEach((type, index) => {
-            if (type.type === editShow.type) {
+            if (type.type === editShow) {
               defaultType = index;
             }
           });
@@ -213,15 +181,40 @@ const ShowForm = (props: Props) => {
     getColours();
   }, []);
 
+  const editInfo = (show: Show | undefined, type: string) => {
+    setShowName(show ? show.name : "");
+    if (show?.display_id) {
+      setDisplay(show.display_id);
+      setTestDisplay(show.display_id);
+      setTestDisplaySelected(true);
+      displays.map((displayCheck) => {
+        if (displayCheck.id == show.display_id) {
+          setDisplayCue(displayCheck);
+        }
+      });
+    }
+  };
+
   useEffect(() => {
     if (editShow) {
-      setShowName(editShow.name);
-      setDisplay(editShow.display_id ? editShow.display_id : 0);
-      setTestDisplay(editShow.display_id ? editShow.display_id : 0);
-      setTestDisplaySelected(editShow.display_id ? true : false);
-      setEditPattern(editShow ? editShow.cue : undefined);
+      switch (editShow) {
+        case "pattern":
+          editInfo(patternShow, editShow);
+          setEditPattern(patternShow ? patternShow : undefined);
+          break;
+        case "random":
+          setEditRandom(randomShow ? randomShow : undefined);
+          editInfo(randomShow, editShow);
+          break;
+        case "cue":
+          setEditCueList(cueShow ? cueShow : undefined);
+          editInfo(cueShow, editShow);
+          break;
+        default:
+          break;
+      }
       showTypes.forEach((type) => {
-        if (editShow.type === type.type) {
+        if (type.type === editShow) {
           setSelectedType(type);
         }
       });
@@ -339,6 +332,7 @@ const ShowForm = (props: Props) => {
             handleSave={handleSave}
             handleTest={handleTest}
             cancel={cancel}
+            editRandom={editRandom}
           />
         ) : null}
       </div>
@@ -352,6 +346,7 @@ const ShowForm = (props: Props) => {
             handleSaveCue={saveCue}
             cancel={cancel}
             display={displayCue}
+            editCue={editCueList}
           />
         ) : null}
       </div>

@@ -253,7 +253,7 @@ const ShowQuery = {
       return error;
     }
   },
-  async createCue(showId: number, cue: Cue) {
+  async createCue(showId: number, cue: CueCue) {
     cue.show_id = showId;
     try {
       const res = await fetch(`${BASE_URL}/shows/${showId}/cue`, {
