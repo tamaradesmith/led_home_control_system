@@ -32,7 +32,7 @@ const ShowEdit = (props: Props) => {
   const history = useHistory();
   const match = props.match;
 
-  const [cueShow, setCueShow] = useState();
+  const [cueShow, setCueShow] = useState<CueShow>();
   const [randomShow, setRandomShow] = useState();
   const [patternShow, setPatternShow] = useState();
   const [type, setType] = useState("");

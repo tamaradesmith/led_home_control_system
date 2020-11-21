@@ -1,3 +1,12 @@
+:root {
+  --main-colour: #451f55;
+  --fade-main-colour: #451f5527;
+  --secondary-colour: #feffff;
+  --background: #f6f2fa91;
+  --missing: #dd0000;
+}
+
+
 .timeline {
   width: 95%;
   height: 25px;
@@ -24,13 +33,20 @@
   display: flex;
   align-items: center;
   margin-left: 1.5em;
-}
+} 
+
 .led-swatch {
   width: 30px;
   height: 25px;
   margin: 0.5em;
   padding: 0.25em;
   border: 1px solid black;
+}
+.swatch-list{
+    display: flex;
+  align-items: center;
+  margin-left: 1.5em;
+  flex: 1;
 }
 .cue-name {
   font-size: 1.1em;
@@ -47,4 +63,18 @@
   font-size: 1.2em;
   font-weight: 700;
   margin: 2em 0 1em;
+}
+.cue-list-header {
+  font-size: 1.2em;
+  font-weight: 700;
+ text-align: center;
+ margin: 1em;
+}
+.btn-div {
+  display: flex;
+  justify-content: flex-end;
+}
+.div-divide{
+  border-top: 1px solid var(--main-colour);
+  margin-top: 1em;
 }

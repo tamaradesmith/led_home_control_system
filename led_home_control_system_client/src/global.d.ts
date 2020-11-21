@@ -15,7 +15,7 @@ interface Show {
 }
 
 interface CueShow extends Show {
-  cue?: CueCue;
+  cue?: CueCue[];
 }
 interface PatternShow extends Show {
   cue?: PatternCue;
@@ -74,11 +74,14 @@ interface CueCue {
   id: number;
   show_id: number;
   time_code: number;
-  leds: cueLeds[];
+  leds: CueLeds[];
 }
 
-interface cueLeds {
-  id: number;
+
+
+interface CueLeds {
+  id?: number;
+  show_cue_id?: number
   fade: number;
   led_colour: number;
   led_number: number;

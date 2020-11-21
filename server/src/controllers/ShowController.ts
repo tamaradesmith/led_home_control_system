@@ -5,10 +5,7 @@ var express = require("express");
 export const ShowController: Router = express.Router();
 
 import { ShowModel } from "../model/ShowModel";
-// import { LedController } from "./LedController";
 
-var { PatternModel } = require("../model/PatternModel");
-// import { RandomModel } from "../model/RandomModel";
 // TYPES
 
 ShowController.get(
@@ -77,7 +74,6 @@ ShowController.post(
     if (validShow === true) {
       try {
         const show = await ShowModel.create(newShow, cue);
-
         res.status(200).send({ id: show[0] });
       } catch (error) {
         next(error);
@@ -152,12 +148,26 @@ ShowController.get(
 );
 
 ShowController.patch(
-  "/:id/cue",
+  "/:id/cue/",
   async (req: Request, res: Response, next: NextFunction) => {
     const cue = req.body.cue;
     try {
       const updateCue = await ShowModel.updateCue(cue);
       res.status(200).send(updateCue[0]);
+    } catch (error) {
+     console.error("error", error);
+      next(error);
+    }
+  }
+);
+
+ShowController.delete(
+  "/:id/cue/:cueId",
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { cueId } = req.params;
+    try {
+      const cue = await ShowModel.deleteCue(cueId);
+      res.sendStatus(200);
     } catch (error) {
       next(error);
     }

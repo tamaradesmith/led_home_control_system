@@ -106,7 +106,7 @@ const ShowForm = (props: Props) => {
       name: showName,
       type_id: selectedType.id,
     };
-    if (display !== 0) {
+    if (show.display_id) {
       show.display_id = display;
     }
 
@@ -183,7 +183,7 @@ const ShowForm = (props: Props) => {
 
   const editInfo = (show: Show | undefined, type: string) => {
     setShowName(show ? show.name : "");
-    if (show?.display_id) {
+    if (show && show.display_id) {
       setDisplay(show.display_id);
       setTestDisplay(show.display_id);
       setTestDisplaySelected(true);
@@ -276,6 +276,7 @@ const ShowForm = (props: Props) => {
         id="display"
         className="column_2_4"
         onChange={pickDisplay}
+        value={display}
       >
         {selectedType.type === "cue" ? (
           <option value="-1"></option>

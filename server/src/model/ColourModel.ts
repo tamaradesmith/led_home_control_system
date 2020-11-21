@@ -68,6 +68,9 @@ export const ColourModel = {
       vaild = false;
     }
 
+    if (!colour.hue) {
+      vaild = false;
+    }
     if (
       colour.saturation < -0.99 ||
       colour.saturation > 100 ||

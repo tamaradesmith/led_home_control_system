@@ -17,6 +17,7 @@ interface Props {
 
 const noLed = {
   led_number: -1,
+  led_colour: 0,
   colour: { id: -1, hue: -1, saturation: -1, lightness: -1, name: "" },
   fade: 0,
 };
@@ -34,9 +35,10 @@ const CueShow = (props: Props) => {
   } = props;
 
   // Lists
-  const [ledsList, setLedList] = useState([
+  const [ledsList, setLedList] = useState<CueLeds[]>([
     {
       led_number: 0,
+      led_colour: 0,
       colour: { id: -1, hue: -1, saturation: -1, lightness: -1, name: "" },
       fade: 0,
     },
@@ -53,8 +55,9 @@ const CueShow = (props: Props) => {
       leds: [
         {
           led_number: -1,
+          led_colour: 0,
           fade: 0,
-          colour: { lightness: -1, hue: -1, saturation: -1 },
+          colour: { lightness: -1, hue: -1, saturation: -1, id: -1, name: '' },
         },
       ],
     },
@@ -75,12 +78,12 @@ const CueShow = (props: Props) => {
       showId === -1
         ? [{ time_code: timeCode + totalTimeCode, leds: colours }]
         : [
-            {
-              time_code: timeCode + totalTimeCode,
-              leds: colours,
-              show_id: showId,
-            },
-          ];
+          {
+            time_code: timeCode + totalTimeCode,
+            leds: colours,
+            show_id: showId,
+          },
+        ];
     return info;
   };
 
@@ -103,9 +106,10 @@ const CueShow = (props: Props) => {
 
   const test = (type: string) => {
     const leds = changedLedValue();
+    console.log("test -> leds", leds);
     if (type === "show") {
       const allCues = cueList;
-      allCues.push(leds[0]);
+      // allCues.push(leds[0]);
       handleCueTest(allCues);
     } else {
       handleTest(leds);
@@ -140,6 +144,7 @@ const CueShow = (props: Props) => {
     led_number: number;
     colour: Colour;
     fade: number;
+    led_colour: number
   }) => {
     setColourListVisable(colourListVisable ? false : true);
     setCurrentLed(selectedLed);
@@ -155,31 +160,47 @@ const CueShow = (props: Props) => {
     setLedList([
       {
         led_number: 0,
+        led_colour: -1,
         colour: { id: -1, hue: -1, saturation: -1, lightness: -1, name: "" },
         fade: 0,
       },
     ]);
+    const result = madeList();
+
+    setLedList(result);
+  };
+
+  const madeList = () => {
     let i = 0;
     const result = [];
     if (display) {
       while (i < display.led_number) {
         result.push({
           led_number: i,
+          led_colour: -1,
           colour: { name: "", id: -1, hue: -1, saturation: -1, lightness: -1 },
           fade: 0,
         });
         i++;
       }
+    } else {
+      result.push(noLed)
     }
-    setLedList(result);
+    return result
+  }
+
+  const editCueLeds = async (index: number) => {
+    const list = madeList();
+    cueList[index].leds.forEach(aLed => {
+      list[aLed.led_number] = aLed
+    });
+    setLedList(list)
   };
 
-  const editCueLeds = () => {};
-
-  const delectCue = () => {};
+  const delectCue = () => { };
 
 
-  // USEE EFFECT
+  // USE EFFECT
 
   useEffect(() => {
     if (editCue) {
@@ -225,8 +246,8 @@ const CueShow = (props: Props) => {
                 style={
                   led.colour.id !== undefined
                     ? {
-                        background: `hsl(${led.colour.hue}, ${led.colour.saturation}%, ${led.colour.lightness}%)`,
-                      }
+                      background: `hsl(${led.colour.hue}, ${led.colour.saturation}%, ${led.colour.lightness}%)`,
+                    }
                     : { border: "0px solid black" }
                 }
                 onClick={() => {
@@ -289,24 +310,14 @@ const CueShow = (props: Props) => {
 
       <div>
         {cueList[0].time_code !== -1 ? (
-          <>
+          <div className='div-divide'>
+            <p className='cue-list-header'> Cue List</p>
             {cueList.map((cue, index) => (
               <div key={index}>
                 <p className="cue-name">Cue {index + 1}</p>
-                <div className="cue-list">
-                  <p>Wait Time: {cue.time_code}</p>
-                  {cue.leds.map((led, index) => (
-                    <div
-                      key={`${index}-led`}
-                      className="led-swatch"
-                      style={{
-                        background: `hsl(${led.colour.hue}, ${led.colour.saturation}%, ${led.colour.lightness}%)`,
-                      }}
-                    >
-                      <p>{led.led_number}</p>
-                    </div>
-                  ))}
-                  <button className="btn btn_save" onClick={editCueLeds}>
+
+                <div className="btn-div">
+                  <button className="btn btn_save" onClick={() => { editCueLeds(index) }}>
                     {" "}
                     edit
                   </button>{" "}
@@ -315,9 +326,27 @@ const CueShow = (props: Props) => {
                     delete
                   </button>
                 </div>
+
+                <div className="cue-list">
+                  <p>Wait Time: {cue.time_code}</p>
+
+                  <div className="cue-list">
+                    {cue.leds.map((led, index) => (
+                      <div
+                        key={`${index}-led`}
+                        className="led-swatch"
+                        style={{
+                          background: `hsl(${led.colour.hue}, ${led.colour.saturation}%, ${led.colour.lightness}%)`,
+                        }}
+                      >
+                        <p>{led.led_number}</p>
+                      </div>
+                    ))}
+                  </div>
+                </div>
               </div>
             ))}
-          </>
+          </div>
         ) : null}
       </div>
     </div>

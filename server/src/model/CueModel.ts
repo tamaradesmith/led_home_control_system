@@ -22,6 +22,7 @@ const getCuesLeds = async (cues, cuesAndLeds) => {
       cuesAndLeds.push(cue);
       return await getCuesLeds(cues, cuesAndLeds);
     } catch (error) {
+      return error;
     }
   } else {
     const leds = await knex("cueLeds")
@@ -56,16 +57,16 @@ const getColours = async (leds, LedsWithColours) => {
 };
 
 const saveLeds = async (cueId: number, cues) => {
-    const savedLeds = cues.leds.map((led) => {
-      const newLedInfo = {
-        cue_show_id: cueId,
-        led_colour: parseInt(led.colour.id),
-        fade: parseInt(led.fade),
-        led_number: parseInt(led.led_number),
-      };
-      return newLedInfo;
-    });
-  
+  const savedLeds = cues.leds.map((led) => {
+    const newLedInfo = {
+      cue_show_id: cueId,
+      led_colour: led.colour ? parseInt(led.colour.id) : led.led_colour,
+      fade: parseInt(led.fade),
+      led_number: led.led_number,
+    };
+    return newLedInfo;
+  });
+
   try {
     const ledSaved = await knex("cueLeds").insert(savedLeds).returning("id");
     return ledSaved;
@@ -110,32 +111,23 @@ export const CueModel = {
   },
   async create(cue) {
     const savedcue = await knex("cueShows")
-      .insert([
-        { id: cue.cue_id, time_code: cue.time_code, show_id: cue.show_id },
-      ])
+      .insert([{ time_code: cue.time_code, show_id: cue.show_id }])
       .returning("id");
-  const result =   await saveLeds(savedcue[0], cue);
+    const result = await saveLeds(savedcue[0], cue);
     return savedcue;
   },
 
-  async update(cues) {
-    let leds;
-    const toUpdate = cues.map(
-      (cue: {
-        id: number;
-        time_code: number;
-        show_id: number;
-        leds: Led[];
-      }) => {
-        leds = cue.leds;
-        return { id: cue.id, time_code: cue.time_code, show_id: cue.show_id };
-      }
-    );
+  async update(cue) {
+    const leds = cue.leds;
+    const cuetoUpdate =  { id: cue.id, time_code: cue.time_code, show_id: cue.show_id };
     const updatedCue = await knex("cueShows")
-      .where({ id: toUpdate[0].id })
-      .update(toUpdate[0])
+        .where({ id: cuetoUpdate.id })
+      .update(cuetoUpdate)
       .returning("*");
-    const updatedLeds = await updateLeds(leds);
+     await updateLeds(leds);
     return updatedCue;
+  },
+  async delect(id) {
+    return await knex("cueShows").where({ id: id }).del().returning("*");
   },
 };

@@ -87,18 +87,18 @@ export async function seed(knex: Knex): Promise<void> {
   }
   try {
     await knex("cueLeds").insert([
-      { cue_id: 1, fade: 0, led_number: 1, colour_id: 1 },
-      { cue_id: 1, fade: 1, led_number: 2, colour_id: 1 },
-      { cue_id: 1, fade: 2, led_number: 3, colour_id: 2 },
-      { cue_id: 1, fade: 3, led_number: 4, colour_id: 3 },
-      { cue_id: 2, fade: 0, led_number: 1, colour_id: 1 },
-      { cue_id: 2, fade: 3, led_number: 4, colour_id: 3 },
-      { cue_id: 2, fade: 2, led_number: 3, colour_id: 2 },
-      { cue_id: 3, fade: 3, led_number: 4, colour_id: 3 },
-      { cue_id: 3, fade: 1, led_number: 2, colour_id: 1 },
-      { cue_id: 4, fade: 1, led_number: 2, colour_id: 1 },
-      { cue_id: 4, fade: 0, led_number: 1, colour_id: 1 },
-      { cue_id: 5, fade: 0, led_number: 1, colour_id: 3 },
+      { cue_show_id: 1, fade: 0, led_number: 1, led_colour: 1 },
+      { cue_show_id: 1, fade: 1, led_number: 2, led_colour: 1 },
+      { cue_show_id: 1, fade: 2, led_number: 3, led_colour: 2 },
+      { cue_show_id: 1, fade: 3, led_number: 4, led_colour: 3 },
+      { cue_show_id: 2, fade: 0, led_number: 1, led_colour: 1 },
+      { cue_show_id: 2, fade: 3, led_number: 4, led_colour: 3 },
+      { cue_show_id: 2, fade: 2, led_number: 3, led_colour: 2 },
+      { cue_show_id: 3, fade: 3, led_number: 4, led_colour: 3 },
+      { cue_show_id: 3, fade: 1, led_number: 2, led_colour: 1 },
+      { cue_show_id: 4, fade: 1, led_number: 2, led_colour: 1 },
+      { cue_show_id: 4, fade: 0, led_number: 1, led_colour: 1 },
+      { cue_show_id: 5, fade: 0, led_number: 1, led_colour: 3 },
     ]);
   } catch (error) {
     return error;

@@ -68,9 +68,16 @@ const validCueShow = (show) => {
     delete show.type;
   }
   let valid = true;
+
   const validParam = ["name", "type_id", "id", "cue"];
   const validCueParams = ["time_code", "leds", "show_id"];
-  const validLedParams = ["colour_id", "fade", "led_number", "cue_id"];
+  const validLedParams = [
+    "led_colour",
+    "fade",
+    "led_number",
+    "cue_show_id",
+    "colour",
+  ];
   if (show.type) {
     delete show.type;
   }
@@ -89,6 +96,7 @@ const validCueShow = (show) => {
   }
   if (show.cue) {
     const keysCue = Object.keys(show.cue[0]);
+
     const cue = show.cue[0];
 
     keysCue.forEach((key) => {
@@ -101,14 +109,16 @@ const validCueShow = (show) => {
       }
       const keysCueLed = Object.keys(show.cue[0].leds[0]);
       keysCueLed.forEach((key) => {
-        if (!validLedParams.includes(key) && key !== "id") {
-          valid = false;
-        }
-        if (typeof cue.leds[0][key] !== "number" && key !== "id") {
-          valid = false;
-        }
-        if (cue.leds[key] < 0 && key !== "fade") {
-          valid = false;
+        if (key !== "id") {
+          if (!validLedParams.includes(key)) {
+            valid = false;
+          }
+          if (typeof cue.leds[0][key] !== "number" && key !== "colour") {
+            valid = false;
+          }
+          if (cue.leds[key] < 0 && key !== "fade") {
+            valid = false;
+          }
         }
       });
     });
@@ -218,7 +228,7 @@ const ShowModel = {
           break;
 
         case "cue":
-          await CueModel.update(cue[0]);
+          const updatedcue = await CueModel.update(cue[0]);
           break;
 
         default:
@@ -261,6 +271,7 @@ const ShowModel = {
   async createCue(showId: number, cue) {
     const show = await this.getOne(showId);
     let savedCue;
+
     switch (show[0].type) {
       case "pattern":
         savedCue = await PatternModel.create(cue);
@@ -288,8 +299,19 @@ const ShowModel = {
         updatedCue = await RandomModel.update(cue);
       default:
         break;
+        case 'cue':
+          updatedCue = await CueModel.update(cue)
+        break;
     }
     return updatedCue;
+  },
+  async deleteCue(cueId) {
+    try {
+      const cue =  await CueModel.delect(cueId);
+      return cue
+    } catch (error) {
+      return error;
+    }
   },
 
   // VALIDS
@@ -304,6 +326,7 @@ const ShowModel = {
       if (show.cue) {
         delete show.cue;
       }
+
       const validParam = ["name", "display_id", "id", "type_id"];
       const keys = Object.keys(show);
       keys.forEach((key) => {

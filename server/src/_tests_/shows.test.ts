@@ -38,12 +38,28 @@ const randomShow = {
 const cueShow = {
   show_id: 5,
   time_code: 5,
-  cue_id: 26,
+  // cue_show_id: 26,
   leds: [
-    { led_number: 1, fade: 4, colour_id: 3 },
-    { led_number: 2, fade: 2, colour_id: 1 },
-    { led_number: 3, fade: 1, colour_id: 3 },
-    { led_number: 5, fade: 6, colour_id: 2 },
+    {
+      led_number: 1,
+      fade: 4,
+      colour: { id: 3, hue: 4, lightness: 50, saturation: 100 },
+    },
+    {
+      led_number: 2,
+      fade: 2,
+      colour: { id: 1, hue: 4, lightness: 50, saturation: 100 },
+    },
+    {
+      led_number: 3,
+      fade: 1,
+      colour: { id: 3, hue: 4, lightness: 50, saturation: 100 },
+    },
+    {
+      led_number: 5,
+      fade: 6,
+      colour: { id: 2, hue: 4, lightness: 50, saturation: 100 },
+    },
   ],
 };
 
@@ -56,10 +72,10 @@ const newCueShow = {
     {
       time_code: 4,
       leds: [
-        { led_number: 1, fade: 4, colour_id: 3 },
-        { led_number: 2, fade: 2, colour_id: 1 },
-        { led_number: 3, fade: 1, colour_id: 3 },
-        { led_number: 5, fade: 6, colour_id: 2 },
+        { led_number: 1, fade: 4, colour: { id: 3 } },
+        { led_number: 2, fade: 2, colour: { id: 1 } },
+        { led_number: 3, fade: 1, colour: { id: 3 } },
+        { led_number: 5, fade: 6, colour: { id: 2 } },
       ],
     },
   ],
@@ -68,10 +84,10 @@ const newCueShow = {
 const newCue = {
   time_code: 4,
   leds: [
-    { led_number: 1, fade: 4, colour_id: 3 },
-    { led_number: 2, fade: 2, colour_id: 1 },
-    { led_number: 3, fade: 1, colour_id: 3 },
-    { led_number: 5, fade: 6, colour_id: 2 },
+    { led_number: 1, fade: 4, led_colour: 3 },
+    { led_number: 2, fade: 2, led_colour: 1 },
+    { led_number: 3, fade: 1, led_colour: 3 },
+    { led_number: 5, fade: 6, led_colour: 2 },
   ],
 };
 
@@ -298,6 +314,7 @@ describe("CUE SHOWS", () => {
     expect(res.body.cue[1]).toHaveProperty("time_code", 2);
     expect(res.body.cue[0]).toHaveProperty("show_id", "5");
   });
+
   it("should have cue listing all led on that cue", async () => {
     const res = await request(app).get("/shows/5");
     const leds = res.body.cue[0].leds;
@@ -306,8 +323,9 @@ describe("CUE SHOWS", () => {
     expect(leds).toHaveLength(4);
     expect(leds[0]).toHaveProperty("fade", 0);
     expect(leds[1]).toHaveProperty("led_number", 2);
-    expect(leds[3]).toHaveProperty("cue_id", 1);
+    expect(leds[3]).toHaveProperty("cue_show_id", 1);
   });
+
   it("should have  leds should have colour info", async () => {
     const res = await request(app).get("/shows/5");
     const led = res.body.cue[0].leds[0].colour;
@@ -318,15 +336,19 @@ describe("CUE SHOWS", () => {
     expect(led).toHaveProperty("lightness", 100);
     expect(led).toHaveProperty("id", "1");
   });
+
   it("should create a new cue for cue Show", async () => {
-    const res = await request(app).post("/shows/5/cue").send({ cue: cueShow });
+    const res = await request(app)
+      .post("/shows/5/cue")
+      .send({ cue: [cueShow] });
     expect(200);
-    expect(res.text).toBe("26");
+    expect(res.text).toBe("6");
   });
+
   it("show create a new show with one cue", async () => {
     const createShow = await request(app)
       .post("/shows")
-      .send({ show: newCueShow, cue: newCue });
+      .send({ show: newCueShow, cue: [newCue] });
     const res = await request(app).get(`/shows/${createShow.body.id}`);
     const cue = res.body.cue;
     expect(200);
@@ -335,26 +357,36 @@ describe("CUE SHOWS", () => {
     expect(cue).toHaveLength(1);
     expect(cue[0]).toHaveProperty("time_code", 4);
     expect(cue[0]).toHaveProperty("leds");
-    expect(cue[0].leds[0]).toHaveProperty("colour_id", 3);
-    expect(cue[0].leds[0]).toHaveProperty("cue_id");
+    expect(cue[0].leds[0]).toHaveProperty("led_colour", 3);
+    expect(cue[0].leds[0]).toHaveProperty("cue_show_id");
     expect(cue[0].leds[0]).toHaveProperty("fade", 4);
     expect(cue[0].leds[0]).toHaveProperty("led_number", 1);
   });
-  it("should update an execting cue show Cue", async () => {
+
+  it("should update an execting cue in show Cue", async () => {
     const exectingShow = await request(app).get("/shows/7");
-    const cue = exectingShow.body;
-    cue.cue[0].time_code = 5;
-    cue.cue[0].leds[0] = {
+    const cue = exectingShow.body.cue[0];
+    cue.time_code = 5;
+       cue.leds[0] = {
       id: "12",
       fade: 4,
       led_number: 1,
-      colour_id: 1,
-      cue_id: 5,
+      led_colour: 1,
+      cue_show_id: 5,
     };
     const res = await request(app)
-      .patch("/shows/7")
-      .send({ show: cue, cue: cue.cue });
+      .patch("/shows/7/cue")
+      .send({ cue: cue});
     expect(200);
-    expect(res.body).toHaveProperty("id", '7');
+    expect(res.body).toHaveProperty("id", "5");
+  });
+
+  
+
+  it("should delect a cue", async () => {
+  await request(app).delete("/shows/5/cue/4");
+    const show = await request(app).get("/shows/5");
+    expect(200);
+    expect(show.body.cue).toHaveLength(3);
   });
 });
