@@ -56,7 +56,7 @@ const getTypeName = async (typeId) => {
   const types = await knex("showTypes").select("*");
   let name: string = "";
   types.forEach((type) => {
-    if (parseInt(type.id) === typeId) {
+    if (type.id === typeId) {
       name = type.type;
     }
   });
@@ -209,14 +209,15 @@ const ShowModel = {
       return error;
     }
   },
-  async update(id, show, cue, type) {
+  async update(id, show, cue) {
     if (show.cue) {
       delete show.cue;
     }
     const updateShow = await knex("shows")
-      .where({ id })
-      .update(show)
+    .where({ id })
+    .update(show)
       .returning("id");
+    const type = await getTypeName(show.type_id)
     if (cue) {
       switch (type) {
         case "pattern":

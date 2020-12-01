@@ -53,7 +53,6 @@ export async function seed(knex: Knex): Promise<void> {
       colours: "3,2,3",
       pattern_length: 3,
       wait_time: 6,
-      group_length: 2,
     },
   ]);
 }

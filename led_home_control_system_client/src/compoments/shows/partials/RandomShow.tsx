@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
+import ShowEdit from "../ShowEdit";
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   handleSave: Function;
   handleTest: Function;
+  handleUpdate: Function;
   editRandom?: RandomShow;
 }
 
 const RandomShow = (props: Props) => {
-  const { cancel, handleSave, handleTest, editRandom } = props;
+  const { cancel, handleSave, handleTest, handleUpdate, editRandom, } = props;
 
   const [saturation, setSaturation] = useState(100);
   const [lightness, setLightness] = useState(50);
@@ -88,47 +90,71 @@ const RandomShow = (props: Props) => {
     }
   };
 
-  const getCueInfo = () => {
-    const cue = {
-      saturation,
-      lightness,
-      fade,
-      fade_random: fadeRandom,
-      wait_time: waitTime,
-      wait_random: waitTimeRandom,
-      hue_max: hue.max,
-      hue_min: hue.min,
-    };
+  const getCueInfo = (action: string) => {
+    let cue;
+    switch (action) {
+      case 'save':
+        cue = {
+          saturation,
+          lightness,
+          fade,
+          fade_random: fadeRandom,
+          wait_time: waitTime,
+          wait_random: waitTimeRandom,
+          hue_max: hue.max,
+          hue_min: hue.min,
+        };
+        break;
+      case 'update':
+        if (editRandom && editRandom.cue) {
+          cue = {
+            id: editRandom.cue.id,
+            show_id: editRandom.cue.show_id,
+            saturation,
+            lightness,
+            fade,
+            fade_random: fadeRandom,
+            wait_time: waitTime,
+            wait_random: waitTimeRandom,
+            hue_max: hue.max,
+            hue_min: hue.min,
+          };
+        };
+        break;
+      default:
+        break;
+    }
     return cue;
   };
 
   const test = () => {
-    const cue = getCueInfo();
+    const cue = getCueInfo('save');
     handleTest(cue);
   };
 
   const save = () => {
-    const cue = getCueInfo();
+    const cue = getCueInfo('save');
     handleSave(cue);
   };
 
-  const instanceOfRandomCue = (object: any): object is RandomCue => {
-    return object === "random";
+  const update = () => {
+    const cue = getCueInfo('update');
+    handleUpdate(cue);
   };
 
   useEffect(() => {
     if (editRandom) {
       const cue = editRandom.cue;
-      if (cue){
-        setFade(cue.fade)
+      if (cue) {
+        setFade(cue.fade);
         setFadeRandom(cue.fade_random);
-        setHue({max: cue.hue_max, min: cue.hue_min})
-        setLightness(cue.lightness)
-        setSaturation(cue.saturation)
-        setWaitTime(cue.wait_time)
-        setWaitTimeRandom(cue.wait_random)
-        if (cue.hue_max !== 360 || cue.hue_min !== 0){
-          setHueRandom(true)
+        setHue({ max: cue.hue_max, min: cue.hue_min });
+        setLightness(cue.lightness);
+        setSaturation(cue.saturation);
+        setWaitTime(cue.wait_time);
+        setWaitTimeRandom(cue.wait_random);
+        if (cue.hue_max !== 360 || cue.hue_min !== 0) {
+          setHueRandom(true);
         }
       }
     }
@@ -256,7 +282,7 @@ const RandomShow = (props: Props) => {
           {" "}
           Test
         </button>
-        <button className="btn btn_save" onClick={save}>
+        <button className="btn btn_save" onClick={editRandom ? update : save}>
           {" "}
           Save
         </button>

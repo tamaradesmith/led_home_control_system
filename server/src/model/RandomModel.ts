@@ -16,9 +16,17 @@ export const RandomModel = {
   },
 
   async update(cue) {
-    return await knex("randomShows")
-      .where({ id: cue.id })
-      .update(cue)
-      .returning("*");
+    console.log("🚀 ~ file: RandomModel.ts ~ line 19 ~ update ~ cue", cue);
+    try {
+      const show = await knex("randomShows")
+        .where({ id: cue.id })
+        .update(cue)
+        .returning("*");
+      console.log("🚀 ~ file: RandomModel.ts ~ line 21 ~ update ~ show", show);
+      return show[0];
+    } catch (error) {
+      console.error("update -> error", error);
+      return error;
+    }
   },
 };

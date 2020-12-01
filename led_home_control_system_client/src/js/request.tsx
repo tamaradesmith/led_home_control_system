@@ -1,38 +1,5 @@
 const BASE_URL = "http://localhost:4545";
 
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-  default_on: boolean;
-  default_show?: number;
-}
-
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-
-interface Cue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  name?: string;
-  pattern_length: number;
-  group_length: number;
-  type?: number | string;
-}
-
-interface Show {
-  name: string;
-  type_id: number;
-  display_id?: number;
-  id?: number | string;
-}
 
 const DisplayQuery = {
   async getAll() {
@@ -212,7 +179,7 @@ const ShowQuery = {
       return error;
     }
   },
-  async create(show: Show, cue: Cue) {
+  async create(show: Show, cue: CueCue | PatternCue | RandomCue) {
     try {
       const res = await fetch(`${BASE_URL}/shows`, {
         method: "post",
@@ -227,7 +194,7 @@ const ShowQuery = {
       return error;
     }
   },
-  async update(show: Show, cue: Cue) {
+  async update(show: Show, cue: CueCue | PatternCue | RandomCue) {
     try {
       const res = await fetch(`${BASE_URL}/shows/${show.id}`, {
         method: "PATCH",
@@ -269,6 +236,17 @@ const ShowQuery = {
       return error;
     }
   },
+  async deleteCue(showId: number, cueId: number) {
+    try {
+      const res = await fetch(`${BASE_URL}/shows/${showId}/cue/${cueId}`, {
+        method: "DELETE",
+        credentials: 'include'
+      });
+      return res.status;
+    } catch (error) {
+
+    }
+  }
 };
 
 const LedQuery = {
@@ -279,7 +257,7 @@ const LedQuery = {
       ipaddress: string;
       name: string;
     },
-    colour: { hue: number; saturation: number; lightness: number }
+    colour: { hue: number; saturation: number; lightness: number; }
   ) {
     try {
       const res = await fetch(`${BASE_URL}/displays/ledColour`, {
@@ -297,9 +275,9 @@ const LedQuery = {
   },
   async sendShow(
     display: number,
-    show: PatternCue | CueCue[] | RandomCue | Cue,
+    show: PatternCue | CueCue[] | RandomCue,
     type: string
-    ) {
+  ) {
     try {
       const res = await fetch(`${BASE_URL}/shows/test`, {
         method: "POST",
@@ -307,7 +285,7 @@ const LedQuery = {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ display, show, type}),
+        body: JSON.stringify({ display, show, type }),
       });
 
       return res.json();

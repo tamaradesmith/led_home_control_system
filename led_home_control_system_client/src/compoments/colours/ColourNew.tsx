@@ -4,23 +4,8 @@ import { ColourQuery } from "../../js/request";
 
 import ColourForm from "./partials/ColourForm";
 
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-}
-
 const ColourNew = () => {
   const history = useHistory();
-
 
   const cancel = () => {
     history.push("/colours");

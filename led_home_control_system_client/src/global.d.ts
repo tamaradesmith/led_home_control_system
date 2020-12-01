@@ -10,8 +10,8 @@ interface Show {
   name: string;
   type_id: number;
   display_id?: number;
-  type: string;
-  id: number;
+  type?: string;
+  id?: number;
 }
 
 interface CueShow extends Show {
@@ -34,8 +34,9 @@ interface Colour {
 
 interface Led {
   fade: number;
-  colour: Colour;
+  colour?: Colour;
   led_number: number;
+  led_colour: number;
 }
 
 interface Type {
@@ -50,7 +51,6 @@ interface PatternCue {
   show_id?: number;
   wait_time: number;
   pattern_length?: number;
-  group_length: number;
   fade: number;
   colours: Colour[] ;
   type?: string;
@@ -71,8 +71,8 @@ interface RandomCue {
 }
 
 interface CueCue {
-  id: number;
-  show_id: number;
+  id?: number;
+  show_id?: number;
   time_code: number;
   leds: CueLeds[];
 }
@@ -81,7 +81,7 @@ interface CueCue {
 
 interface CueLeds {
   id?: number;
-  show_cue_id?: number
+  cue_show_id?: number
   fade: number;
   led_colour: number;
   led_number: number;

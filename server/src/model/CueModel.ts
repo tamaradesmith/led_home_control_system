@@ -57,6 +57,7 @@ const getColours = async (leds, LedsWithColours) => {
 };
 
 const saveLeds = async (cueId: number, cues) => {
+
   const savedLeds = cues.leds.map((led) => {
     const newLedInfo = {
       cue_show_id: cueId,
@@ -77,18 +78,28 @@ const saveLeds = async (cueId: number, cues) => {
 
 const updateLeds = async (leds) => {
   const led = leds.shift();
-  try {
-    const updated = knex("cueLeds")
+  led.led_colour = led.colour.id;
+  if (led.colour) {
+    delete led.colour;
+  }
+  let updated;
+  if (led.id) {
+    try {
+      updated =await knex("cueLeds")
       .where({ id: led.id })
       .update(led)
       .returning("id");
-  } catch (error) {
-    return error;
+    } catch (error) {
+      return error;
+    }
+  } else {
+    updated = await knex("cueLeds").insert(led).returning("id");
   }
+
   if (leds.length > 0) {
     return updateLeds(leds);
   } else {
-    return "finished";
+    return updated;
   }
 };
 
@@ -119,12 +130,12 @@ export const CueModel = {
 
   async update(cue) {
     const leds = cue.leds;
-    const cuetoUpdate =  { id: cue.id, time_code: cue.time_code, show_id: cue.show_id };
+    const cuetoUpdate = { id: cue.id, time_code: cue.time_code, show_id: cue.show_id };
     const updatedCue = await knex("cueShows")
-        .where({ id: cuetoUpdate.id })
+      .where({ id: cuetoUpdate.id })
       .update(cuetoUpdate)
       .returning("*");
-     await updateLeds(leds);
+    await updateLeds(leds);
     return updatedCue;
   },
   async delect(id) {

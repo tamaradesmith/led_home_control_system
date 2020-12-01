@@ -1,26 +1,33 @@
 import React, { useState, useEffect } from "react";
 import ColourList from "../../colours/partials/ColourList";
 
+// interface SaveCue {
+//   wait_time: number;
+//   pattern_length: number;
+//   fade: number;
+//   colours: number[];
+// }
 
-interface SaveCue {
-  id?: number;
-  wait_time: number;
-  group_length: number;
-  pattern_length: number;
-  fade: number;
-  colours: (number | undefined)[];
-}
+// interface UpdateCue {
+//   id: number;
+//   show_id: number;
+//   wait_time: number;
+//   pattern_length: number;
+//   fade: number;
+//   colours: number[];
+// }
 
 interface Props {
   colours: Colour[] | undefined;
   handleSave: Function;
   handleTest: Function;
+  updateShow: Function;
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   editPattern?: PatternShow;
 }
 
 const PatternShow = (props: Props) => {
-  const { colours, handleSave, handleTest, cancel, editPattern } = props;
+  const { colours, handleSave, handleTest, cancel, editPattern, updateShow } = props;
 
   const [colourListVisable, setColourListVisable] = useState(false);
   const [selectedColours, setSelectedColours] = useState<Colour[]>([]);
@@ -28,7 +35,6 @@ const PatternShow = (props: Props) => {
   const [orginalColours, setOrginalColours] = useState<Colour[] | []>([]);
 
   const [waitTime, setWaitTime] = useState(1);
-  const [groupSize, setGroupSize] = useState(1);
   const [fade, setFade] = useState(1);
 
   const handleColourSelection = () => {
@@ -57,9 +63,6 @@ const PatternShow = (props: Props) => {
       case "waitTime":
         setWaitTime(parseInt(value));
         break;
-      case "groupSize":
-        setGroupSize(parseInt(value));
-        break;
       case "fade":
         setFade(parseInt(value));
         break;
@@ -68,24 +71,36 @@ const PatternShow = (props: Props) => {
     }
   };
 
-  const getCueInfo = () => {
+  const getCueInfo = (action: string) => {
     let coloursId;
-
     if (selectedColours.length > 1) {
       coloursId = selectedColours.map((colour) => {
         return colour.id;
       });
-      const cue: SaveCue = {
-        colours: coloursId,
-        wait_time: waitTime,
-        group_length: groupSize,
-        pattern_length: coloursId.length * groupSize,
-        fade: fade,
-        id: undefined,
-      };
-      if (editPattern) {
-        cue.id = editPattern.id;
+      let cue;
+      switch (action) {
+        case 'save':
+          cue = {
+            colours: coloursId,
+            wait_time: waitTime,
+            pattern_length: coloursId.length,
+            fade: fade,
+          };
+          break;
+        case 'update':
+          cue = {
+            id: editPattern && editPattern.cue ? editPattern.cue.id : -1,
+            show_id: editPattern?.id,
+            colours: coloursId,
+            wait_time: waitTime,
+            pattern_length: coloursId.length,
+            fade: fade,
+          };
+          break;
+        default:
+          break;
       }
+
       return cue;
     } else {
       const message = document.querySelector(
@@ -97,15 +112,20 @@ const PatternShow = (props: Props) => {
   };
 
   const test = () => {
-    const showInfo = getCueInfo();
+    const showInfo = getCueInfo('save');
     if (showInfo !== false) {
       handleTest(showInfo);
     }
   };
 
-  const save = () => {
-    const cue = getCueInfo();
+  const save = async () => {
+    const cue = getCueInfo('save');
     handleSave(cue);
+  };
+
+  const update = async () => {
+    const cue = getCueInfo('update');
+    updateShow(cue);
   };
 
   const cancelColour = () => {
@@ -119,17 +139,11 @@ const PatternShow = (props: Props) => {
     setColourListVisable(false);
   };
 
- const instanceOfPatternCue = (object: any): object is PatternCue => {
-   return object === "pattern";
- };
-
   useEffect(() => {
-    if (editPattern) {
-      setWaitTime(
-        (instanceOfPatternCue(editPattern.type) && editPattern.cue) ?   (editPattern.cue.wait_time )? editPattern.cue.wait_time : 1  : 1
-      );
-      setFade(editPattern.cue ? editPattern.cue.fade : 1);
-      setGroupSize(editPattern.cue ? editPattern.cue.group_length : 1);
+    if (editPattern && editPattern.cue) {
+      setWaitTime(editPattern.cue.wait_time);
+      setFade(editPattern.cue.fade);
+      setSelectedColours(editPattern.cue?.colours);
     }
   }, [editPattern]);
 
@@ -159,19 +173,6 @@ const PatternShow = (props: Props) => {
         ))}
         <p id="colourMessage"></p>{" "}
       </div>
-
-      <label htmlFor="groupSize" className="column_1">
-        {" "}
-        group number:
-      </label>
-      <input
-        type="number"
-        id="groupSize"
-        min="1"
-        className="column_2"
-        onChange={handleChange}
-        value={groupSize}
-      />
 
       <label htmlFor="fade" className="column_1">
         {" "}
@@ -203,7 +204,7 @@ const PatternShow = (props: Props) => {
           {" "}
           Test
         </button>
-        <button className="btn btn_save" onClick={save}>
+        <button className="btn btn_save" onClick={editPattern ? update : save}>
           {" "}
           Save
         </button>

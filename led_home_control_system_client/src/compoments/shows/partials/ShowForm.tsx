@@ -97,19 +97,14 @@ const ShowForm = (props: Props) => {
       document.querySelector("#name")?.classList.add("missing_field");
       document.querySelector("#missing")?.classList.remove("hidden");
     }
-    const show: {
-      name: string;
-      type_id: number;
-      display_id?: number;
-      id?: number;
-    } = {
+    const show: Show
+      = {
       name: showName,
       type_id: selectedType.id,
     };
-    if (show.display_id) {
+    if (display) {
       show.display_id = display;
     }
-
     if (cueShow) {
       show.id = cueShow.id;
     }
@@ -124,7 +119,6 @@ const ShowForm = (props: Props) => {
 
   const handleSave = (cue: {}) => {
     const show = getShowInfo();
-
     const saved = save(show, cue, selectedType.type);
     return saved;
   };
@@ -132,6 +126,12 @@ const ShowForm = (props: Props) => {
   const saveCue = async (showId: number, cue: CueCue) => {
     const savedCue = await ShowQuery.createCue(showId, cue);
     return savedCue;
+  };
+
+  const updateShow = async (cue: CueCue | PatternCue | RandomCue) => {
+    const show = getShowInfo();
+    const updated = await save(show, cue);
+    return updated
   };
 
   const handleTest = (showInfo: PatternCue | RandomCue | CueCue[]) => {
@@ -250,16 +250,20 @@ const ShowForm = (props: Props) => {
         Please add name{" "}
       </p>
 
+
       <label htmlFor="type" className="column_1">
         Type Of Show
       </label>
-      <select
+
+      {editShow === undefined ? (
+        
+        <select
         name="type"
         id="type"
         className="column_2_4"
         onChange={handleType}
         value={getdefaultType()}
-      >
+        >
         <option value={-1}></option>
         {showTypes.map((type: Type, index) => (
           <option key={type.id} value={index}>
@@ -267,6 +271,8 @@ const ShowForm = (props: Props) => {
           </option>
         ))}
       </select>
+     
+      ) : (<p>{selectedType.type}</p>)}
 
       <label htmlFor="display" className="column_1">
         display:
@@ -281,8 +287,8 @@ const ShowForm = (props: Props) => {
         {selectedType.type === "cue" ? (
           <option value="-1"></option>
         ) : (
-          <option value="0">General</option>
-        )}
+            <option value="0">General</option>
+          )}
         {displays?.map((display) => (
           <option key={display.id} value={display.id}>
             {display.name}
@@ -319,10 +325,11 @@ const ShowForm = (props: Props) => {
         {selectedType.type === "pattern" ? (
           <PatternShow
             colours={colourList}
+            editPattern={editPattern}
             handleSave={handleSave}
             handleTest={handleTest}
+            updateShow={updateShow}
             cancel={cancel}
-            editPattern={editPattern}
           />
         ) : null}
       </div>
@@ -330,10 +337,11 @@ const ShowForm = (props: Props) => {
       <div className="column_1_5">
         {selectedType.type === "random" ? (
           <RandomShow
+            editRandom={editRandom}
             handleSave={handleSave}
             handleTest={handleTest}
+            handleUpdate={updateShow}
             cancel={cancel}
-            editRandom={editRandom}
           />
         ) : null}
       </div>
@@ -345,9 +353,11 @@ const ShowForm = (props: Props) => {
             handleTest={handleTest}
             handleCueTest={handleCueTest}
             handleSaveCue={saveCue}
+            // handleUpdateCue={}
             cancel={cancel}
             display={displayCue}
             editCue={editCueList}
+            updateShow={updateShow}
           />
         ) : null}
       </div>

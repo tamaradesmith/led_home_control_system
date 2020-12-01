@@ -5,21 +5,6 @@ import { ColourQuery } from "../../js/request";
 
 import ColourForm from "./partials/ColourForm";
 
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-}
-
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-
 interface DetailParams {
   id: string;
 }
@@ -67,13 +52,13 @@ const ColourEdit = (props: Props) => {
     <div className="ColourEdit">
       <div className="card-colour">
 
-      <h3 className="card-header"> Edit Colour Form</h3>
-      <ColourForm
-        save={save}
-        cancel={cancel}
-        editColour={colour}
+        <h3 className="card-header"> Edit Colour Form</h3>
+        <ColourForm
+          save={save}
+          cancel={cancel}
+          editColour={colour}
         />
-        </div>
+      </div>
     </div>
   );
 };

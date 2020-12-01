@@ -4,22 +4,6 @@ import { ShowQuery } from "../../js/request";
 
 import ShowForm from "./partials/ShowForm";
 
-interface Show {
-  name: string;
-  type_id: number;
-  display_id?: number;
-}
-
-interface Cue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  pattern_length: number;
-  group_length: number;
-  fade: number;
-  colours: [];
-}
-
 interface DetailParams {
   id: string;
 }
@@ -61,15 +45,18 @@ const ShowEdit = (props: Props) => {
     history.push(`/shows/${match.params.id}`);
   };
 
-  const handleUpdate = async (show: Show, cue: Cue) => {
+  const handleUpdate = async (show: Show, cue: CueCue | PatternCue | RandomCue) => {
     const res = await ShowQuery.update(show, cue);
-    if (typeof res === "number") {
-      history.push(`/shows/${res}`);
+    if (type === 'cue' && parseInt(res.id) !== NaN) {
+      return res
+    } else if (parseInt(res.id) !== NaN) {
+      history.push(`/shows/${res.id}`);
     } else {
       const message = document.querySelector<HTMLElement>(
         "#errorMessage"
       ) as HTMLElement;
-      message.innerText = res;
+      message.innerText = res.message;
+      console.error("ShowEdit -> res", res);
     }
   };
 

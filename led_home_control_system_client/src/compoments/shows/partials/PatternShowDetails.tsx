@@ -27,7 +27,6 @@ const PatternShowDetails = (props: Props) => {
         </div>
         <p> fade time: {cue.fade} seconds</p>
         <p>wait time: {cue.wait_time} seconds</p>
-        <p>group size: {cue.group_length} </p>
       </div>
     </div>
   );

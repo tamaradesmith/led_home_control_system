@@ -4,22 +4,6 @@ import { ShowQuery } from "../../js/request";
 
 import ShowForm from "./partials/ShowForm";
 
-interface Show {
-  name: string;
-  type_id: number;
-  display_id?: number;
-}
-
-interface Cue {
-  id?: number;
-  show_id?: number;
-  wait_time: number;
-  pattern_length: number;
-  group_length: number;
-  fade: number;
-  colour: [];
-}
-
 const ShowNew = () => {
   const history = useHistory();
 
@@ -27,7 +11,7 @@ const ShowNew = () => {
     history.push("/shows");
   };
 
-  const handleSave = async (show: Show, cue: Cue, type: string) => {
+  const handleSave = async (show: Show, cue: CueCue | PatternCue | RandomCue, type: string) => {
     const res = await ShowQuery.create(show, cue);
     if (typeof parseInt(res.id) === "number") {
       if (type !== "cue") {

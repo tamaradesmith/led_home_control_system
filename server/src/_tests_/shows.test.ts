@@ -23,7 +23,6 @@ const patternShow = {
   colours: [3, 2, 1],
   pattern_length: 3,
   wait_time: 3,
-  group_length: 2,
   fade: 3,
 };
 
@@ -235,7 +234,6 @@ describe("PATTERN SHOW", () => {
     expect(res.body).toHaveProperty("colours", ["3", "2", "1"]);
     expect(res.body).toHaveProperty("pattern_length", 3);
     expect(res.body).toHaveProperty("wait_time", 3);
-    expect(res.body).toHaveProperty("group_length", 2);
   });
 
   it("GET ONE PATTERN SHOW Cue", async () => {
@@ -246,7 +244,6 @@ describe("PATTERN SHOW", () => {
     expect(res.body).toHaveProperty("colours", ["1", "2", "3"]);
     expect(res.body).toHaveProperty("pattern_length", 3);
     expect(res.body).toHaveProperty("wait_time", 3);
-    expect(res.body).toHaveProperty("group_length", 1);
   });
 
   it("UPDATE Pattern Show cue", async () => {

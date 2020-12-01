@@ -29,7 +29,6 @@ const ShowShow = (props: Props) => {
   const [cuePattern, setCuePattern] = useState({
     id: -1,
     wait_time: -1,
-    group_length: 1,
     fade: 0,
     colours: [
       {
