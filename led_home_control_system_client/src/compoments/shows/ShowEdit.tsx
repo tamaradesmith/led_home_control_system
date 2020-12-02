@@ -45,11 +45,15 @@ const ShowEdit = (props: Props) => {
     history.push(`/shows/${match.params.id}`);
   };
 
+  const redircetToShowPage = (id: number) => {
+    history.push(`/shows/${id}`);
+  };
+
   const handleUpdate = async (show: Show, cue: CueCue | PatternCue | RandomCue) => {
     const res = await ShowQuery.update(show, cue);
-    if (type === 'cue' && parseInt(res.id) !== NaN) {
+    if (type === 'cue' && !isNaN( parseInt(res.id))) {
       return res
-    } else if (parseInt(res.id) !== NaN) {
+    } else if (!isNaN(parseInt(res.id))) {
       history.push(`/shows/${res.id}`);
     } else {
       const message = document.querySelector<HTMLElement>(
@@ -77,6 +81,7 @@ const ShowEdit = (props: Props) => {
           patternShow={patternShow}
           randomShow={randomShow}
           editShow={type}
+          handleRedirect={redircetToShowPage}
         />
       </div>
     </div>

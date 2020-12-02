@@ -2,15 +2,12 @@ import React, { useEffect, useState } from "react";
 import { match, useHistory } from "react-router-dom";
 
 import { DisplayQuery, LedQuery } from "../../js/request";
+
+import ButtonCompoment from "../partials/ButtonCompoment";
 import ShowList from "./partials/ShowList";
 
 interface DisplayParams {
   id: string;
-}
-interface Show {
-  name: string;
-  id: number;
-  display_id: number;
 }
 
 interface DisplaysProps {
@@ -29,7 +26,7 @@ const DisplayShow = (props: DisplaysProps) => {
     led_number: 0,
     shows: [],
     default_on: true,
-    default_show: { name: "", id: 0, display_id: 0 },
+    default_show: { name: "", id: 0, display_id: 0, type_id: 0 },
   });
 
   const [deleteDiv, setDeleteDiv] = useState(true);
@@ -37,7 +34,7 @@ const DisplayShow = (props: DisplaysProps) => {
 
   const getDisplay = async () => {
     const displayInfo = await DisplayQuery.getOne(match.params.id);
-    displayInfo.shows.forEach((show: { id: number }) => {
+    displayInfo.shows.forEach((show: { id: number; }) => {
       if (show.id === displayInfo.default_show) {
         displayInfo.default_show = show;
       }
@@ -88,7 +85,7 @@ const DisplayShow = (props: DisplaysProps) => {
   };
 
   const playShow = async (show: Show) => {
-    await LedQuery.playShow(display.id, show.id);
+    await LedQuery.playShow(display.id, show.id ? show.id : 0);
   };
 
   useEffect(() => {
@@ -111,8 +108,8 @@ const DisplayShow = (props: DisplaysProps) => {
             {display.default_show ? (
               <>{display.default_show.name}</>
             ) : (
-              <>none</>
-            )}
+                <>none</>
+              )}
           </p>
 
           <p
@@ -124,13 +121,11 @@ const DisplayShow = (props: DisplaysProps) => {
             Change Shows
           </p>
           <div className="btn-div">
-            <button onClick={editDisplay} className="btn btn_save">
-              Edit
-            </button>
-            <button onClick={confirmDelete} className="btn btn_cancel">
-              {" "}
-              Delete
-            </button>
+
+            <ButtonCompoment text={'Edit'} styleClass={"btn btn_save"} action={editDisplay} />
+
+            <ButtonCompoment text={'Delete'} action={confirmDelete} styleClass={"btn btn_cancel"} />
+
           </div>
         </div>
       </div>
@@ -156,10 +151,9 @@ const DisplayShow = (props: DisplaysProps) => {
           >
             Yes
           </button>
-          <button onClick={cancel} className="btn btn_cancel">
-            {" "}
-            Cancel
-          </button>
+
+          <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
+
         </div>
       </div>
     </div>

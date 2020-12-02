@@ -100,15 +100,13 @@ const ShowShow = (props: Props) => {
       case "cue":
         setCueCues(showCue);
         break;
-
       default:
         break;
     }
-    // setCue(showCue);
   };
 
   const playShow = async () => {
-    const playing = await LedQuery.sendShow(show.display_id, cueCues, show.type);
+    await LedQuery.sendShow(show.display_id, cueCues, show.type);
   };
 
   const editShow = () => {
@@ -134,6 +132,7 @@ const ShowShow = (props: Props) => {
       message.innerText = "Something when wrong please try again";
     }
   };
+
 
   const instanceOfRandomCue = (object: any): object is RandomCue => {
     return object === "random";

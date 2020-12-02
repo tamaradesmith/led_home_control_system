@@ -1,16 +1,10 @@
 import React, { useEffect, useState } from "react";
+import ButtonCompoment from "../../partials/ButtonCompoment";
 
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   save: Function;
   display?: Display;
-}
-
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
 }
 
 const DisplayForm = (props: Props) => {
@@ -179,12 +173,10 @@ const DisplayForm = (props: Props) => {
       </div>
 
       <div className="row5 btn-div">
-        <button className=" btn btn_save" onClick={saveDisplay}>
-          Save
-        </button>
-        <button className="btn btn_cancel" onClick={cancel}>
-          Cancel
-        </button>
+        <ButtonCompoment text={'Save' } styleClass=" btn btn_save" action={saveDisplay} />
+        
+        <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
+
       </div>
     </div>
   );

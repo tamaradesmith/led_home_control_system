@@ -10,6 +10,7 @@ import CueShow from "./CueShow";
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
   save: Function;
+  handleRedirect: Function
   cueShow?: CueShow;
   patternShow?: PatternShow;
   randomShow?: RandomShow;
@@ -19,7 +20,7 @@ interface Props {
 const ShowForm = (props: Props) => {
   const allDisplays = useContext(DisplayContext);
 
-  const { save, cancel, cueShow, randomShow, patternShow, editShow } = props;
+  const { save, cancel, cueShow, randomShow, patternShow, editShow, handleRedirect } = props;
 
   //STATES:
 
@@ -79,7 +80,7 @@ const ShowForm = (props: Props) => {
     setTestDisplaySelected(true);
     if (selectedType.type === "cue") {
       displays.forEach((display) => {
-        if (display.id == parseInt(value)) {
+        if (`${display.id}` === value) {
           setDisplayCue(display);
         }
       });
@@ -117,21 +118,22 @@ const ShowForm = (props: Props) => {
     return show;
   };
 
-  const handleSave = (cue: {}) => {
+  const handleSave = async(cue: {}) => {
     const show = getShowInfo();
-    const saved = save(show, cue, selectedType.type);
+    const saved = await save(show, cue, selectedType.type);
     return saved;
   };
 
-  const saveCue = async (showId: number, cue: CueCue) => {
-    const savedCue = await ShowQuery.createCue(showId, cue);
+  const saveCue = async ( cue: CueCue) => {
+    const savedCue = await ShowQuery.createCue(cue);
+    console.log("🚀 ~ file: ShowForm.tsx ~ line 128 ~ saveCue ~ savedCue", savedCue);
     return savedCue;
   };
 
   const updateShow = async (cue: CueCue | PatternCue | RandomCue) => {
     const show = getShowInfo();
     const updated = await save(show, cue);
-    return updated
+    return updated;
   };
 
   const handleTest = (showInfo: PatternCue | RandomCue | CueCue[]) => {
@@ -157,6 +159,8 @@ const ShowForm = (props: Props) => {
       alert("select a test type");
     }
   };
+
+  
 
   const getdefaultType = () => {
     let defaultType = -1;
@@ -187,13 +191,15 @@ const ShowForm = (props: Props) => {
       setDisplay(show.display_id);
       setTestDisplay(show.display_id);
       setTestDisplaySelected(true);
-      displays.map((displayCheck) => {
-        if (displayCheck.id == show.display_id) {
+      displays.forEach((displayCheck) => {
+        if (`${displayCheck.id}` === `${show.display_id}`) {
           setDisplayCue(displayCheck);
         }
       });
     }
   };
+
+
 
   useEffect(() => {
     if (editShow) {
@@ -256,22 +262,22 @@ const ShowForm = (props: Props) => {
       </label>
 
       {editShow === undefined ? (
-        
+
         <select
-        name="type"
-        id="type"
-        className="column_2_4"
-        onChange={handleType}
-        value={getdefaultType()}
+          name="type"
+          id="type"
+          className="column_2_4"
+          onChange={handleType}
+          value={getdefaultType()}
         >
-        <option value={-1}></option>
-        {showTypes.map((type: Type, index) => (
-          <option key={type.id} value={index}>
-            {type.type}
-          </option>
-        ))}
-      </select>
-     
+          <option value={-1}></option>
+          {showTypes.map((type: Type, index) => (
+            <option key={type.id} value={index}>
+              {type.type}
+            </option>
+          ))}
+        </select>
+
       ) : (<p>{selectedType.type}</p>)}
 
       <label htmlFor="display" className="column_1">
@@ -353,11 +359,11 @@ const ShowForm = (props: Props) => {
             handleTest={handleTest}
             handleCueTest={handleCueTest}
             handleSaveCue={saveCue}
-            // handleUpdateCue={}
             cancel={cancel}
             display={displayCue}
             editCue={editCueList}
             updateShow={updateShow}
+            handleRedirect={handleRedirect}
           />
         ) : null}
       </div>

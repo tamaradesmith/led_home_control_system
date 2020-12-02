@@ -1,12 +1,5 @@
 import React from "react";
-
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
+import ButtonCompoment from "../../partials/ButtonCompoment";
 
 interface Props {
   colours: Colour[] | undefined;
@@ -68,18 +61,15 @@ const ColourList = (props: Props) => {
         </>
       ) : null}
       <div className="btn-div">
-        <button
-          className="btn btn_save"
-          onClick={() => {
+        <ButtonCompoment text={'Save'}
+          action={() => {
             saveColours();
           }}
-        >
-          Save
-        </button>
-        <button className="btn btn_cancel" onClick={cancel}>
-          {" "}
-          cancel
-        </button>
+          styleClass={'btn btn_save'} />
+       
+        
+        <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
+        
       </div>
     </div>
   );

@@ -1,12 +1,5 @@
 import React from "react";
-
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
+import ButtonCompoment from "../../partials/ButtonCompoment";
 
 interface Props {
   colours: Colour[] | undefined;
@@ -41,10 +34,9 @@ const ColourCueList = (props: Props) => {
         ) : null}
       </div>
       <div className="show-btn-div column_1_5">
-        <button className="btn btn_cancel" onClick={cancel}>
-          {" "}
-          cancel
-        </button>
+
+        <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
+
       </div>
     </div>
   );

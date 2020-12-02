@@ -5,12 +5,7 @@ import { DisplayQuery } from "../../js/request";
 
 import DisplayForm from "./partials/DisplayForm";
 
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-  default_on: boolean;
+interface DisplayInfo extends Display {
   default_show?: number;
 }
 
@@ -39,7 +34,7 @@ const DisplayEdit = (props: DetailProps) => {
     setDisplay(displayInfo);
   };
 
-  const save = async (displayInfo: Display) => {
+  const save = async (displayInfo: DisplayInfo) => {
     const result = await DisplayQuery.update(displayInfo);
     if (result.name) {
       history.push(`/displays/${result.id}`);

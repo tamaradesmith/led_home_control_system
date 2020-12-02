@@ -5,15 +5,6 @@ import { DisplayQuery } from "../../js/request";
 
 import DisplayForm from "./partials/DisplayForm";
 
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-  default_on: boolean;
-  default_show?: number;
-}
-
 const DisplayNew = () => {
   const history = useHistory();
 

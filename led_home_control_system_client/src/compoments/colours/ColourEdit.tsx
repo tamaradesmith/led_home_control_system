@@ -22,6 +22,7 @@ const ColourEdit = (props: Props) => {
     hue: -1,
     saturation: -1,
     lightness: -1,
+    id: -1
   });
 
   const getColour = async () => {

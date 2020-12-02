@@ -220,10 +220,10 @@ const ShowQuery = {
       return error;
     }
   },
-  async createCue(showId: number, cue: CueCue) {
-    cue.show_id = showId;
+  async createCue( cue: CueCue) {
+    console.log("🚀 ~ file: request.tsx ~ line 226 ~ createCue ~ cue", cue);
     try {
-      const res = await fetch(`${BASE_URL}/shows/${showId}/cue`, {
+      const res = await fetch(`${BASE_URL}/shows/${cue.show_id}/cue`, {
         method: "POST",
         credentials: "include",
         headers: {
@@ -251,12 +251,7 @@ const ShowQuery = {
 
 const LedQuery = {
   async sendColour(
-    display: {
-      id: number;
-      led_number: number;
-      ipaddress: string;
-      name: string;
-    },
+    display: Display,
     colour: { hue: number; saturation: number; lightness: number; }
   ) {
     try {

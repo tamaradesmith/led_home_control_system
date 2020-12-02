@@ -2,7 +2,7 @@ interface Display {
   name: string;
   ipaddress: string;
   led_number: number;
-  id?: number | string;
+  id?: number;
   default_on?: boolean;
 }
 
@@ -17,9 +17,11 @@ interface Show {
 interface CueShow extends Show {
   cue?: CueCue[];
 }
+
 interface PatternShow extends Show {
   cue?: PatternCue;
 }
+
 interface RandomShow extends Show {
   cue?: RandomCue;
 }

@@ -1,21 +1,7 @@
 import React, { useState, useEffect } from "react";
+
 import ColourList from "../../colours/partials/ColourList";
-
-// interface SaveCue {
-//   wait_time: number;
-//   pattern_length: number;
-//   fade: number;
-//   colours: number[];
-// }
-
-// interface UpdateCue {
-//   id: number;
-//   show_id: number;
-//   wait_time: number;
-//   pattern_length: number;
-//   fade: number;
-//   colours: number[];
-// }
+import ButtonCompoment from "../../partials/ButtonCompoment";
 
 interface Props {
   colours: Colour[] | undefined;
@@ -200,18 +186,13 @@ const PatternShow = (props: Props) => {
       />
 
       <div className="show-btn-div column_1_5">
-        <button className="btn btn_save" onClick={test}>
-          {" "}
-          Test
-        </button>
-        <button className="btn btn_save" onClick={editPattern ? update : save}>
-          {" "}
-          Save
-        </button>
-        <button className="btn btn_cancel" onClick={cancel}>
-          {" "}
-          Cancel
-        </button>
+
+        <ButtonCompoment text={'Test'} action={test} styleClass={'btn btn_save'} />
+
+        <ButtonCompoment text={'Save'} action={editPattern ? update : save} styleClass={'btn btn_save'} />
+
+        <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
+
       </div>
       <div className={colourListVisable ? "" : "hidden"}>
         <ColourList

@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from "react";
-interface Show {
-  name: string;
-  id: number;
-  display_id: number;
-}
+
+import ButtonCompoment from "../../partials/ButtonCompoment";
 
 interface Props {
   shows: Show[];
@@ -41,7 +38,7 @@ const ShowList = (props: Props) => {
             <div key={show.id} onClick={() => playShow(show)}>
               <p
                 className={
-                 currentShow ? currentShow.id === show.id ? "selected" : "non-selected" : 'non-selected'
+                  currentShow ? currentShow.id === show.id ? "selected" : "non-selected" : 'non-selected'
                 }
               >
                 {show.name}
@@ -51,13 +48,11 @@ const ShowList = (props: Props) => {
         </>
       ) : null}
       <div className="btn-div">
-        <button className="btn btn_save" onClick={saveShow}>
-          Save
-        </button>
-        <button className="btn btn_cancel" onClick={cancel}>
-          {" "}
-          cancel
-        </button>
+
+        <ButtonCompoment text={'Save'} styleClass={"btn btn_save"} action={saveShow} />
+
+        <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
+
       </div>
     </div>
   );

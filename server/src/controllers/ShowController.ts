@@ -90,7 +90,6 @@ ShowController.patch(
     const id: number = parseInt(req.params.id);
     const { show, cue } = req.body;
     const validShow = ShowModel.validShow(show, true);
-    console.log("🚀 ~ file: ShowController.ts ~ line 93 ~ validShow", validShow);
   
     if (validShow === true) {
       try {
@@ -125,9 +124,10 @@ ShowController.post(
   "/:id/cue",
   async (req: Request, res: Response, next: NextFunction) => {
     const { cue } = req.body;
+    console.log("🚀 ~ file: ShowController.ts ~ line 127 ~ cue", cue);
     const showId = parseInt(req.params.id);
     try {
-      const savesCue = await ShowModel.createCue(showId, cue);
+      const savesCue = await ShowModel.createCue(showId, [cue]);
       res.status(200).send(savesCue[0]);
     } catch (error) {
       next(error);

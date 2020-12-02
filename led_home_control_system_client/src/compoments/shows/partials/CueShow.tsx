@@ -17,6 +17,7 @@ interface Props {
   display: Display | undefined;
   editCue?: CueShow;
   updateShow: Function;
+  handleRedirect: Function;
 }
 
 const noLed = {
@@ -37,6 +38,7 @@ const CueShow = (props: Props) => {
     cancel,
     display,
     editCue,
+    handleRedirect
   } = props;
 
   // Lists
@@ -46,14 +48,7 @@ const CueShow = (props: Props) => {
   const [colourListVisable, setColourListVisable] = useState(false);
   const [currentLed, setCurrentLed] = useState(noLed);
 
-  const [cueList, setCuelist] = useState<CueCue[]>([
-    {
-      time_code: -1,
-      leds: [noLed],
-    },
-  ]);
-
-  // const [saveLEd, setEditCueInfo] = useState({})
+  const [cueList, setCuelist] = useState<CueCue[]>([{ time_code: -1, leds: [noLed], },]);
 
   const [timeCode, setTimeCode] = useState(0);
   const [editCueId, setEditCueId] = useState<number | undefined>(-1);
@@ -85,7 +80,6 @@ const CueShow = (props: Props) => {
           default:
             break;
         }
-        console.log(ledColours);
       }
     });
     return ledColours;
@@ -119,7 +113,21 @@ const CueShow = (props: Props) => {
   const save = async () => {
     const leds = changedLedValue('save');
     const show = showId === -1 ? cueInfo('save', leds) : cueInfo('cue', leds);
-    await handleSave(show);
+    if (showId === -1) {
+      const newShow = await handleSave(show);
+      if (!isNaN(parseInt(newShow))) {
+        setShowId(newShow);
+      } else {
+        console.error("saved Cue ", newShow);
+      }
+    } else {
+      const newCue = await handleSaveCue(show[0]);
+      if (!isNaN(parseInt(newCue))) {
+        getCues();
+      } else {
+        console.error("saved Cue ", newCue);
+      }
+    }
   };
 
   const saveAs = async () => {
@@ -130,7 +138,7 @@ const CueShow = (props: Props) => {
     const leds = changedLedValue('update');
     const cue = cueInfo('update', leds);
     const updatedLeds = await updateShow(cue);
-    if (parseInt(updatedLeds.id) === NaN) {
+    if (!isNaN(parseInt(updatedLeds.id))) {
       getCues();
     } else {
       console.error("saved Cue ", updatedLeds);
@@ -141,7 +149,7 @@ const CueShow = (props: Props) => {
     const leds = changedLedValue('save');
     if (type === "show") {
       const allCues = cueList;
-      // allCues.push(leds[0]);
+      allCues.push({ time_code: timeCode, leds: leds });
       handleCueTest(allCues);
     } else {
       handleTest(leds);
@@ -217,7 +225,7 @@ const CueShow = (props: Props) => {
     const list = createList();
     const cueInfo = [...cueList[index].leds];
     cueInfo.forEach(aLed => {
-      list[aLed.led_number] = aLed;
+      list[aLed.led_number] = Object.assign({}, aLed);;
     });
     setLedList([...list]);
     setTimeCode(cueList[index].time_code);
@@ -247,12 +255,14 @@ const CueShow = (props: Props) => {
     if (display) {
       createLedList();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [display]);
 
   useEffect(() => {
     if (showId !== -1) {
       getCues();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showId]);
 
   return (
@@ -313,15 +323,19 @@ const CueShow = (props: Props) => {
             action={() => { test("cue"); }}
             styleClass={'btn-big btn_save'} />
 
-          <ButtonCompoment text={'Save'}
-            action={() => { editCue ? update() : save(); }}
-            styleClass={'btn-big btn_save'} />
-
           {editCue ? (
             <ButtonCompoment text={'Save As'}
               action={() => { saveAs(); }}
               styleClass={'btn-big btn_save'} />
           ) : null}
+
+          <ButtonCompoment text={'Save'}
+            action={() => { editCue ? update() : save(); }}
+            styleClass={'btn btn_save'} />
+
+          <ButtonCompoment text={'Finish'}
+            action={() => { handleRedirect(showId); }}
+            styleClass={'btn btn_save'} />
 
           <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
         </div>

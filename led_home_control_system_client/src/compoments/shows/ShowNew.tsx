@@ -11,9 +11,15 @@ const ShowNew = () => {
     history.push("/shows");
   };
 
+
+
+  const redircetToShowPage = (id : number) => {
+    history.push(`/shows/${id}`);
+  };
+
   const handleSave = async (show: Show, cue: CueCue | PatternCue | RandomCue, type: string) => {
     const res = await ShowQuery.create(show, cue);
-    if (typeof parseInt(res.id) === "number") {
+    if (!isNaN(parseInt(res.id))) {
       if (type !== "cue") {
         history.push(`/shows/${res.id}`);
       } else {
@@ -32,7 +38,7 @@ const ShowNew = () => {
       <div className="card-show">
         <h2 className="card-header">New Show Form</h2>
         <p id="errorMessage"></p>
-        <ShowForm cancel={cancel} save={handleSave} />
+        <ShowForm cancel={cancel} save={handleSave} handleRedirect={redircetToShowPage} />
       </div>
     </div>
   );

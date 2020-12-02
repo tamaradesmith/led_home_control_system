@@ -4,21 +4,7 @@ import DisplayContext from "../../partials/DisplayContext";
 import ColourSlider from "./ColourSlider";
 
 import { LedQuery } from "../../../js/request";
-
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-}
+import ButtonCompoment from "../../partials/ButtonCompoment";
 
 interface Props {
   cancel: (event: React.MouseEvent<HTMLElement>) => void;
@@ -71,7 +57,7 @@ const ColourForm = (props: Props) => {
       lightness,
     };
     const displayInfo = {
-      id: testDisplay ? (testDisplay.id === undefined ? 0 : testDisplay.id) : 0,
+      id: testDisplay && testDisplay.id !== undefined ? testDisplay.id : 0 , 
       led_number: testDisplay ? testDisplay.led_number : 0,
       ipaddress: testDisplay ? testDisplay.ipaddress : "none",
       name: testDisplay ? testDisplay.name : "none",
@@ -155,19 +141,15 @@ const ColourForm = (props: Props) => {
         className="colour-swatch"
         style={{ background: `hsl(${hue}, ${saturation}%, ${lightness}%)` }}
       ></div>
+
       <div className="colour-btn-div ">
-        <button className="btn btn_save" onClick={testColour}>
-          {" "}
-          Test
-        </button>
-        <button className="btn btn_save" onClick={handleSave}>
-          {" "}
-          Save
-        </button>
-        <button className="btn btn_cancel" onClick={cancel}>
-          {" "}
-          Cancel
-        </button>
+
+        <ButtonCompoment text={'Test'} styleClass={"btn btn_save"} action={testColour} />
+    
+        <ButtonCompoment text={'Save'} action={handleSave} styleClass={"btn btn_save"}/>
+   
+        <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
+
       </div>
     </div>
   );

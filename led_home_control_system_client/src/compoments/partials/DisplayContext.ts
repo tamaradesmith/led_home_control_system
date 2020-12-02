@@ -1,12 +1,5 @@
 import React from "react";
 
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-}
-
 const DisplayContext = React.createContext<{
   displays: Display[];
   missingDisplays: Display[];

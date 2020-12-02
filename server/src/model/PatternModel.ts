@@ -27,8 +27,7 @@ export const PatternModel = {
   },
   async create(cue) {
     cue.colours = joinColour(cue.colours);
-    const savedCue = await knex("patternShows").insert([cue]).returning("*");
-    savedCue[0].colours = splitColour(savedCue[0].colours);
+    const savedCue = await knex("patternShows").insert([cue]).returning("id");
     return savedCue;
   },
 

@@ -56,7 +56,7 @@ const getTypeName = async (typeId) => {
   const types = await knex("showTypes").select("*");
   let name: string = "";
   types.forEach((type) => {
-    if (type.id === typeId) {
+    if (type.id === `${typeId}`) {
       name = type.type;
     }
   });
@@ -180,7 +180,6 @@ const ShowModel = {
       const newShow = await knex("shows").insert(show).returning("id");
       if (cue) {
         const type = await getTypeName(show.type_id);
-        cue[0].show_id = newShow[0];
         let newCue;
         switch (type) {
           case "pattern":
@@ -198,9 +197,9 @@ const ShowModel = {
             } catch (error) {
               return error;
             }
-
             break;
           default:
+            return new Error('Something went wrong');
             break;
         }
       }
@@ -214,10 +213,10 @@ const ShowModel = {
       delete show.cue;
     }
     const updateShow = await knex("shows")
-    .where({ id })
-    .update(show)
+      .where({ id })
+      .update(show)
       .returning("id");
-    const type = await getTypeName(show.type_id)
+    const type = await getTypeName(show.type_id);
     if (cue) {
       switch (type) {
         case "pattern":
@@ -300,16 +299,16 @@ const ShowModel = {
         updatedCue = await RandomModel.update(cue);
       default:
         break;
-        case 'cue':
-          updatedCue = await CueModel.update(cue)
+      case 'cue':
+        updatedCue = await CueModel.update(cue);
         break;
     }
     return updatedCue;
   },
   async deleteCue(cueId) {
     try {
-      const cue =  await CueModel.delect(cueId);
-      return cue
+      const cue = await CueModel.delect(cueId);
+      return cue;
     } catch (error) {
       return error;
     }

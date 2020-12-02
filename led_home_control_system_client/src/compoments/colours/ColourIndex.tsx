@@ -3,14 +3,13 @@ import { useHistory } from "react-router-dom";
 
 import { ColourQuery } from "../../js/request";
 
-interface Colour {
-  name: string;
-  hue: number;
-  saturation: number;
-  lightness: number;
-  id?: number;
-}
-
+// interface Colour {
+//   name: string;
+//   hue: number;
+//   saturation: number;
+//   lightness: number;
+//   id?: number;
+// }
 
 const ColourIndex = () => {
 

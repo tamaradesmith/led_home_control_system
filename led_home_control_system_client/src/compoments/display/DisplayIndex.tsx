@@ -3,13 +3,14 @@ import { useHistory } from "react-router-dom";
 
 import DisplayContext from "../partials/DisplayContext";
 import { DisplayQuery } from "../../js/request";
+import ButtonCompoment from "../partials/ButtonCompoment";
 
-interface Display {
-  name: string;
-  ipaddress: string;
-  led_number: number;
-  id?: number;
-}
+// interface Display {
+//   name: string;
+//   ipaddress: string;
+//   led_number: number;
+//   id?: number;
+// }
 
 interface Props {
   update: Function;
@@ -39,8 +40,8 @@ const DisplayIndex = (props: Props) => {
     <main className="DisplayIndex">
       <div className="card-index">
         <h2 className="card-header"> Available LED Displays </h2>
-        <button>All OFF</button>
-        <button>All On</button>
+        {/* <button>All OFF</button>
+        <button>All On</button> */}
         <div className="list-div">
           <div className="display-list">
             <h4 className="column_1 table-header">Name</h4>
@@ -62,8 +63,8 @@ const DisplayIndex = (props: Props) => {
               ))}
             </>
           ) : (
-            <p className="display-message">No Available Displays</p>
-          )}
+              <p className="display-message">No Available Displays</p>
+            )}
         </div>
       </div>
 
@@ -72,14 +73,10 @@ const DisplayIndex = (props: Props) => {
           <h2 className="card-header">Unavailable LED Display</h2>
           <div className="list-div">
             <div className="display-list toCapital">
-              <button
-                className="btn btn-search column_3"
-                onClick={() => {
-                  updateAll();
-                }}
-              >
-                search All
-              </button>
+              <ButtonCompoment text={'Search All'} action={() => {
+                updateAll();
+              }} styleClass={"btn btn-search column_3"} />
+
               <h4 className="column_1 table-header">Name</h4>
               <h4 className="column_2 table-header">ipaddress</h4>
               <h4 className="column_3 table-header">search</h4>
@@ -92,14 +89,13 @@ const DisplayIndex = (props: Props) => {
                 <p onClick={() => redirctToShow(display.id ? display.id : 0)}>
                   {display.ipaddress}
                 </p>
-                <button
-                  className="btn btn-search"
-                  onClick={() => {
+                <ButtonCompoment text={'Search'}
+                  styleClass={"btn btn-search"}
+                  action={() => {
                     searchDisplay(display.id ? display.id : 0);
                   }}
-                >
-                  Search
-                </button>
+                />
+
                 <p id={`error-${display.id}`} className="hidden">
                   {" "}
                   Display not founded
