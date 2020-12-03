@@ -7,52 +7,546 @@ export async function seed(knex: Knex): Promise<void> {
   await knex("shows").del();
 
   // Inserts seed entries
-  await knex("displays").insert([
-    { id: 1, name: "ivan", ipaddress: "192.168.0.202", led_number: 16 },
-    { id: 2, name: "village", ipaddress: "192.168.1.64", led_number: 34 },
-    { id: 3, name: "garland", ipaddress: "192.168.1.65", led_number: 8 },
-  ]);
+
   // SEED COLOUR
   await knex("colours").insert([
-    { id: 1, name: "red", hue: "360", saturation: 100, lightness: 5 },
-    { id: 2, name: "blue", hue: "240", saturation: 100, lightness: 5 },
-    { id: 3, name: "green", hue: "100", saturation: 100, lightness: 5 },
-  ]);
+    { name: 'red', hue: 1, saturation: 100, lightness: 50 },
+    {
+      name: 'red-orange ',
+      hue: 6,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'orange-red',
+      hue: 9,
+      saturation: 100,
+      lightness: 50
+    },
+    { name: 'orange', hue: 12, saturation: 100, lightness: 50 },
+    {
+      name: 'orange-lt',
+      hue: 18,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'yellow- orange ',
+      hue: 21,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'yellow ',
+      hue: 30,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'yellow-lemon',
+      hue: 33,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'yellow-lt',
+      hue: 37,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'yellow-lime',
+      hue: 42,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'green-yellow',
+      hue: 55,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'green-lt',
+      hue: 58,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'green-lime',
+      hue: 70,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'green- med yellow',
+      hue: 75,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'green- med',
+      hue: 80,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'green-med ii',
+      hue: 85,
+      saturation: 100,
+      lightness: 50
+    },
+    { name: 'green', hue: 90, saturation: 100, lightness: 50 },
+    {
+      name: 'green ii',
+      hue: 95,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'green-med dk',
+      hue: 100,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'green-med dk ii',
+      hue: 105,
+      saturation: 100,
+      lightness: 50
+    },
+    { name: 'green', hue: 110, saturation: 100, lightness: 50 },
+    {
+      name: 'green-dk',
+      hue: 120,
+      saturation: 100,
+      lightness: 50
+    },
+    { name: 'aqua', hue: 125, saturation: 100, lightness: 50 },
+    { name: 'teal', hue: 130, saturation: 100, lightness: 50 },
+    {
+      name: 'aqua ii',
+      hue: 135,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'blue-teal',
+      hue: 140,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'blue-lt',
+      hue: 145,
+      saturation: 100,
+      lightness: 50
+    },
+    { name: 'cyan', hue: 155, saturation: 100, lightness: 50 },
+    {
+
+      name: 'blue med',
+      hue: 160,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'blue-med',
+      hue: 175,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'blue-med ii',
+      hue: 180,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'blue- med dk',
+      hue: 195,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'blue med dk ii',
+      hue: 200,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'blue -dk',
+      hue: 220,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'blue -dk ii',
+      hue: 230,
+      saturation: 100,
+      lightness: 50
+    },
+    { name: 'blue', hue: 240, saturation: 100, lightness: 50 },
+    { name: 'intgo', hue: 245, saturation: 100, lightness: 50 },
+    {
+      name: 'purple-blue',
+      hue: 250,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'purple-blue lt',
+      hue: 255,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'purple-lt ii',
+      hue: 260,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'purple ',
+      hue: 265,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'purple-pinky',
+      hue: 275,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'purple-pink',
+      hue: 290,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'pink-purple',
+      hue: 295,
+      saturation: 100,
+      lightness: 50
+    },
+    { name: 'pink', hue: 315, saturation: 100, lightness: 50 },
+    {
+      name: 'pink-hot',
+      hue: 320,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'pink med',
+      hue: 330,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'magenta',
+      hue: 335,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'magenta ii',
+      hue: 345,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'pink dk',
+      hue: 350,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'red-rose',
+      hue: 355,
+      saturation: 100,
+      lightness: 50
+    },
+    {
+      name: 'red-rouge',
+      hue: 360,
+      saturation: 100,
+      lightness: 50
+    }
+  ]
+  );
+
+  //  Colour Pre-Colour 
+  await knex("colours").insert([
+    { name: 'pre-red', hue: 1, saturation: 0, lightness: 50 },
+    {
+      name: 'pre-r-orange ',
+      hue: 6,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-orange-red',
+      hue: 9,
+      saturation: 0,
+      lightness: 50
+    },
+    { name: 'pre-orange', hue: 12, saturation: 0, lightness: 50 },
+    {
+      name: 'pre-onge-lt',
+      hue: 18,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-yellow- orange ',
+      hue: 21,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-yellow ',
+      hue: 30,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-yellow-lemon',
+      hue: 33,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-yellow-lt',
+      hue: 37,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-yellow-lime',
+      hue: 42,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-green-yellow',
+      hue: 55,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-green-lt',
+      hue: 58,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-green-lime',
+      hue: 70,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-green- med yellow',
+      hue: 75,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-green- med',
+      hue: 80,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-green-med ii',
+      hue: 85,
+      saturation: 0,
+      lightness: 50
+    },
+    { name: 'pre-green', hue: 90, saturation: 0, lightness: 50 },
+    {
+      name: 'pre-gen ii',
+      hue: 95,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-green-med dk',
+      hue: 100,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-green-med dk ii',
+      hue: 105,
+      saturation: 0,
+      lightness: 50
+    },
+    { name: 'pre-green', hue: 110, saturation: 0, lightness: 50 },
+    {
+      name: 'pre-gen-dk',
+      hue: 120,
+      saturation: 0,
+      lightness: 50
+    },
+    { name: 'pre-aqua', hue: 125, saturation: 0, lightness: 50 },
+    { name: 'pre-teal', hue: 130, saturation: 0, lightness: 50 },
+    {
+    name: 'pre-aa ii',
+      hue: 135,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-blue-teal',
+      hue: 140,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-blue-lt',
+      hue: 145,
+      saturation: 0,
+      lightness: 50
+    },
+    { name: 'pre-cyan', hue: 155, saturation: 0, lightness: 50 },
+    {
+    name: 'pre-blue med',
+      hue: 160,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-blue-med',
+      hue: 175,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-blue-med ii',
+      hue: 180,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-blue- med dk',
+      hue: 195,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-blue med dk ii',
+      hue: 200,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-blue -dk',
+      hue: 220,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-blue -dk ii',
+      hue: 230,
+      saturation: 0,
+      lightness: 50
+    },
+    { name: 'pre-blue', hue: 240, saturation: 0, lightness: 50 },
+    { name: 'pre-intgo', hue: 245, saturation: 0, lightness: 50 },
+    {
+    name: 'pre-purple-blue',
+      hue: 250,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-purple-blue lt',
+      hue: 255,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-purple-lt ii',
+      hue: 260,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-purple ',
+      hue: 265,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-purple-pinky',
+      hue: 275,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-purple-pink',
+      hue: 290,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-pink-purple',
+      hue: 295,
+      saturation: 0,
+      lightness: 50
+    },
+    { name: 'pre-pink', hue: 315, saturation: 0, lightness: 50 },
+    {
+      name: 'pre-pk-hot',
+      hue: 320,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-pink med',
+      hue: 330,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-magenta',
+      hue: 335,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-magenta ii',
+      hue: 345,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-pink dk',
+      hue: 350,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-red-rose',
+      hue: 355,
+      saturation: 0,
+      lightness: 50
+    },
+    {
+      name: 'pre-red-rouge',
+      hue: 360,
+      saturation: 0,
+      lightness: 50
+    }
+  ]
+  );
 
   await knex("showTypes").insert([
-    {id: 1, type: "pattern" },
-    {id: 2, type: "cue" },
-    {id: 3, type: "random" },
+    { type: "pattern" },
+    { type: "cue" },
+    { type: "random" },
   ]);
 
-  // SEED SHOWS
-  await knex("shows").insert([
-    { id: 4, name: "move red", type_id: 1 },
-    { id: 2, name: "move green", type_id: 1 },
-    { id: 3, name: "move blue", type_id: 1 },
-    { id: 11, name: "cue 3", display_id: 1, type_id: 2 },
-    { id: 5, name: "cue 2", display_id: 1, type_id: 2 },
-    { id: 6, name: "frosty cue 1", display_id: 1, type_id: 2 },
-    { id: 7, name: "cue 4", display_id: 2, type_id: 2 },
-    { id: 8, name: "patten purple", display_id: 3, type_id: 1 },
-    { id: 9, name: "cue 5", display_id: 3, type_id: 2 },
-    { id: 10, name: "pattern green", type_id: 1 },
-    { id: 1, name: "random", type_id: 1 },
-  ]);
-
-  await knex("displays").where({ id: 1 }).update({ default_show: 1 });
-  await knex("displays").where({ id: 2 }).update({ default_show: 7 });
-  await knex("displays").where({ id: 3 }).update({ default_show: 9 });
-
-  await knex("patternShows").insert([
-    { id: 1, show_id: 1, colours: "1,2,3", pattern_length: 3, wait_time: 3 },
-    { id: 2, show_id: 2, colours: "2,3", pattern_length: 2, wait_time: 3 },
-    {
-      id: 3,
-      show_id: 3,
-      colours: "3,2,3",
-      pattern_length: 3,
-      wait_time: 6,
-    },
-  ]);
 }

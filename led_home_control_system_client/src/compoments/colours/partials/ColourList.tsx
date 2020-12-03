@@ -22,7 +22,6 @@ const ColourList = (props: Props) => {
 
   return (
     <div className="ColourList">
-      <p> Select Colours</p>
       <div className="colours-selected-div">
         <p>Selected Colours: </p>
         {selected.length > 0 ? (
@@ -43,7 +42,7 @@ const ColourList = (props: Props) => {
         ) : null}
       </div>
       {colours ? (
-        <>
+        <div className="colour-list">
           {colours.map((colour: Colour) => (
             <div
               key={colour.id}
@@ -58,18 +57,15 @@ const ColourList = (props: Props) => {
               {colour.name}
             </div>
           ))}
-        </>
+        </div>
       ) : null}
       <div className="btn-div">
         <ButtonCompoment text={'Save'}
-          action={() => {
-            saveColours();
-          }}
+          action={() => { saveColours(); }}
           styleClass={'btn btn_save'} />
-       
-        
+
         <ButtonCompoment text={'Cancel'} action={cancel} styleClass={'btn btn_cancel'} />
-        
+
       </div>
     </div>
   );

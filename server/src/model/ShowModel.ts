@@ -352,7 +352,7 @@ const ShowModel = {
       case "pattern":
         const colours = await getColours(show.colours, []);
         show.colours = colours;
-        const play = await LedController.playShow(display[0], show);
+        await LedController.playShow(display[0], show);
         break;
       case "random":
         await LedController.playShowRandom(display[0], show);

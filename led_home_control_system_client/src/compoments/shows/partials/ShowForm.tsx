@@ -32,7 +32,7 @@ const ShowForm = (props: Props) => {
   // Show info
 
   const [showName, setShowName] = useState("");
-  const [selectedType, setSelectedType] = useState({ type: "cue", id: 2 });
+  const [selectedType, setSelectedType] = useState({ type: "", id: 0 });
   const [display, setDisplay] = useState(0);
   const [testDisplay, setTestDisplay] = useState(0);
   const [testDisplaySelected, setTestDisplaySelected] = useState(false);
@@ -126,7 +126,6 @@ const ShowForm = (props: Props) => {
 
   const saveCue = async ( cue: CueCue) => {
     const savedCue = await ShowQuery.createCue(cue);
-    console.log("🚀 ~ file: ShowForm.tsx ~ line 128 ~ saveCue ~ savedCue", savedCue);
     return savedCue;
   };
 

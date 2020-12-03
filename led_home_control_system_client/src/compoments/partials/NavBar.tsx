@@ -3,6 +3,7 @@ import { NavLink } from "react-router-dom";
 import { useHistory } from "react-router-dom";
 
 import ColourMenuBar from "../colours/partials/ColourMenuBar";
+import DisplayMenuBar from "../display/partials/DisplayMenuBar";
 import ShowMenuBar from "../shows/partials/ShowsMenuBar";
 
 const NavBar = () => {
@@ -10,28 +11,34 @@ const NavBar = () => {
 
   const [colourMenu, setColourMenu] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
+  const [displayMenu, setDisplayMenu] = useState(false);
 
   const handleColour = () => {
-    setColourMenu(colourMenu ? false : true);
+    setColourMenu(true);
   };
 
   const handleShow = () => {
-    setShowMenu(showMenu ? false : true);
+    setShowMenu(true);
   };
 
   const handleDisplay = () => {
     setColourMenu(false);
     setShowMenu(false);
+    setDisplayMenu(true);
+
   };
 
   useEffect(() => {
     if (history.location.pathname.includes("colour")) {
       setColourMenu(true);
       setShowMenu(false);
+      setDisplayMenu(false);
     } else if (history.location.pathname.includes("show")) {
       setShowMenu(true);
       setColourMenu(false);
+      setDisplayMenu(false);
     } else {
+      setDisplayMenu(true);
       setShowMenu(false);
       setColourMenu(false);
     }
@@ -43,7 +50,7 @@ const NavBar = () => {
         <h4 className="nav-header">LED Home Control System</h4>
       </div>
       <div className="nav-div">
-        <NavLink to="/displays" onClick={handleDisplay} className="nav-item">
+        {/* <NavLink to="/displays" onClick={handleDisplay} className="nav-item">
           Displays
         </NavLink>
         <NavLink
@@ -52,21 +59,32 @@ const NavBar = () => {
           className="nav-item"
         >
           Add a Display
-        </NavLink>
+        </NavLink> */}
+        <NavLink to={"/displays"}
+          className="nav-item"
+          onClick={handleDisplay}>
+          Displays
+          </NavLink>
+
+
+
         <NavLink
-          to={!colourMenu ? "/colours" : "/displays"}
+          to={"/colours"}
           className="nav-item"
           onClick={handleColour}
         >
           colours
         </NavLink>
         <NavLink
-          to={!showMenu ? "/shows" : "/displays"}
+          to={"/shows"}
           className="nav-item"
           onClick={handleShow}
         >
           show
         </NavLink>
+      </div>
+      <div className={displayMenu ? "" : "hidden"}>
+        <DisplayMenuBar />
       </div>
       <div className={colourMenu ? "" : "hidden"}>
         <ColourMenuBar />

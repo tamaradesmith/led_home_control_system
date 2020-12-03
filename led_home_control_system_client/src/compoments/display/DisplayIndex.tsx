@@ -68,6 +68,7 @@ const DisplayIndex = (props: Props) => {
         </div>
       </div>
 
+      {console.log("🚀 ~ file: DisplayIndex.tsx ~ line 72 ~ DisplayIndex ~ allDisplays.missingDisplays.length", allDisplays.missingDisplays)}
       {allDisplays.missingDisplays.length > 0 ? (
         <div className="card-index">
           <h2 className="card-header">Unavailable LED Display</h2>

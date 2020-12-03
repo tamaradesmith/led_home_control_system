@@ -17,7 +17,7 @@ interface Display {
   ipaddress: string;
   led_number: number;
   default_on: boolean;
-  default_show?: { name: string; id: number; display_id: number | null };
+  default_show?: { name: string; id: number; display_id: number | null; };
   shows?: [];
 }
 interface Result {
@@ -200,7 +200,7 @@ const DisplayModel = {
   },
   async searchAll() {
     const displays = await this.getAll();
-    const seaching = await searchPromise(displays, [], []);
+    const seaching = displays.length > 0 ? await searchPromise(displays, [], []) : { found: [], not_found: [] };
     return seaching;
   },
   async getShows(id: number) {
@@ -219,7 +219,7 @@ const DisplayModel = {
     const display = await this.getOne(id);
     const show = await ShowModel.getOne(showId);
     const play = await LedController.playShow(display[0], show[0].cue);
-    return "playing show?"
+    return "playing show?";
   },
 };
 
