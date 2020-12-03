@@ -48,7 +48,7 @@ const DisplayIndex = (props: Props) => {
             <h4 className="column_2 table-header">ipaddress</h4>
             <h4 className="column_3 table-header">On/Off</h4>
           </div>
-          {allDisplays.displays.length > 0 ? (
+          {allDisplays.displays && allDisplays.displays.length > 0 ? (
             <>
               {allDisplays.displays.map((display: Display) => (
                 <div
