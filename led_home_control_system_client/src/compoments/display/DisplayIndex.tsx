@@ -48,7 +48,7 @@ const DisplayIndex = (props: Props) => {
             <h4 className="column_2 table-header">ipaddress</h4>
             <h4 className="column_3 table-header">On/Off</h4>
           </div>
-          {allDisplays.displays && allDisplays.displays.length > 0 ? (
+          {allDisplays.displays&& allDisplays.displays.length > 0 ? (
             <>
               {allDisplays.displays.map((display: Display) => (
                 <div
@@ -68,8 +68,7 @@ const DisplayIndex = (props: Props) => {
         </div>
       </div>
 
-      {console.log("🚀 ~ file: DisplayIndex.tsx ~ line 72 ~ DisplayIndex ~ allDisplays.missingDisplays.length", allDisplays.missingDisplays)}
-      {allDisplays.missingDisplays.length > 0 ? (
+      { allDisplays.missingDisplays && allDisplays.missingDisplays.length > 0 ? (
         <div className="card-index">
           <h2 className="card-header">Unavailable LED Display</h2>
           <div className="list-div">
