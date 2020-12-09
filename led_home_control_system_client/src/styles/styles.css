@@ -246,7 +246,7 @@ input {
 /* DISPLAY STYLES */
 .display-list {
   display: grid;
-  grid-template-columns: 200px 200px 125px 200px;
+  grid-template-columns: 200px 200px 125px 150px;
   padding: 0.25em;
 }
 .display-message {

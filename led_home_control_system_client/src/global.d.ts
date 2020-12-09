@@ -4,7 +4,10 @@ interface Display {
   led_number: number;
   id?: number;
   default_on?: boolean;
+  default_show?: number;
+
 }
+
 
 interface Show {
   name: string;

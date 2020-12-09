@@ -61,6 +61,13 @@ const searchPromise = async (
   return { found, not_found };
 };
 
+const getCurrentShow = async (id: number) => {
+  return await knex("shows")
+    .select("name", "shows.id", 'type_id', 'type')
+    .where("shows.id", id)
+    .join("showTypes", "showTypes.id", "type_id");
+};
+
 const DisplayModel = {
   async getAll() {
     try {
@@ -211,15 +218,47 @@ const DisplayModel = {
       .groupBy("name", "display_id", "id")
       .orderBy("name");
   },
-  async getCurrentShow(id: number) {
-    return await knex("shows").select("name", "id").where({ id });
-  },
+
 
   async playShow(id, showId) {
     const display = await this.getOne(id);
     const show = await ShowModel.getOne(showId);
     const play = await LedController.playShow(display[0], show[0].cue);
     return "playing show?";
+  },
+
+  async playAll() {
+    const displays = await this.getAll();
+    displays.forEach(async (display, index) => {
+      if (display.default_show) {
+        const show = await ShowModel.getOne(display.default_show);
+        setTimeout(() => {
+          console.log('playing: ', display.name);
+          LedController.play(display, show[0]);
+        }, 200 * index);
+      }
+    });
+  },
+
+  async playOne(displayId: number) {
+    const display = await this.getOne(displayId);
+      if (display[0].default_show) {
+        const show = await ShowModel.getOne(display[0].default_show);
+          LedController.play(display[0], show[0]);
+      }
+  },
+
+  async stopAll() {
+    const displays = await this.getAll();
+    displays.forEach((display, index) => {
+      setTimeout(() => {
+        LedController.stop(display);
+      }, 200 * index);
+    });
+  },
+  async stopOne(displayId: number) {
+    const display = await this.getOne(displayId);
+    LedController.stop(display[0]);
   },
 };
 

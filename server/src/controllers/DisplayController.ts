@@ -6,7 +6,6 @@ var express = require("express");
 export const DisplayController: Router = express.Router();
 
 import { DisplayModel } from "../model/DisplayModel";
-// import { ColourController } from "./ColourController";
 import { LedController } from "./LedController";
 
 interface Display {
@@ -67,6 +66,51 @@ DisplayController.get('/:id/shows/:showId',
   } catch (error) {
     next(error)
   }
+  }
+)
+
+DisplayController.get('/playAll',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      DisplayModel.playAll()
+      res.sendStatus(200);
+    } catch (error) {
+      next(error)
+  }
+  }
+)
+DisplayController.get('/:id/play',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const { id } = req.params
+
+    try {
+      DisplayModel.playOne(parseInt(id));
+      res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
+  }
+)
+DisplayController.get('/stopAll',
+  async (req: Request, res: Response, next: NextFunction) => {
+    try {
+      DisplayModel.stopAll();
+      res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
+  }
+);
+
+DisplayController.get('/:id/stop',
+  async (req: Request, res: Response, next: NextFunction) => {
+    const {id} = req.params
+    try {
+      DisplayModel.stopOne(parseInt(id));
+      res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
   }
 )
 

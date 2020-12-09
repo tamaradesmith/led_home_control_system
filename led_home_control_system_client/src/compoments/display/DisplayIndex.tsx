@@ -2,15 +2,8 @@ import React, { useContext } from "react";
 import { useHistory } from "react-router-dom";
 
 import DisplayContext from "../partials/DisplayContext";
-import { DisplayQuery } from "../../js/request";
+import { DisplayQuery, LedQuery } from "../../js/request";
 import ButtonCompoment from "../partials/ButtonCompoment";
-
-// interface Display {
-//   name: string;
-//   ipaddress: string;
-//   led_number: number;
-//   id?: number;
-// }
 
 interface Props {
   update: Function;
@@ -36,29 +29,52 @@ const DisplayIndex = (props: Props) => {
     }
   };
 
+  const playAll = () => {
+    LedQuery.playAll();
+  };
+
+  const playOne = (display: Display) => {
+    if (display.id) {
+      LedQuery.playOne(display.id);
+    }
+  };
+
+  const stopAll = () => {
+    LedQuery.stopAll();
+  };
+
+  const stopOne = (display: Display) => {
+    if (display.id) {
+      LedQuery.stopOne(display.id);
+    }
+  };
+
   return (
     <main className="DisplayIndex">
       <div className="card-index">
         <h2 className="card-header"> Available LED Displays </h2>
-        {/* <button>All OFF</button>
-        <button>All On</button> */}
+        <ButtonCompoment text={'Stop All'} action={stopAll} styleClass={'btn btn_cancel'} />
+        <ButtonCompoment text={'Play All'} action={playAll} styleClass={'btn btn_save'} />
+
         <div className="list-div">
           <div className="display-list">
             <h4 className="column_1 table-header">Name</h4>
             <h4 className="column_2 table-header">ipaddress</h4>
-            <h4 className="column_3 table-header">On/Off</h4>
+            <h4 className="column_3 table-header">play</h4>
+            <h4 className="column_4 table-header">stop</h4>
           </div>
-          {allDisplays.displays&& allDisplays.displays.length > 0 ? (
+          {allDisplays.displays && allDisplays.displays.length > 0 ? (
             <>
               {allDisplays.displays.map((display: Display) => (
                 <div
                   key={display.id}
                   className="display-list"
-                  onClick={() => redirctToShow(display.id ? display.id : 0)}
                 >
-                  <p className="display-item toCapital"> {display.name}</p>
-                  <p className="display-item"> {display.ipaddress}</p>
-                  <p className="display-item"> off</p>
+                  <p className="display-item toCapital" onClick={() => redirctToShow(display.id ? display.id : 0)}> {display.name}</p>
+                  <p className="display-item" onClick={() => redirctToShow(display.id ? display.id : 0)}> {display.ipaddress}</p>
+                  <ButtonCompoment text={'play'} action={() => { playOne(display); }} styleClass={'btn btn_save'} />
+                  <ButtonCompoment text={'stop'} action={() => { stopOne(display); }} styleClass={'btn btn_cancel'} />
+
                 </div>
               ))}
             </>

@@ -7,9 +7,8 @@ export const LedController = {
   async ledsOneColour(display, colour) {
     let result = "";
     for (let i = 0; display.led_number > i; i++) {
-      result += `${colour.hue},${colour.saturation / 100},${
-        colour.lightness / 100
-      },`;
+      result += `${colour.hue},${colour.saturation / 100},${colour.lightness / 100
+        },`;
     }
     await axios.post(
       `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/allhsl/${result}`
@@ -17,6 +16,39 @@ export const LedController = {
   },
 
   // TEST AND PLAY SHOW
+  play(display, show) {
+switch (show.type) {
+  case 'pattern':
+    this.playShow(display, show.cue)
+    break;
+  case 'random':
+    this.playShowRandom(display, show.cue);
+    break;
+  case 'cue':
+    this.playCueShow(display, show.cue);
+    break;
+  default:
+    break;
+}
+  },
+
+  stop(display) {
+    if (waitTime[display.name] !== undefined) {
+      clearInterval(waitTime[display.name]);
+    }
+    let urlString = '';
+    for (let i = 0; i < display.led_number; i++) {
+      urlString += `2,1,1,0,`;
+    }
+    try {
+      axios.post(
+        `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlString}`
+      );
+    } catch (error) {
+      error.log("playShow -> error", error);
+      return error;
+    }
+  },
 
   // Pattern
   async playShow(display, cue) {
@@ -86,13 +118,13 @@ export const LedController = {
         if (
           urlString[index] &&
           urlString[index].time_code + startTime <=
-            new Date().getTime() / 1000 &&
+          new Date().getTime() / 1000 &&
           index <= urlString.length - 1
         ) {
           if (
             urlString[index] &&
             endTime <
-              urlString[index].time_code + startTime + urlString[index].waitTime
+            urlString[index].time_code + startTime + urlString[index].waitTime
           ) {
             endTime =
               urlString[index].time_code +
@@ -105,7 +137,7 @@ export const LedController = {
           index++;
         } else if (index >= urlString.length - 1) {
           if (
-          (new Date().getTime() / 1000) >= endTime
+            (new Date().getTime() / 1000) >= endTime
           ) {
             index = 0;
             startTime = new Date().getTime() / 1000;
@@ -122,9 +154,8 @@ const createURLString = (ledsCount: number, cue) => {
   let urlString = "";
   for (let i = 0; i < ledsCount; i++) {
     const coloursInfo = cue.colours[count];
-    urlString += `${cue.fade},${coloursInfo.hue},${
-      coloursInfo.saturation / 100
-    },${coloursInfo.lightness / 100},`;
+    urlString += `${cue.fade},${coloursInfo.hue},${coloursInfo.saturation / 100
+      },${coloursInfo.lightness / 100},`;
     if (count >= cue.pattern_length - 1) {
       count = 0;
     } else {
@@ -145,9 +176,8 @@ const createURLStringRandom = (ledsCount: number, cue) => {
     if (cue.fade_random) {
       fade = Math.round(Math.random() * cue.fade);
     }
-    urlString += `${fade},${hue},${cue.saturation / 100},${
-      cue.lightness / 100
-    },`;
+    urlString += `${fade},${hue},${cue.saturation / 100},${cue.lightness / 100
+      },`;
   }
   return urlString;
 };
@@ -165,9 +195,8 @@ const createURLStringCue = (ledsCount, cues) => {
     }
     cue.leds.forEach((led) => {
       const colour = led.colour;
-      urlString[led.led_number] = `${led.fade},${colour.hue},${
-        colour.saturation / 100
-      },${colour.lightness}`;
+      urlString[led.led_number] = `${led.fade},${colour.hue},${colour.saturation / 100
+        },${colour.lightness}`;
       if (led.fade > max) {
         max = led.fade;
       }

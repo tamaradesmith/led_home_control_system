@@ -220,7 +220,7 @@ const ShowQuery = {
       return error;
     }
   },
-  async createCue( cue: CueCue) {
+  async createCue(cue: CueCue) {
     console.log("🚀 ~ file: request.tsx ~ line 226 ~ createCue ~ cue", cue);
     try {
       const res = await fetch(`${BASE_URL}/shows/${cue.show_id}/cue`, {
@@ -296,6 +296,46 @@ const LedQuery = {
           credentials: "include",
         }
       );
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async playAll() {
+    try {
+      const res = await fetch(`${BASE_URL}/displays/playAll`, {
+        credentials: 'include',
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async playOne(displayId: number) {
+    try {
+      const res = await fetch(`${BASE_URL}/displays/${displayId}/play`, {
+        credentials: 'include',
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async stopAll() {
+    try {
+      const res = await fetch(`${BASE_URL}/displays/stopAll`, {
+        credentials: 'include',
+      });
+      return res.json();
+    } catch (error) {
+      return error;
+    }
+  },
+  async stopOne(displayId: number) {
+    try {
+      const res = await fetch(`${BASE_URL}/displays/${displayId}/stop`, {
+        credentials: 'include',
+      });
       return res.json();
     } catch (error) {
       return error;
