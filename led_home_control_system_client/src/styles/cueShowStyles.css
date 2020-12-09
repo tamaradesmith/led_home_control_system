@@ -31,8 +31,10 @@
 }
 .cue-list {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   margin-left: 1.5em;
+  max-width: 95%;
 } 
 
 .led-swatch {

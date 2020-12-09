@@ -31,11 +31,11 @@ module.exports = {
     },
   },
   production: {
-    client: "postgresql",
+    client: "pg",
     connection: {
-      database: "my_db",
-      user: "username",
-      password: "password",
+      database: "led_home_control_system",
+      user: "pi",
+      password: "pi",
     },
     pool: {
       min: 2,

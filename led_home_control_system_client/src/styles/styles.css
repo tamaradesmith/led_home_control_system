@@ -354,6 +354,8 @@ input {
 }
 .colours-selected-div {
   display: flex;
+  flex-wrap: wrap;
+  max-width: 95%;
 }
 .colour-list {
   display: flex;
@@ -482,4 +484,10 @@ input {
 }
 .cue-swatch-list {
   display: flex;
+  flex-wrap: wrap;
+  max-width: 95%;
+  justify-content: space-between;
 }
+/* .CueDisplay{
+  max-width: 95%;
+} */
