@@ -53,8 +53,10 @@ const DisplayIndex = (props: Props) => {
     <main className="DisplayIndex">
       <div className="card-index">
         <h2 className="card-header"> Available LED Displays </h2>
+
         <ButtonCompoment text={'Stop All'} action={stopAll} styleClass={'btn btn_cancel'} />
         <ButtonCompoment text={'Play All'} action={playAll} styleClass={'btn btn_save'} />
+
 
         <div className="list-div">
           <div className="display-list">
@@ -79,7 +81,12 @@ const DisplayIndex = (props: Props) => {
               ))}
             </>
           ) : (
-              <p className="display-message">No Available Displays</p>
+              <div>
+                <p className="display-message">No Available Displays</p>
+                <ButtonCompoment text={'Search All'} action={() => {
+                  updateAll();
+                }} styleClass={"btn btn-search"} />
+              </div>
             )}
         </div>
       </div>

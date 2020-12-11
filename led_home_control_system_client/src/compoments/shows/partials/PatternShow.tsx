@@ -179,7 +179,7 @@ const PatternShow = (props: Props) => {
       <input
         type="number"
         id="waitTime"
-        min="1"
+        min="0"
         className="column_2"
         onChange={handleChange}
         value={waitTime}

@@ -97,6 +97,9 @@ const ShowForm = (props: Props) => {
     if (showName.length < 1) {
       document.querySelector("#name")?.classList.add("missing_field");
       document.querySelector("#missing")?.classList.remove("hidden");
+    } else {
+      document.querySelector("#name")?.classList.remove("missing_field");
+      document.querySelector("#missing")?.classList.add("hidden");
     }
     const show: Show
       = {
@@ -159,8 +162,6 @@ const ShowForm = (props: Props) => {
     }
   };
 
-  
-
   const getdefaultType = () => {
     let defaultType = -1;
     if (selectedType) {
@@ -197,8 +198,6 @@ const ShowForm = (props: Props) => {
       });
     }
   };
-
-
 
   useEffect(() => {
     if (editShow) {
@@ -254,7 +253,6 @@ const ShowForm = (props: Props) => {
         {" "}
         Please add name{" "}
       </p>
-
 
       <label htmlFor="type" className="column_1">
         Type Of Show

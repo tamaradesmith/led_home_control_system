@@ -317,16 +317,16 @@ const CueShow = (props: Props) => {
         <div className="show-btn-div column_1_5">
           <ButtonCompoment text={'Test Show'}
             action={() => { test("show"); }}
-            styleClass={'btn-big btn_save'} />
+            styleClass={'btn_big btn_save'} />
 
           <ButtonCompoment text={'Test Cue'}
             action={() => { test("cue"); }}
-            styleClass={'btn-big btn_save'} />
+            styleClass={'btn_big btn_save'} />
 
           {editCue ? (
             <ButtonCompoment text={'Save As'}
               action={() => { saveAs(); }}
-              styleClass={'btn-big btn_save'} />
+              styleClass={'btn_big btn_save'} />
           ) : null}
 
           <ButtonCompoment text={'Save'}

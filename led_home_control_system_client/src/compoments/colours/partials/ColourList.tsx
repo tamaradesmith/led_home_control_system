@@ -24,6 +24,7 @@ const ColourList = (props: Props) => {
     <div className="ColourList">
       <div className="colours-selected-div">
         <p>Selected Colours: </p>
+
         {selected.length > 0 ? (
           <>
             {selected.map((colour: Colour, index) => (
@@ -39,8 +40,11 @@ const ColourList = (props: Props) => {
               ></div>
             ))}
           </>
-        ) : null}
+          ) : null}
+
       </div>
+
+      
       {colours ? (
         <div className="colour-list">
           {colours.map((colour: Colour) => (

@@ -17,7 +17,7 @@ interface Display {
   ipaddress: string;
   led_number: number;
   default_on: boolean;
-  default_show?: { name: string; id: number; display_id: number | null; };
+  default_show?: number;
   shows?: [];
 }
 interface Result {
@@ -43,8 +43,9 @@ const searchPromise = async (
   const currentDisplay = displays.shift();
   try {
     const id = currentDisplay!.id;
-    const response = await DisplayModel.search(id);
-    found.push(currentDisplay!);
+    if (await DisplayModel.search(id)) {
+      found.push(currentDisplay!);
+    };
     if (displays.length > 0) {
       await searchPromise(displays, found, not_found);
     } else {
@@ -61,12 +62,12 @@ const searchPromise = async (
   return { found, not_found };
 };
 
-const getCurrentShow = async (id: number) => {
-  return await knex("shows")
-    .select("name", "shows.id", 'type_id', 'type')
-    .where("shows.id", id)
-    .join("showTypes", "showTypes.id", "type_id");
-};
+// const getCurrentShow = async (id: number) => {
+//   return await knex("shows")
+//     .select("name", "shows.id", 'type_id', 'type')
+//     .where("shows.id", id)
+//     .join("showTypes", "showTypes.id", "type_id");
+// };
 
 const DisplayModel = {
   async getAll() {
@@ -220,20 +221,19 @@ const DisplayModel = {
   },
 
 
-  async playShow(id, showId) {
+  async playShow(id: number, showId: number) {
     const display = await this.getOne(id);
     const show = await ShowModel.getOne(showId);
-    const play = await LedController.playShow(display[0], show[0].cue);
+    await LedController.play(display[0], show[0]);
     return "playing show?";
   },
 
   async playAll() {
     const displays = await this.getAll();
-    displays.forEach(async (display, index) => {
+    displays.forEach(async (display: Display, index: number) => {
       if (display.default_show) {
         const show = await ShowModel.getOne(display.default_show);
         setTimeout(() => {
-          console.log('playing: ', display.name);
           LedController.play(display, show[0]);
         }, 200 * index);
       }
@@ -242,15 +242,15 @@ const DisplayModel = {
 
   async playOne(displayId: number) {
     const display = await this.getOne(displayId);
-      if (display[0].default_show) {
-        const show = await ShowModel.getOne(display[0].default_show);
-          LedController.play(display[0], show[0]);
-      }
+    if (display[0].default_show) {
+      const show = await ShowModel.getOne(display[0].default_show);
+      LedController.play(display[0], show[0]);
+    }
   },
 
   async stopAll() {
     const displays = await this.getAll();
-    displays.forEach((display, index) => {
+    displays.forEach((display: Display, index: number) => {
       setTimeout(() => {
         LedController.stop(display);
       }, 200 * index);

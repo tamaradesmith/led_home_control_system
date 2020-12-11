@@ -1,5 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
 import { match, useHistory } from "react-router-dom";
+
+import DisplayContext from "../partials/DisplayContext";
 
 import { DisplayQuery, LedQuery } from "../../js/request";
 
@@ -18,6 +20,8 @@ interface DisplaysProps {
 const DisplayShow = (props: DisplaysProps) => {
   const history = useHistory();
   const match = props.match;
+
+  const allDisplays = useContext(DisplayContext);
 
   const [display, setDisplay] = useState({
     name: "",
@@ -79,13 +83,38 @@ const DisplayShow = (props: DisplaysProps) => {
       default_show: show.id,
       default_on: display.default_on,
     };
-    await DisplayQuery.update(displayUpdated);
-    setShowList(false);
-    getDisplay();
+    const res = await DisplayQuery.update(displayUpdated);
+    if (res.id) {
+      setShowList(false);
+      getDisplay();
+    }
   };
 
   const playShow = async (show: Show) => {
     await LedQuery.playShow(display.id, show.id ? show.id : 0);
+  };
+
+  const playDefaultShow = async () => {
+    if (display.default_show) {
+      await LedQuery.playOne(display.id);
+    } else {
+      const message = document.querySelector<HTMLElement>(
+        "#message"
+      ) as HTMLElement;
+      message.innerText = "Please select a show";
+    }
+  };
+
+  const checkForDisplay = () => {
+    let result = 'false';
+    if (allDisplays) {
+      allDisplays.displays.forEach(oneDisplay => {
+        if (display.id === oneDisplay.id) {
+          result = 'true';
+        }
+      });
+      return result;
+    }
   };
 
   useEffect(() => {
@@ -98,11 +127,15 @@ const DisplayShow = (props: DisplaysProps) => {
       <div className="card-div">
         <div className="card">
           <h4 className="card-header"> {display.name}</h4>
+
           <p className="card-label">Contection:</p>
-          <p className="column_2">true</p>
+          <p className="column_2">{checkForDisplay()}</p>
+
           <p className="card-label column_3"> Stauts: </p>
-          <p className="column_4">play</p>
-          <p className="card-label">Current Show:</p>
+          <div className="column_4"><ButtonCompoment text={'Play'} styleClass={"btn btn_save"} action={playDefaultShow} /></div>
+
+          <p id="message" className="message-text"></p>
+          <p className="card-label column_1">Current Show:</p>
           <p className="column_2_4">
             {" "}
             {display.default_show ? (
@@ -112,14 +145,14 @@ const DisplayShow = (props: DisplaysProps) => {
               )}
           </p>
 
-          <p
-            className="column_4"
-            onClick={() => {
+          <ButtonCompoment
+            text={'Change Shows'}
+            styleClass="btn_save btn btn_x_big column_4"
+            action={() => {
               setShowList(showlist ? false : true);
             }}
-          >
-            Change Shows
-          </p>
+          />
+            
           <div className="btn-div">
 
             <ButtonCompoment text={'Edit'} styleClass={"btn btn_save"} action={editDisplay} />

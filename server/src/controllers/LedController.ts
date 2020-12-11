@@ -5,6 +5,11 @@ const waitTime = {};
 export const LedController = {
   // TEXT COLOUR
   async ledsOneColour(display, colour) {
+
+    if (waitTime[display.name] !== undefined) {
+      clearInterval(waitTime[display.name]);
+    }
+
     let result = "";
     for (let i = 0; display.led_number > i; i++) {
       result += `${colour.hue},${colour.saturation / 100},${colour.lightness / 100
@@ -37,9 +42,11 @@ switch (show.type) {
       clearInterval(waitTime[display.name]);
     }
     let urlString = '';
+
     for (let i = 0; i < display.led_number; i++) {
       urlString += `2,1,1,0,`;
     }
+
     try {
       axios.post(
         `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlString}`
@@ -51,6 +58,7 @@ switch (show.type) {
   },
 
   // Pattern
+
   async playShow(display, cue) {
     if (waitTime[display.name] !== undefined) {
       clearInterval(waitTime[display.name]);
@@ -67,7 +75,7 @@ switch (show.type) {
       }
       const colourholder = cue.colours.shift();
       cue.colours.push(colourholder);
-    }, (cue.wait_time + cue.fade) * 1000);
+    }, (cue.wait_time + Math.abs(cue.fade)) * 1000);
   },
 
   // Random
@@ -162,6 +170,7 @@ const createURLString = (ledsCount: number, cue) => {
       count++;
     }
   }
+  console.log("🚀 ~ file: LedController.ts ~ line 175 ~ createURLString ~ urlString", urlString);
   return urlString;
 };
 

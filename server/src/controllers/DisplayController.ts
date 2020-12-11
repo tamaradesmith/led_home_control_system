@@ -47,9 +47,9 @@ DisplayController.get(
 DisplayController.post(
   "/ledColour",
   async (req: Request, res: Response, next: NextFunction) => {
-    const { colour, display } = req.body
+    const { colour, display } = req.body;
     try {
-     LedController.ledsOneColour(display, colour)
+      LedController.ledsOneColour(display, colour);
       res.status(200);
     } catch (error) {
       next(error);
@@ -57,31 +57,31 @@ DisplayController.post(
   }
 );
 
-DisplayController.get('/:id/shows/:showId', 
+DisplayController.get('/:id/shows/:showId',
   async (req: Request, res: Response, next: NextFunction) => {
-  const {id , showId} = req.params;
-  try {
-      DisplayModel.playShow(id, showId);
-      res.status(200).send('playing')
-  } catch (error) {
-    next(error)
+    const { id, showId } = req.params;
+    try {
+      DisplayModel.playShow(parseInt(id), parseInt(showId));
+      res.sendStatus(200);
+    } catch (error) {
+      next(error);
+    }
   }
-  }
-)
+);
 
 DisplayController.get('/playAll',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
-      DisplayModel.playAll()
+      DisplayModel.playAll();
       res.sendStatus(200);
     } catch (error) {
-      next(error)
+      next(error);
+    }
   }
-  }
-)
+);
 DisplayController.get('/:id/play',
   async (req: Request, res: Response, next: NextFunction) => {
-    const { id } = req.params
+    const { id } = req.params;
 
     try {
       DisplayModel.playOne(parseInt(id));
@@ -90,7 +90,7 @@ DisplayController.get('/:id/play',
       next(error);
     }
   }
-)
+);
 DisplayController.get('/stopAll',
   async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -104,7 +104,7 @@ DisplayController.get('/stopAll',
 
 DisplayController.get('/:id/stop',
   async (req: Request, res: Response, next: NextFunction) => {
-    const {id} = req.params
+    const { id } = req.params;
     try {
       DisplayModel.stopOne(parseInt(id));
       res.sendStatus(200);
@@ -112,7 +112,7 @@ DisplayController.get('/:id/stop',
       next(error);
     }
   }
-)
+);
 
 // CRUD ROUTES
 DisplayController.get(

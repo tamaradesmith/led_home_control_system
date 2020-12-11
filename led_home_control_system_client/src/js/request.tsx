@@ -221,7 +221,6 @@ const ShowQuery = {
     }
   },
   async createCue(cue: CueCue) {
-    console.log("🚀 ~ file: request.tsx ~ line 226 ~ createCue ~ cue", cue);
     try {
       const res = await fetch(`${BASE_URL}/shows/${cue.show_id}/cue`, {
         method: "POST",
@@ -296,7 +295,7 @@ const LedQuery = {
           credentials: "include",
         }
       );
-      return res.json();
+      return res.status;
     } catch (error) {
       return error;
     }
@@ -306,7 +305,7 @@ const LedQuery = {
       const res = await fetch(`${BASE_URL}/displays/playAll`, {
         credentials: 'include',
       });
-      return res.json();
+      return res.status;
     } catch (error) {
       return error;
     }
@@ -316,7 +315,7 @@ const LedQuery = {
       const res = await fetch(`${BASE_URL}/displays/${displayId}/play`, {
         credentials: 'include',
       });
-      return res.json();
+      return res.status;
     } catch (error) {
       return error;
     }
@@ -326,7 +325,8 @@ const LedQuery = {
       const res = await fetch(`${BASE_URL}/displays/stopAll`, {
         credentials: 'include',
       });
-      return res.json();
+      return res.status;
+
     } catch (error) {
       return error;
     }
@@ -336,7 +336,7 @@ const LedQuery = {
       const res = await fetch(`${BASE_URL}/displays/${displayId}/stop`, {
         credentials: 'include',
       });
-      return res.json();
+      return res.status;
     } catch (error) {
       return error;
     }

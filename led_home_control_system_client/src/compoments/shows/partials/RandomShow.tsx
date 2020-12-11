@@ -47,26 +47,36 @@ const RandomShow = (props: Props) => {
     }
   };
 
+  let hueDelay;
   const checkHue = (value: number, key: string) => {
-    const newHue = Object.assign({}, hue);
-
-    switch (key) {
-      case "min":
-        if (value >= newHue.max) {
-          newHue.max = value + 1;
-        }
-        newHue.min = value;
-        break;
-      case "max":
-        if (value <= newHue.min) {
-          newHue.min = value - 1;
-        }
-        newHue.max = value;
-        break;
-      default:
-        break;
+    if (key === 'max') {
+      setHue({ max: value, min: hue.min })
+    } else {
+      setHue({max: hue.max, min: value})
     }
-    setHue(newHue);
+    
+    const check = () => {
+    const newHue = Object.assign({}, hue);
+      switch (key) {
+        case "min":
+          if (value >= newHue.max) {
+            newHue.max = value + 1;
+          }
+          newHue.min = value;
+          break;
+        case "max":
+          if (value <= newHue.min) {
+            newHue.min = value - 1;
+          }
+          newHue.max = value;
+          break;
+        default:
+          break;
+      }
+      setHue(newHue);
+      return 'checked'
+    };
+    hueDelay = setTimeout(check, 1000);
   };
 
   const handleCheck = (event: React.ChangeEvent<HTMLInputElement>) => {
