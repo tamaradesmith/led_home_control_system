@@ -105,6 +105,10 @@ const DisplayShow = (props: DisplaysProps) => {
     }
   };
 
+  const stopDefaultShow = () => {
+    LedQuery.stopOne(display.id);
+  };
+
   const checkForDisplay = () => {
     let result = 'false';
     if (allDisplays) {
@@ -131,8 +135,12 @@ const DisplayShow = (props: DisplaysProps) => {
           <p className="card-label">Contection:</p>
           <p className="column_2">{checkForDisplay()}</p>
 
-          <p className="card-label column_3"> Stauts: </p>
-          <div className="column_4"><ButtonCompoment text={'Play'} styleClass={"btn btn_save"} action={playDefaultShow} /></div>
+          <div className="column_3_4 show-btn-div">
+            <ButtonCompoment text={'Play'} styleClass={"btn btn_save"} action={playDefaultShow} />
+            <ButtonCompoment text={'Stop'} styleClass={"btn btn_cancel"} action={stopDefaultShow} />
+
+          </div>
+          {/* <ButtonCompoment className="card-label column_4" />  */}
 
           <p id="message" className="message-text"></p>
           <p className="card-label column_1">Current Show:</p>
@@ -152,7 +160,7 @@ const DisplayShow = (props: DisplaysProps) => {
               setShowList(showlist ? false : true);
             }}
           />
-            
+
           <div className="btn-div">
 
             <ButtonCompoment text={'Edit'} styleClass={"btn btn_save"} action={editDisplay} />

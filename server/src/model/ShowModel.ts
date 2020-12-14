@@ -358,7 +358,7 @@ const ShowModel = {
         await LedController.playShowRandom(display[0], show);
         break;
       case "cue":
-        await LedController.playCueShow(display[0], show);
+        await LedController.playCueShow(display[0], [{leds: show}]);
         break;
       default:
         return "missing show type";

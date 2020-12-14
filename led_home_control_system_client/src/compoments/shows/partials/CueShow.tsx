@@ -18,12 +18,13 @@ interface Props {
   editCue?: CueShow;
   updateShow: Function;
   handleRedirect: Function;
+  handleCueUpdate: Function;
 }
 
 const noLed = {
   led_number: -1,
-  led_colour: 0,
-  colour: { id: -1, hue: -1, saturation: -1, lightness: -1, name: "" },
+  led_colour: -1,
+  colour: { id: -1, hue: -1, saturation: -1, lightness: 100, name: "" },
   fade: 0,
 };
 
@@ -38,7 +39,8 @@ const CueShow = (props: Props) => {
     cancel,
     display,
     editCue,
-    handleRedirect
+    handleRedirect,
+    handleCueUpdate
   } = props;
 
   // Lists
@@ -53,6 +55,7 @@ const CueShow = (props: Props) => {
   const [timeCode, setTimeCode] = useState(0);
   const [editCueId, setEditCueId] = useState<number | undefined>(-1);
 
+  const [linkedLeds, setLinkedLeds] = useState<CueLeds[] | []>([]);
 
   const changedLedValue = (action: string) => {
     const ledColours: CueLeds[] = [];
@@ -117,6 +120,7 @@ const CueShow = (props: Props) => {
       const newShow = await handleSave(show);
       if (!isNaN(parseInt(newShow))) {
         setShowId(newShow);
+        clearLinedList();
       } else {
         console.error("saved Cue ", newShow);
       }
@@ -124,9 +128,21 @@ const CueShow = (props: Props) => {
       const newCue = await handleSaveCue(show[0]);
       if (!isNaN(parseInt(newCue))) {
         getCues();
+        clearLinedList();
       } else {
         console.error("saved Cue ", newCue);
       }
+    }
+  };
+
+  const updateCue = async () => {
+    const leds = changedLedValue('update');
+    const cue = cueInfo('update', leds);
+    const updatedLeds = await handleCueUpdate(cue, showId);
+    if (!isNaN(parseInt(updatedLeds.id))) {
+      getCues();
+    } else {
+      console.error("saved Cue ", updatedLeds);
     }
   };
 
@@ -165,6 +181,11 @@ const CueShow = (props: Props) => {
     const id = parseInt(event.target.id.slice(5));
     const ledsFade = [...ledsList];
     ledsFade[id].fade = parseInt(event.target.value);
+    if (linkedLeds.length > 0) {
+      linkedLeds.forEach(led => {
+        ledsFade[led.led_number].fade = parseInt(event.target.value);
+      });
+    }
     setLedList(ledsFade);
   };
 
@@ -177,6 +198,12 @@ const CueShow = (props: Props) => {
     colour.id = !colour.id ? -1 : colour.id;
     ledsList[currentLed.led_number].colour = colour;
     ledsList[currentLed.led_number].led_colour = colour.id;
+    if (linkedLeds.length > 0) {
+      linkedLeds.forEach(led => {
+        ledsList[led.led_number].colour = colour;
+        ledsList[led.led_number].led_colour = colour.id;
+      });
+    }
     setColourListVisable(colourListVisable ? false : true);
     setCurrentLed(noLed);
   };
@@ -210,7 +237,7 @@ const CueShow = (props: Props) => {
         result.push({
           led_number: i,
           led_colour: -1,
-          colour: { name: "", id: -1, hue: -1, saturation: -1, lightness: -1 },
+          colour: { name: "", id: -1, hue: -1, saturation: -1, lightness: 100 },
           fade: 0,
         });
         i++;
@@ -219,6 +246,13 @@ const CueShow = (props: Props) => {
       result.push(noLed);
     }
     return result;
+  };
+
+  const clearLedInfo = (led: CueLeds) => {
+    const newList = [...ledsList];
+    newList[led.led_number] = { ...noLed };
+    newList[led.led_number].led_number = led.led_number;
+    setLedList(newList);
   };
 
   const editCueLeds = async (index: number) => {
@@ -241,6 +275,39 @@ const CueShow = (props: Props) => {
     }
   };
 
+  const addToLinked = (addLed: CueLeds) => {
+    let add = true;
+    const newList = [...linkedLeds];
+    if (linkedLeds.length !== 0) {
+      linkedLeds.forEach((led, index) => {
+        if (addLed.led_number === led.led_number) {
+          add = false;
+          setLinkedLeds(newList);
+        }
+      });
+      if (add) {
+        newList.push(addLed);
+        setLinkedLeds(newList);
+      } else {
+        const filtered = newList.filter((value, index, arr) => {
+          return value.led_number !== addLed.led_number;
+        });
+        setLinkedLeds(filtered);
+      }
+    } else {
+      setLinkedLeds([addLed]);
+    }
+  };
+
+  const clearLinedList = () => {
+    const allCheckBoxes = document.querySelectorAll("input[type='checkbox']") as NodeListOf<HTMLInputElement>;
+    allCheckBoxes.forEach(checkBox => {
+      if (checkBox && checkBox.checked) checkBox.checked = false;
+    });
+    setLinkedLeds([]);
+
+
+  };
   // USE EFFECT
 
   useEffect(() => {
@@ -281,9 +348,12 @@ const CueShow = (props: Props) => {
           onChange={handleChangeTimeCode}
         />
 
+        <ButtonCompoment text={'clear links'} styleClass={'btn_big btn_cancel'} action={clearLinedList} />
+
         <div className="column_1_5 led-cue-div">
           {ledsList.map((led) => (
             <div key={led.led_number} className="led-div">
+              <p className="led-header">led {led.led_number} </p>
               <div
                 className="swatch-led"
                 style={
@@ -297,19 +367,27 @@ const CueShow = (props: Props) => {
                   handleOpenColourList(led);
                 }}
               >
-                {" "}
               </div>
-              <p>led {led.led_number} </p>
-              <label htmlFor={`fade-${led.led_number}`}>Fade:</label>
+              {led.colour.name ? (
+                <p className="colour-name">
+                  {led.colour.name}
+
+                </p>
+              ) : <p className="colour-no-name"> none </p>}
+              <label htmlFor={`fade-${led.led_number}`}>Fade: </label>
               <input
                 type="number"
                 id={`fade-${led.led_number}`}
-                min="0"
+                min="-99"
                 max="99"
                 className="led-number"
                 onChange={handleChangeFade}
                 value={led.fade}
               />
+              <div >
+                <input id={`check-${led.led_number}`} type='checkbox' onChange={() => { addToLinked(led); }} />
+                <ButtonCompoment text={'clear'} action={() => (clearLedInfo(led))} styleClass={'btn btn_cancel'} />
+              </div>
             </div>
           ))}
         </div>
@@ -328,6 +406,10 @@ const CueShow = (props: Props) => {
               action={() => { saveAs(); }}
               styleClass={'btn_big btn_save'} />
           ) : null}
+
+          <ButtonCompoment text={'Update Cue'}
+            action={() => { updateCue(); }}
+            styleClass={'btn btn_x_big btn_save'} />
 
           <ButtonCompoment text={'Save'}
             action={() => { editCue ? update() : save(); }}

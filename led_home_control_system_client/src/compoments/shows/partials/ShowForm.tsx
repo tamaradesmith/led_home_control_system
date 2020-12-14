@@ -132,6 +132,13 @@ const ShowForm = (props: Props) => {
     return savedCue;
   };
 
+  const handleCueUpdate = async (cue: CueCue, showId: number) => {
+    const show = getShowInfo();
+    show.id = showId;
+    const updated = await ShowQuery.update(show, cue);
+    return updated;
+  }
+
   const updateShow = async (cue: CueCue | PatternCue | RandomCue) => {
     const show = getShowInfo();
     const updated = await save(show, cue);
@@ -361,6 +368,7 @@ const ShowForm = (props: Props) => {
             editCue={editCueList}
             updateShow={updateShow}
             handleRedirect={handleRedirect}
+            handleCueUpdate={handleCueUpdate}
           />
         ) : null}
       </div>

@@ -170,7 +170,6 @@ const createURLString = (ledsCount: number, cue) => {
       count++;
     }
   }
-  console.log("🚀 ~ file: LedController.ts ~ line 175 ~ createURLString ~ urlString", urlString);
   return urlString;
 };
 
@@ -197,6 +196,7 @@ const randomWait = (max: number, random) => {
 
 const createURLStringCue = (ledsCount, cues) => {
   const urlAll = cues.map((cue) => {
+
     let max = 0;
     let urlString: string[] = [];
     for (let i = 0; i < ledsCount; i++) {
