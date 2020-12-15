@@ -138,7 +138,17 @@ export const CueModel = {
     await updateLeds(leds);
     return updatedCue;
   },
-  async delect(id) {
+  async delect(id: number) {
     return await knex("cueShows").where({ id: id }).del().returning("*");
   },
+
+  async delectLeds(leds) {
+    if (leds.length === 0) {
+      return "leds delete/no leds"
+    } else {
+      const led = leds.pop();
+      await knex("cueLeds").where({ id: led.id }).del().returning('*')
+      return this.delectLeds(leds)
+    }
+  }
 };

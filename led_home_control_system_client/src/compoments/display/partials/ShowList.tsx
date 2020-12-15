@@ -32,21 +32,24 @@ const ShowList = (props: Props) => {
   return (
     <div className="ShowList">
       <p className="header-secondary"> Select A Show</p>
-      {currentShow ? (
-        <>
-          {shows.map((show: Show) => (
-            <div key={show.id} onClick={() => playShow(show)}>
-              <p
-                className={
-                  currentShow ? currentShow.id === show.id ? "selected" : "non-selected" : 'non-selected'
-                }
-              >
-                {show.name}
-              </p>
-            </div>
-          ))}
-        </>
-      ) : null}
+      <div className='show-list-div'>
+        {currentShow ? (
+          <>
+            {shows.map((show: Show) => (
+              <div key={show.id} onClick={() => playShow(show)}>
+                <p
+                  className={
+                    currentShow ? currentShow.id === show.id ? "selected" : "non-selected" : 'non-selected'
+                  }
+                >
+                  {show.name}
+                </p>
+              </div>
+            ))}
+          </>
+        ) : null}
+      </div>
+
       <div className="btn-div">
 
         <ButtonCompoment text={'Save'} styleClass={"btn btn_save"} action={saveShow} />

@@ -208,7 +208,7 @@ const ShowModel = {
       return error;
     }
   },
-  async update(id, show, cue) {
+  async update(id, show, cue, delectLed) {
     if (show.cue) {
       delete show.cue;
     }
@@ -228,7 +228,8 @@ const ShowModel = {
           break;
 
         case "cue":
-          const updatedcue = await CueModel.update(cue[0]);
+          await CueModel.update(cue[0]);
+          await CueModel.delectLeds(delectLed);
           break;
 
         default:
@@ -358,12 +359,18 @@ const ShowModel = {
         await LedController.playShowRandom(display[0], show);
         break;
       case "cue":
-        await LedController.playCueShow(display[0], [{leds: show}]);
+        try {
+          await LedController.playCueShow(display[0], show);
+
+        } catch (error) {
+          return error;
+        }
         break;
       default:
         return "missing show type";
         break;
     }
+    return 'play show';
   },
 };
 

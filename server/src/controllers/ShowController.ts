@@ -27,7 +27,8 @@ ShowController.post(
   async (req: Request, res: Response, next: NextFunction) => {
     const { display, show, type } = req.body;
     try {
-      ShowModel.testShow(display, show, type);
+      const result = await ShowModel.testShow(display, show, type);
+      res.status(200).send({message: result})
     } catch (error) {
       next(error);
     }
@@ -88,12 +89,12 @@ ShowController.patch(
   "/:id",
   async (req: Request, res: Response, next: NextFunction) => {
     const id: number = parseInt(req.params.id);
-    const { show, cue } = req.body;
+    const { show, cue, delectLed } = req.body;
     const validShow = ShowModel.validShow(show, true);
-  
     if (validShow === true) {
       try {
-        const updatedShow = await ShowModel.update(id, show, cue);
+        const updatedShow = await ShowModel.update(id, show, cue, delectLed);
+
         res.status(200).send({ id: updatedShow[0] });
       } catch (error) {
         next(error);

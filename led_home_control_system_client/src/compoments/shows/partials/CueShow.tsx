@@ -35,7 +35,7 @@ const CueShow = (props: Props) => {
     handleTest,
     handleSaveCue,
     handleCueTest,
-    updateShow,
+    // updateShow,
     cancel,
     display,
     editCue,
@@ -50,12 +50,13 @@ const CueShow = (props: Props) => {
   const [colourListVisable, setColourListVisable] = useState(false);
   const [currentLed, setCurrentLed] = useState(noLed);
 
-  const [cueList, setCuelist] = useState<CueCue[]>([{ time_code: -1, leds: [noLed], },]);
+  const [cueList, setCuelist] = useState<CueCue[]>([{ time_code: -1, leds: [noLed] }]);
 
   const [timeCode, setTimeCode] = useState(0);
   const [editCueId, setEditCueId] = useState<number | undefined>(-1);
 
   const [linkedLeds, setLinkedLeds] = useState<CueLeds[] | []>([]);
+  const [delectLed, setDelectLed] = useState<CueLeds[] | []>([]);
 
   const changedLedValue = (action: string) => {
     const ledColours: CueLeds[] = [];
@@ -138,8 +139,9 @@ const CueShow = (props: Props) => {
   const updateCue = async () => {
     const leds = changedLedValue('update');
     const cue = cueInfo('update', leds);
-    const updatedLeds = await handleCueUpdate(cue, showId);
+    const updatedLeds = await handleCueUpdate(cue, showId, delectLed);
     if (!isNaN(parseInt(updatedLeds.id))) {
+      setDelectLed([])
       getCues();
     } else {
       console.error("saved Cue ", updatedLeds);
@@ -147,28 +149,29 @@ const CueShow = (props: Props) => {
   };
 
   const saveAs = async () => {
-
-  };
-
-  const update = async () => {
-    const leds = changedLedValue('update');
-    const cue = cueInfo('update', leds);
-    const updatedLeds = await updateShow(cue);
-    if (!isNaN(parseInt(updatedLeds.id))) {
-      getCues();
+    const leds = changedLedValue('save');
+    if (showId !== -1) {
+      const show = cueInfo('cue', leds);
+      const newCue = await handleSaveCue(show[0]);
+      if (!isNaN(parseInt(newCue))) {
+        getCues();
+        clearLinedList();
+      } else {
+        console.error("saved Cue ", newCue);
+      }
     } else {
-      console.error("saved Cue ", updatedLeds);
+      console.error('no show id');
     }
   };
 
   const test = (type: string) => {
     const leds = changedLedValue('save');
     if (type === "show") {
-      const allCues = cueList;
+      const allCues = [...cueList];
       allCues.push({ time_code: timeCode, leds: leds });
       handleCueTest(allCues);
     } else {
-      handleTest(leds);
+      handleTest([{ leds: leds }]);
     }
   };
 
@@ -208,12 +211,7 @@ const CueShow = (props: Props) => {
     setCurrentLed(noLed);
   };
 
-  const handleOpenColourList = (selectedLed: {
-    led_number: number;
-    colour: Colour;
-    fade: number;
-    led_colour: number;
-  }) => {
+  const handleOpenColourList = (selectedLed: CueLeds) => {
     setColourListVisable(colourListVisable ? false : true);
     setCurrentLed(selectedLed);
   };
@@ -248,6 +246,11 @@ const CueShow = (props: Props) => {
     return result;
   };
 
+  const addLedToDelete = (led: CueLeds) => {
+    clearLedInfo(led);
+    setDelectLed([...delectLed, led]);
+  };
+
   const clearLedInfo = (led: CueLeds) => {
     const newList = [...ledsList];
     newList[led.led_number] = { ...noLed };
@@ -259,7 +262,7 @@ const CueShow = (props: Props) => {
     const list = createList();
     const cueInfo = [...cueList[index].leds];
     cueInfo.forEach(aLed => {
-      list[aLed.led_number] = Object.assign({}, aLed);;
+      list[aLed.led_number] = Object.assign({}, aLed);
     });
     setLedList([...list]);
     setTimeCode(cueList[index].time_code);
@@ -299,14 +302,19 @@ const CueShow = (props: Props) => {
     }
   };
 
+  const linedAll = () => {
+    const allCheckBoxes = document.querySelectorAll("input[type='checkbox']") as NodeListOf<HTMLInputElement>;
+    allCheckBoxes.forEach(checkBox => {
+      if (checkBox && !checkBox.checked) checkBox.checked = true;
+    });
+    setLinkedLeds([...ledsList]);
+  };
   const clearLinedList = () => {
     const allCheckBoxes = document.querySelectorAll("input[type='checkbox']") as NodeListOf<HTMLInputElement>;
     allCheckBoxes.forEach(checkBox => {
       if (checkBox && checkBox.checked) checkBox.checked = false;
     });
     setLinkedLeds([]);
-
-
   };
   // USE EFFECT
 
@@ -347,6 +355,7 @@ const CueShow = (props: Props) => {
           value={timeCode}
           onChange={handleChangeTimeCode}
         />
+        <ButtonCompoment text={'Links All'} styleClass={'btn_big btn_cancel'} action={linedAll} />
 
         <ButtonCompoment text={'clear links'} styleClass={'btn_big btn_cancel'} action={clearLinedList} />
 
@@ -386,7 +395,13 @@ const CueShow = (props: Props) => {
               />
               <div >
                 <input id={`check-${led.led_number}`} type='checkbox' onChange={() => { addToLinked(led); }} />
-                <ButtonCompoment text={'clear'} action={() => (clearLedInfo(led))} styleClass={'btn btn_cancel'} />
+                {led.id ? (
+
+                  <ButtonCompoment text={'delete'} action={() => (addLedToDelete(led))} styleClass={'btn btn_cancel'} />
+                ) : (
+                    <ButtonCompoment text={'clear'} action={() => (clearLedInfo(led))} styleClass={'btn btn_cancel'} />)
+
+                }
               </div>
             </div>
           ))}
@@ -401,19 +416,17 @@ const CueShow = (props: Props) => {
             action={() => { test("cue"); }}
             styleClass={'btn_big btn_save'} />
 
+          <ButtonCompoment text={'Update Cue'}
+            action={() => { updateCue(); }}
+            styleClass={'btn btn_x_big btn_save'} />
           {editCue ? (
             <ButtonCompoment text={'Save As'}
               action={() => { saveAs(); }}
               styleClass={'btn_big btn_save'} />
-          ) : null}
+          ) : <ButtonCompoment text={'Save'}
+            action={() => { save(); }}
+            styleClass={'btn btn_save'} />}
 
-          <ButtonCompoment text={'Update Cue'}
-            action={() => { updateCue(); }}
-            styleClass={'btn btn_x_big btn_save'} />
-
-          <ButtonCompoment text={'Save'}
-            action={() => { editCue ? update() : save(); }}
-            styleClass={'btn btn_save'} />
 
           <ButtonCompoment text={'Finish'}
             action={() => { handleRedirect(showId); }}

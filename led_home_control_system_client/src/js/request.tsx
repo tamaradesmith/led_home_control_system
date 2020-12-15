@@ -194,7 +194,7 @@ const ShowQuery = {
       return error;
     }
   },
-  async update(show: Show, cue: CueCue | PatternCue | RandomCue) {
+  async update(show: Show, cue: CueCue | PatternCue | RandomCue, delectLed: [] | CueLeds[] = [] ) {
     try {
       const res = await fetch(`${BASE_URL}/shows/${show.id}`, {
         method: "PATCH",
@@ -202,7 +202,7 @@ const ShowQuery = {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ show, cue }),
+        body: JSON.stringify({ show, cue, delectLed }),
       });
       return res.json();
     } catch (error) {

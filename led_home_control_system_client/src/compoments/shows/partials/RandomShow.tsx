@@ -21,6 +21,7 @@ const RandomShow = (props: Props) => {
   const [fadeRandom, setFadeRandom] = useState(false);
   const [hueRandom, setHueRandom] = useState(false);
 
+
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = event.target;
     switch (id) {
@@ -44,19 +45,19 @@ const RandomShow = (props: Props) => {
         break;
       default:
         break;
-    }
+    };
   };
 
   let hueDelay;
   const checkHue = (value: number, key: string) => {
     if (key === 'max') {
-      setHue({ max: value, min: hue.min })
+      setHue({ max: value, min: hue.min });
     } else {
-      setHue({max: hue.max, min: value})
+      setHue({ max: hue.max, min: value });
     }
-    
+
     const check = () => {
-    const newHue = Object.assign({}, hue);
+      const newHue = Object.assign({}, hue);
       switch (key) {
         case "min":
           if (value >= newHue.max) {
@@ -74,7 +75,7 @@ const RandomShow = (props: Props) => {
           break;
       }
       setHue(newHue);
-      return 'checked'
+      return 'checked';
     };
     hueDelay = setTimeout(check, 1000);
   };

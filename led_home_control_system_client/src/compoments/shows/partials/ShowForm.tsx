@@ -132,10 +132,10 @@ const ShowForm = (props: Props) => {
     return savedCue;
   };
 
-  const handleCueUpdate = async (cue: CueCue, showId: number) => {
+  const handleCueUpdate = async (cue: CueCue, showId: number, delectLeds: [] | CueLeds[]) => {
     const show = getShowInfo();
     show.id = showId;
-    const updated = await ShowQuery.update(show, cue);
+    const updated = await ShowQuery.update(show, cue, delectLeds);
     return updated;
   }
 

@@ -36,7 +36,10 @@
   margin-left: 1.5em;
   max-width: 95%;
 } 
-
+.cue-list-div{
+  max-height: 35vh;
+  overflow-y: scroll;
+}
 .led-swatch {
   width: 30px;
   height: 25px;

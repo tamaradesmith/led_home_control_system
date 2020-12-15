@@ -250,6 +250,7 @@ input {
   border-bottom: 2px solid var(--main-colour);
   padding: 0em 0.5em;
 }
+
 /* DISPLAY STYLES */
 
 .display-list {
@@ -374,8 +375,17 @@ input {
   max-height: 55vh;
   overflow-y: scroll;
   border-top: 1px solid var(--main-colour);
-
 }
+.colour-name{
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: .5em;
+}
+.colour-no-name{
+  text-align: center;
+  margin-bottom: .5em;
+}
+
 
 /* SLIDER */
 .slider-div {
@@ -438,6 +448,10 @@ input {
   display: grid;
   grid-template-columns: 200px 100px auto;
 }
+.show-list-div{
+ max-height: 55vh;
+ overflow-y: scroll;
+}
 .selected {
   background: var(--main-colour);
   color: var(--secondary-colour);
@@ -466,6 +480,8 @@ input {
 .led-cue-div {
   display: flex;
   flex-wrap: wrap;
+  max-height: 45vh;
+  overflow-y: scroll;
 }
 .led-div {
   width: 110px;
@@ -511,13 +527,4 @@ input {
 .led-div-button {
   display: flex;
 }
-.colour-name{
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: .5em;
-}
-.colour-no-name{
-  /* font-weight: 700; */
-  text-align: center;
-  margin-bottom: .5em;
-}
+

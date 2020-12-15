@@ -22,19 +22,19 @@ export const LedController = {
 
   // TEST AND PLAY SHOW
   play(display, show) {
-switch (show.type) {
-  case 'pattern':
-    this.playShow(display, show.cue)
-    break;
-  case 'random':
-    this.playShowRandom(display, show.cue);
-    break;
-  case 'cue':
-    this.playCueShow(display, show.cue);
-    break;
-  default:
-    break;
-}
+    switch (show.type) {
+      case 'pattern':
+        this.playShow(display, show.cue);
+        break;
+      case 'random':
+        this.playShowRandom(display, show.cue);
+        break;
+      case 'cue':
+        this.playCueShow(display, show.cue);
+        break;
+      default:
+        break;
+    }
   },
 
   stop(display) {
@@ -139,9 +139,13 @@ switch (show.type) {
               startTime +
               urlString[index].waitTime;
           }
-          axios.post(
-            `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlString[index].url}`
-          );
+          try {
+            axios.post(
+              `http://${display.ipaddress}/rest/colourapp/fixture/${display.name}/channel/showhsl/${urlString[index].url}`
+            );
+          } catch (error: any) {
+            return error;
+          }
           index++;
         } else if (index >= urlString.length - 1) {
           if (
@@ -157,6 +161,10 @@ switch (show.type) {
   },
 };
 
+
+// PRIVATE FUNCTIONS
+
+// pattern
 const createURLString = (ledsCount: number, cue) => {
   let count = 0;
   let urlString = "";
@@ -173,6 +181,7 @@ const createURLString = (ledsCount: number, cue) => {
   return urlString;
 };
 
+// random
 const createURLStringRandom = (ledsCount: number, cue) => {
   let urlString = "";
   for (let i = 0; i < ledsCount; i++) {
@@ -194,9 +203,9 @@ const randomWait = (max: number, random) => {
   return random ? Math.round(Math.random() * max) : max;
 };
 
+// cue
 const createURLStringCue = (ledsCount, cues) => {
   const urlAll = cues.map((cue) => {
-
     let max = 0;
     let urlString: string[] = [];
     for (let i = 0; i < ledsCount; i++) {
@@ -210,6 +219,7 @@ const createURLStringCue = (ledsCount, cues) => {
         max = led.fade;
       }
     });
+    
     return {
       url: urlString.join(","),
       time_code: cue.time_code,
