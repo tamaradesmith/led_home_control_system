@@ -3,6 +3,7 @@ const axios = require("axios");
 const waitTime = {};
 
 export const LedController = {
+
   // TEXT COLOUR
   async ledsOneColour(display, colour) {
 
@@ -93,7 +94,7 @@ export const LedController = {
         error.log("playShowRadom -> error", error);
         return error;
       }
-    }, (randomWait(cue.wait_time, cue.wait_random) + cue.fade) * 1000);
+    }, (randomWait(cue.wait_time, cue.wait_random) + Math.abs(cue.fade)) * 1000);
   },
 
   // CUE SHOW
@@ -219,7 +220,7 @@ const createURLStringCue = (ledsCount, cues) => {
         max = led.fade;
       }
     });
-    
+
     return {
       url: urlString.join(","),
       time_code: cue.time_code,

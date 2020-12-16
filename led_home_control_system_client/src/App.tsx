@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
+
 import NavBar from "./compoments/partials/NavBar";
 
 import DisplayEdit from "./compoments/display/DisplayEdit";

@@ -1,9 +1,10 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 
 import DisplayContext from "../partials/DisplayContext";
-import { DisplayQuery, LedQuery } from "../../js/request";
+import { DisplayQuery, LedQuery, ShowQuery } from "../../js/request";
 import ButtonCompoment from "../partials/ButtonCompoment";
+import ShowList from "./partials/ShowList";
 
 interface Props {
   update: Function;
@@ -15,6 +16,8 @@ const DisplayIndex = (props: Props) => {
   const history = useHistory();
 
   const allDisplays = useContext(DisplayContext);
+
+  const [shows, setShow] = useState<Show[]>([]);
 
   const redirctToShow = (id: number) => {
     history.push(`/displays/${id}`);
@@ -49,21 +52,57 @@ const DisplayIndex = (props: Props) => {
     }
   };
 
+  const getAllShows = async () => {
+    const allShows = await ShowQuery.getAll();
+    setShow(allShows);
+  };
+
+  const assignShows = () => {
+    if (allDisplays.displays && allDisplays.displays.length > 0) {
+      allDisplays.displays.forEach(display => {
+        const displayDiv = document.querySelector<HTMLElement>(
+          `#display${display.id}`
+        ) as HTMLElement;
+       
+        let displayShow = 'none';
+        if (displayDiv && display.default_show) {
+          shows.forEach(show => {
+            if (`${show.id}` === `${display.default_show}`) {
+             displayShow = show.name;
+           }
+          });
+        }
+        displayDiv.innerText = displayShow;
+      });
+    };
+    return 'show';
+  };
+
+  useEffect(() => {
+    getAllShows();
+  }, [allDisplays]);
+
+  useEffect(() => {
+    assignShows();
+  }, [shows]);
+
   return (
     <main className="DisplayIndex">
       <div className="card-index">
         <h2 className="card-header"> Available LED Displays </h2>
+        <div className="display-list">
+          
+        <ButtonCompoment text={'Play All'} action={playAll} styleClass={'btn btn_save column_3 model-btn-column_3'} />
+          <ButtonCompoment text={'Stop All'} action={stopAll} styleClass={'btn btn_cancel column_4 model-btn-column_4'} />
 
-        <ButtonCompoment text={'Stop All'} action={stopAll} styleClass={'btn btn_cancel'} />
-        <ButtonCompoment text={'Play All'} action={playAll} styleClass={'btn btn_save'} />
-
+</div>
 
         <div className="list-div">
           <div className="display-list">
             <h4 className="column_1 table-header">Name</h4>
-            <h4 className="column_2 table-header">ipaddress</h4>
-            <h4 className="column_3 table-header">play</h4>
-            <h4 className="column_4 table-header">stop</h4>
+            <h4 className="column_2 table-header">Current Show</h4>
+            <h4 className="column_3 table-header model-hidden">play</h4>
+            <h4 className="column_4 table-header model-hidden">stop</h4>
           </div>
           {allDisplays.displays && allDisplays.displays.length > 0 ? (
             <>
@@ -73,9 +112,12 @@ const DisplayIndex = (props: Props) => {
                   className="display-list"
                 >
                   <p className="display-item toCapital" onClick={() => redirctToShow(display.id ? display.id : 0)}> {display.name}</p>
-                  <p className="display-item" onClick={() => redirctToShow(display.id ? display.id : 0)}> {display.ipaddress}</p>
-                  <ButtonCompoment text={'play'} action={() => { playOne(display); }} styleClass={'btn btn_save'} />
-                  <ButtonCompoment text={'stop'} action={() => { stopOne(display); }} styleClass={'btn btn_cancel'} />
+
+                  <p id={`display${display.id}`} className="display-item" onClick={() => redirctToShow(display.id ? display.id : 0)}> none </p>
+
+                  <ButtonCompoment text={'play'} action={() => { playOne(display); }} styleClass={'btn btn_save model-row-2'} />
+
+                  <ButtonCompoment text={'stop'} action={() => { stopOne(display); }} styleClass={'btn btn_cancel model-row-2'} />
 
                 </div>
               ))}
