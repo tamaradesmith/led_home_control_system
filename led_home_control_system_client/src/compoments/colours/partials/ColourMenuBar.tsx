@@ -2,17 +2,17 @@ import React from "react";
 import { NavLink } from "react-router-dom";
 
 
-const ColourMenuBar = ()=>{
+const ColourMenuBar = () => {
   return (
     <div className="ColourMenuBar nav-secondary">
-        <NavLink to="/colours" className="nav-item">
-          colours
+      <NavLink to="/colours" className="nav-item">
+        colours
         </NavLink>
-        <NavLink to="/colours/new" className="nav-item">
-        new colours
+      <NavLink to="/colours/new" className="nav-item">
+        new colour
         </NavLink>
-      </div>
-  )
-}
+    </div>
+  );
+};
 
 export default ColourMenuBar;

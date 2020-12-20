@@ -12,7 +12,7 @@ const DisplayMenuBar = () => {
       <NavLink
         to="/displays/new"
         className="nav-item">
-        Add a Display
+        New Display
         </NavLink>
     </div>
   );

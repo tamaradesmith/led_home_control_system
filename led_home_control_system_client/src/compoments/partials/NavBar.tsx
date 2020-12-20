@@ -50,23 +50,12 @@ const NavBar = () => {
         <h4 className="nav-header">LED Home Control System</h4>
       </div>
       <div className="nav-div">
-        {/* <NavLink to="/displays" onClick={handleDisplay} className="nav-item">
-          Displays
-        </NavLink>
-        <NavLink
-          to="/displays/new"
-          onClick={handleDisplay}
-          className="nav-item"
-        >
-          Add a Display
-        </NavLink> */}
+
         <NavLink to={"/displays"}
           className="nav-item"
           onClick={handleDisplay}>
           Displays
-          </NavLink>
-
-
+        </NavLink>
 
         <NavLink
           to={"/colours"}
@@ -75,23 +64,28 @@ const NavBar = () => {
         >
           colours
         </NavLink>
+
         <NavLink
           to={"/shows"}
           className="nav-item"
           onClick={handleShow}
         >
-          show
+          shows
         </NavLink>
       </div>
+
       <div className={displayMenu ? "" : "hidden"}>
         <DisplayMenuBar />
       </div>
+
       <div className={colourMenu ? "" : "hidden"}>
         <ColourMenuBar />
       </div>
+
       <div className={showMenu ? "" : "hidden"}>
         <ShowMenuBar />
       </div>
+
     </header>
   );
 };

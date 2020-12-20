@@ -14,7 +14,7 @@ export const ColourModel = {
       return await knex("colours")
         .select("id", "name", "hue", "saturation", "lightness")
         .groupBy("name", "id", "hue", "saturation", "lightness")
-        .orderBy([{ column: 'hue' }, { column: 'saturation', order: 'desc' }]);
+        .orderBy([{ column: 'hue' }, { column: 'lightness', order: 'desc' }]);
     } catch (error) {
       return error;
     }

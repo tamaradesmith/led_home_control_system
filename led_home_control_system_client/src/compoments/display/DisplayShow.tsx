@@ -134,7 +134,8 @@ const DisplayShow = (props: DisplaysProps) => {
 
           <p className="card-label">Contection:</p>
           <p className="column_2">{checkForDisplay()}</p>
-
+          <p className="card-label">IP Address:</p>
+          <p className="column_2">{display.ipaddress}</p>
           <div className="column_3_4 show-btn-div">
             <ButtonCompoment text={'Play'} styleClass={"btn btn_save"} action={playDefaultShow} />
             <ButtonCompoment text={'Stop'} styleClass={"btn btn_cancel"} action={stopDefaultShow} />
@@ -142,7 +143,7 @@ const DisplayShow = (props: DisplaysProps) => {
           </div>
 
           <p className="card-label column_1 model-card-label">Current Show:</p>
-          <p className="column_2_4 model-column-1">
+          <p className="column_2_4 model-column-1 toCapital">
             {" "}
             {display.default_show ? (
               <>{display.default_show.name}</>
@@ -152,8 +153,8 @@ const DisplayShow = (props: DisplaysProps) => {
           </p>
 
           <ButtonCompoment
-            text={'Change Shows'}
-            styleClass="btn_save btn btn_x_big column_4 model-column-2"
+            text={'Change'}
+            styleClass="btn_save btn btn column_4 model-column-2"
             action={() => {
               setShowList(showlist ? false : true);
             }}

@@ -118,7 +118,7 @@ const DisplayForm = (props: Props) => {
 
       <label htmlFor="ipaddress" className="column_1">
         {" "}
-        Ip Adrress:
+        IP Address:
       </label>
       <div className="column_2_4 form_ipadress">
         <input

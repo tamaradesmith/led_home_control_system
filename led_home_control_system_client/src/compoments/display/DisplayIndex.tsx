@@ -3,8 +3,8 @@ import { useHistory } from "react-router-dom";
 
 import DisplayContext from "../partials/DisplayContext";
 import { DisplayQuery, LedQuery, ShowQuery } from "../../js/request";
+
 import ButtonCompoment from "../partials/ButtonCompoment";
-import ShowList from "./partials/ShowList";
 
 interface Props {
   update: Function;
@@ -63,13 +63,13 @@ const DisplayIndex = (props: Props) => {
         const displayDiv = document.querySelector<HTMLElement>(
           `#display${display.id}`
         ) as HTMLElement;
-       
+
         let displayShow = 'none';
         if (displayDiv && display.default_show) {
           shows.forEach(show => {
             if (`${show.id}` === `${display.default_show}`) {
-             displayShow = show.name;
-           }
+              displayShow = show.name;
+            }
           });
         }
         displayDiv.innerText = displayShow;
@@ -84,6 +84,7 @@ const DisplayIndex = (props: Props) => {
 
   useEffect(() => {
     assignShows();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [shows]);
 
   return (
@@ -91,11 +92,11 @@ const DisplayIndex = (props: Props) => {
       <div className="card-index">
         <h2 className="card-header"> Available LED Displays </h2>
         <div className="display-list">
-          
-        <ButtonCompoment text={'Play All'} action={playAll} styleClass={'btn btn_save column_3 model-btn-column_3'} />
+
+          <ButtonCompoment text={'Play All'} action={playAll} styleClass={'btn btn_save column_3 model-btn-column_3'} />
           <ButtonCompoment text={'Stop All'} action={stopAll} styleClass={'btn btn_cancel column_4 model-btn-column_4'} />
 
-</div>
+        </div>
 
         <div className="list-div">
           <div className="display-list">
@@ -113,7 +114,7 @@ const DisplayIndex = (props: Props) => {
                 >
                   <p className="display-item toCapital" onClick={() => redirctToShow(display.id ? display.id : 0)}> {display.name}</p>
 
-                  <p id={`display${display.id}`} className="display-item" onClick={() => redirctToShow(display.id ? display.id : 0)}> none </p>
+                  <p id={`display${display.id}`} className="display-item toCapital" onClick={() => redirctToShow(display.id ? display.id : 0)}> none </p>
 
                   <ButtonCompoment text={'play'} action={() => { playOne(display); }} styleClass={'btn btn_save model-row-2'} />
 
